@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="format-detection" content="telephone=no">
 <title>تحليل ساعات الموظفين - Mobile Fix</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Rt0PCi8LJbhHYASEpj8GJU5PyE_9Fd_tj59GMyK_iyXuSdYTv2Qnz1GhnuNgBzgFkLV-zB09q9QizDoV07fwd-8BRxUcaXVOByU9LEsBrb9fMJsrgaj0PZqZ_nCWF2dF-6rUUnMgxJvKmUmz9GxGGzftdz4pUOpiRGvNHk-jQhvyFw4_f5UjXde5GtBCgmc3zJPU-UWom6F4osO0pvC_-FoJY85vVwf9gMCDfjVFjhWl3T-fZEziWG986MHKGHoa48BU0aRjthAvfBllcrLcvbHslYDOflSbRRjEFbtpDS-9d3q-gwqLDnOgwEN3mf683Lp-bnJI4UIOciovmUkpfQ" charset="UTF-8"></script><style>
+<style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#152238;--muted:#667085;--line:#dfe5ec;
   --primary:#0f766e;--primary-dark:#155e75;--good:#027a48;--bad:#b42318;--warn:#b54708;
@@ -451,6 +451,593 @@ input,select,button{max-width:100%}
   line-height:1.6;
 }
 .startup-error.show{display:block}
+
+.weekday-picker{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.weekday-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:#fff;font-size:12px;cursor:pointer}
+.weekday-chip input{width:16px;height:16px;min-height:auto!important}
+.payroll-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;grid-column:1/-1}
+.reason-wrap{grid-column:1/-1}
+.reason-wrap input{width:100%}
+.setting-wide{grid-column:1/-1}
+@media(max-width:700px){
+  .payroll-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:460px){
+  .payroll-grid{grid-template-columns:1fr}
+}
+
+
+.penalty-list{display:grid;gap:8px;margin-top:8px}
+.penalty-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(110px,.7fr) auto;gap:8px;align-items:end;padding:9px;border:1px solid var(--line);border-radius:10px;background:#fafafa}
+.penalty-row input{width:100%}.penalty-remove{min-width:44px}.penalty-total{margin-top:7px;font-size:12px;color:#667085}
+@media(max-width:600px){.penalty-row{grid-template-columns:1fr}.penalty-remove{width:100%}}
+
+/* Side navigation layout */
+@media (min-width: 801px){
+  body{padding-right:190px}
+  .tabs{
+    position:fixed!important;
+    top:18px;
+    right:14px;
+    width:162px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:7px!important;
+    padding:10px!important;
+    margin:0!important;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    z-index:50;
+    box-shadow:0 8px 24px rgba(16,24,40,.08);
+  }
+  .tabs .tab{
+    width:100%!important;
+    min-width:0!important;
+    text-align:right!important;
+    justify-content:flex-start!important;
+    padding:11px 12px!important;
+    border-radius:9px!important;
+  }
+  .tabs .tab.active{font-weight:700}
+  .container,.wrap,main{max-width:none!important}
+}
+@media (max-width:800px){
+  body{padding-right:0!important}
+  .tabs{
+    position:static!important;
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:7px!important;
+  }
+  .tabs .tab{width:100%!important;min-width:0!important}
+}
+@media (max-width:420px){
+  .tabs{grid-template-columns:1fr!important}
+}
+
+
+/* ===== Professional wide desktop layout ===== */
+:root{
+  --sidebar-w:220px;
+}
+@media (min-width: 901px){
+  body{
+    padding-right:calc(var(--sidebar-w) + 28px)!important;
+  }
+  .tabs{
+    top:20px!important;
+    right:18px!important;
+    width:var(--sidebar-w)!important;
+    padding:14px!important;
+    gap:8px!important;
+    border-radius:16px!important;
+  }
+  .tabs::before{
+    content:attr(data-menu-title);
+    display:block;
+    padding:7px 8px 13px;
+    margin-bottom:2px;
+    font-size:13px;
+    font-weight:800;
+    color:#344054;
+    border-bottom:1px solid var(--line);
+  }
+  .tabs .tab{
+    min-height:46px!important;
+    display:flex!important;
+    align-items:center!important;
+    font-size:14px!important;
+  }
+  .tabs .tab.active{
+    box-shadow:inset -3px 0 0 currentColor;
+  }
+  .container,.wrap,main{
+    width:100%!important;
+    max-width:none!important;
+    margin-right:0!important;
+    margin-left:auto!important;
+  }
+  .card{
+    width:100%!important;
+  }
+  .settings-grid{
+    grid-template-columns:1fr!important;
+  }
+  .setting-row{
+    width:100%!important;
+  }
+  .kpis{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  table{
+    width:100%!important;
+  }
+}
+@media (min-width: 1280px){
+  body{
+    padding-right:calc(var(--sidebar-w) + 36px)!important;
+  }
+  .kpis{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+}
+
+/* Better toolbar alignment */
+.toolbar{
+  align-items:center!important;
+}
+.toolbar > *{
+  min-width:0;
+}
+.card{
+  border-radius:16px!important;
+}
+.panel > .card{
+  overflow:visible;
+}
+
+/* ===== Application popup ===== */
+.app-popup-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.38);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:9999;
+}
+.app-popup-backdrop.show{
+  display:flex;
+}
+.app-popup{
+  width:min(440px,100%);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 20px 60px rgba(15,23,42,.22);
+  text-align:right;
+}
+.app-popup-icon{
+  width:46px;
+  height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:#f2f4f7;
+  font-size:23px;
+  margin-bottom:12px;
+}
+.app-popup h3{
+  margin:0 0 7px;
+  font-size:18px;
+}
+.app-popup p{
+  margin:0;
+  color:#667085;
+  line-height:1.7;
+  overflow-wrap:anywhere;
+}
+.app-popup-actions{
+  display:flex;
+  justify-content:flex-start;
+  gap:8px;
+  margin-top:18px;
+}
+.app-popup-actions button{
+  min-width:90px;
+}
+.app-popup.success .app-popup-icon{background:#ecfdf3;color:#027a48}
+.app-popup.error .app-popup-icon{background:#fef3f2;color:#b42318}
+.app-popup.info .app-popup-icon{background:#eff8ff;color:#175cd3}
+
+@media(max-width:900px){
+  body{padding-right:0!important}
+  .app-popup-backdrop{padding:14px}
+  .app-popup{padding:17px;border-radius:15px}
+}
+
+
+/* ===== Lightweight toast notifications ===== */
+.app-popup-backdrop,.app-popup{display:none!important}
+.app-toast{
+  position:fixed;
+  top:18px;
+  left:50%;
+  transform:translate(-50%,-14px);
+  width:min(520px,calc(100% - 28px));
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:12px 14px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:13px;
+  box-shadow:0 12px 34px rgba(15,23,42,.16);
+  z-index:10000;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease,visibility .2s ease;
+}
+.app-toast.show{
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0);
+  pointer-events:auto;
+}
+.app-toast-icon{
+  width:30px;height:30px;min-width:30px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;
+  background:#eff8ff;color:#175cd3;
+}
+.app-toast.success .app-toast-icon{background:#ecfdf3;color:#027a48}
+.app-toast.error .app-toast-icon{background:#fef3f2;color:#b42318}
+.app-toast-copy{min-width:0;display:grid;gap:2px;flex:1}
+.app-toast-copy b{font-size:13px;color:#101828}
+.app-toast-copy span{font-size:12px;color:#667085;line-height:1.55;white-space:pre-line}
+.app-toast-close{
+  border:0;background:transparent;color:#667085;
+  width:30px;height:30px;min-width:30px;
+  padding:0;font-size:22px;line-height:1;cursor:pointer
+}
+.lang-switch{
+  width:100%;
+  min-height:42px;
+  margin-bottom:4px;
+  border:1px solid var(--line)!important;
+  background:#f8fafc!important;
+  color:#344054!important;
+  font-weight:800!important;
+  text-align:center!important;
+  justify-content:center!important;
+}
+html[dir="ltr"] body{padding-left:calc(var(--sidebar-w) + 28px)!important;padding-right:0!important}
+html[dir="ltr"] .tabs{left:18px!important;right:auto!important}
+html[dir="ltr"] .tabs .tab{text-align:left!important;justify-content:flex-start!important}
+html[dir="ltr"] .tabs .tab.active{box-shadow:inset 3px 0 0 currentColor!important}
+html[dir="ltr"] .app-toast{text-align:left}
+@media(max-width:900px){
+  html[dir="ltr"] body{padding-left:0!important}
+  .app-toast{top:10px;width:calc(100% - 20px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .app-toast{transition:none}
+}
+
+/* FINAL RESPONSIVE LAYOUT OVERRIDE */
+@media (min-width:901px){
+  :root{--sidebar-w:190px}
+  body{
+    padding-right:calc(var(--sidebar-w) + 26px)!important;
+    padding-left:18px!important;
+  }
+  html[dir="ltr"] body{
+    padding-left:calc(var(--sidebar-w) + 26px)!important;
+    padding-right:18px!important;
+  }
+  .wrap{
+    width:100%!important;
+    max-width:1180px!important;
+    margin:0 auto!important;
+    padding:16px 0 26px!important;
+  }
+  .tabs{
+    width:var(--sidebar-w)!important;
+    right:16px!important;
+    top:16px!important;
+    padding:12px!important;
+  }
+  html[dir="ltr"] .tabs{left:16px!important;right:auto!important}
+  .hero{padding:18px 20px!important;border-radius:15px!important}
+  .hero h1{font-size:24px!important}
+  .hero p{font-size:13px!important;line-height:1.7!important}
+  .card{padding:14px!important;border-radius:14px!important}
+  .kpis{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:8px!important}
+  .kpi{padding:11px!important}
+  .kpi b{font-size:19px!important}
+  .kpi span{font-size:11px!important}
+  .summary-toolbar,.filter-panel{gap:8px!important}
+  .summary-toolbar button,.filter-panel button{padding-inline:12px!important}
+  table{font-size:12px!important}
+  th,td{padding:8px 7px!important}
+  .setting-row{padding:11px!important;gap:8px!important}
+  input,select,button{min-height:40px!important}
+}
+@media (min-width:1600px){
+  .wrap{max-width:1240px!important}
+}
+
+@media (max-width:900px){
+  body,html[dir="ltr"] body{
+    padding:0!important;
+  }
+  .wrap{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:9px!important;
+  }
+  .hero{margin-bottom:9px!important;padding:14px!important}
+  .hero h1{font-size:20px!important;margin-bottom:5px!important}
+  .hero p{font-size:12px!important;line-height:1.6!important}
+  .card{padding:11px!important;margin-bottom:9px!important}
+
+  .tabs,
+  html[dir="ltr"] .tabs{
+    position:static!important;
+    width:100%!important;
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    gap:6px!important;
+    padding:2px 0 8px!important;
+    margin:0 0 8px!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:transparent!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+  }
+  .tabs::before{display:none!important}
+  .tabs .tab,
+  html[dir="ltr"] .tabs .tab{
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:118px!important;
+    min-height:40px!important;
+    padding:8px 10px!important;
+    font-size:13px!important;
+    white-space:nowrap!important;
+    text-align:center!important;
+    justify-content:center!important;
+    box-shadow:none!important;
+  }
+  .tabs .lang-switch{
+    min-width:86px!important;
+    order:-1;
+  }
+
+  .table-wrap{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  .table-wrap table{
+    width:max-content!important;
+    min-width:820px!important;
+    max-width:none!important;
+  }
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  .kpi{padding:9px!important}
+  .kpi b{font-size:17px!important}
+  .kpi span{font-size:10.5px!important}
+  .summary-toolbar,.filter-panel,.toolbar{gap:7px!important}
+  .summary-toolbar button,.filter-panel button{min-height:42px!important}
+  .settings-card{padding:10px!important}
+  .setting-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:10px!important;gap:8px!important}
+  .setting-row .setting-wide,.setting-row .payroll-grid,.setting-row .penalty-list{grid-column:1/-1!important}
+  .payroll-grid{grid-template-columns:1fr 1fr!important}
+  .reason-wrap{grid-column:1/-1!important}
+}
+@media (max-width:560px){
+  .wrap{padding:7px!important}
+  .hero{padding:12px!important;border-radius:12px!important}
+  .hero h1{font-size:18px!important}
+  .upload-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
+  .upload-row input[type="file"]{grid-column:1/-1!important}
+  .upload-row button{width:100%!important}
+  .kpis{grid-template-columns:1fr 1fr!important}
+  .setting-row{grid-template-columns:1fr!important}
+  .setting-row .emp,.setting-row .setting-wide,.setting-row .payroll-grid,.setting-row .penalty-list,.reason-wrap{grid-column:1!important}
+  .payroll-grid{grid-template-columns:1fr!important}
+  .weekday-picker{gap:5px!important}
+  .weekday-chip{font-size:12px!important;padding:6px 7px!important}
+  .summary-toolbar,.filter-panel,.toolbar,.bulk-actions{display:grid!important;grid-template-columns:1fr!important}
+  .summary-toolbar>* ,.filter-panel>* ,.toolbar>* ,.bulk-actions>*{width:100%!important;min-width:0!important}
+  .app-toast{top:8px!important;width:calc(100% - 14px)!important;padding:10px 11px!important}
+}
+
+
+/* ===== Analytics Dashboard ===== */
+.dashboard-card{padding:18px!important}
+.dashboard-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.dashboard-head h2{margin:0 0 4px}
+.dashboard-sub{font-size:12px;color:#667085}
+.dashboard-actions{display:flex;gap:7px;flex-wrap:wrap}
+.dashboard-filter{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;padding:10px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
+.dashboard-filter label{min-width:240px;flex:1;max-width:420px}
+.dashboard-filter label span{display:block;font-size:11px;color:#667085;margin-bottom:4px}
+#dashboardScopeText{font-size:12px;color:#667085}
+.dashboard-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.dash-kpi{padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px;min-width:0}
+.dash-kpi span{display:block;font-size:10px;color:#667085;margin-bottom:5px}
+.dash-kpi b{font-size:17px;overflow-wrap:anywhere}
+.dash-kpi-main{background:#f0fdf9;border-color:#b7e4da}
+.dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:10px}
+.dash-box{border:1px solid var(--line);border-radius:13px;padding:13px;background:#fff;min-width:0}
+.dash-box h3{font-size:13px;margin:0 0 12px}
+.dashboard-table-box{margin-top:0}
+.donut-wrap{display:flex;align-items:center;gap:16px;min-height:150px}
+.donut{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#13877d 0deg,#13877d 0deg,#e9eef3 0deg 360deg);position:relative;flex:0 0 auto}
+.donut:after{content:"";position:absolute;width:88px;height:88px;border-radius:50%;background:#fff}
+.donut>div{position:relative;z-index:1;text-align:center;display:grid}
+.donut b{font-size:20px}.donut span{font-size:9px;color:#667085}
+.dash-legend{display:grid;gap:9px;font-size:11px;flex:1}
+.dash-legend span{display:flex;align-items:center;gap:6px}.dash-legend b{margin-inline-start:auto}
+.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}.present-dot{background:#13877d}.absent-dot{background:#d92d20}
+.bar-list{display:grid;gap:10px}
+.bar-row{display:grid;grid-template-columns:92px 1fr 72px;gap:7px;align-items:center;font-size:10px}
+.bar-row span:first-child{color:#475467;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:9px;background:#eef2f6;border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;background:#13877d;border-radius:999px;min-width:0}
+.bar-row b{text-align:end;font-size:10px}
+.rank-list{display:grid;gap:7px}
+.rank-row{display:grid;grid-template-columns:24px 1fr auto;gap:7px;align-items:center;padding:7px 0;border-bottom:1px solid #f0f2f5;font-size:10px}
+.rank-row:last-child{border-bottom:0}.rank-no{width:22px;height:22px;border-radius:7px;background:#f2f4f7;display:grid;place-items:center;font-weight:700}
+.rank-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rank-value{font-weight:800}
+@media(max-width:1100px){
+  .dashboard-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .dashboard-card{padding:10px!important}
+  .dashboard-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dashboard-grid{grid-template-columns:1fr}
+  .dashboard-actions{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
+  .dashboard-actions button{min-width:0;padding-inline:5px}
+  .dashboard-filter label{min-width:0;max-width:none;width:100%}
+  .donut-wrap{justify-content:center}
+  .bar-row{grid-template-columns:80px 1fr 62px}
+}
+
+
+.salary-upload-row{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.salary-file-status{font-size:11px;color:#667085;align-self:center;min-width:180px;flex:1}
+.salary-source-note{font-size:10px;color:#667085;margin-top:3px}
+[data-salary]{background:#fff!important}
+@media(max-width:700px){
+  .salary-upload-row{display:grid!important;grid-template-columns:1fr!important}
+  .salary-upload-row input,.salary-upload-row button{width:100%!important}
+  .salary-file-status{min-width:0}
+}
+
+.files-page{max-width:900px;margin:0 auto}
+.files-page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}
+.files-page-head h2{margin:0 0 5px}.files-page-head p{margin:0;color:#667085;font-size:12px;line-height:1.7}
+.files-progress{display:flex;align-items:center;min-width:130px;padding-top:5px}
+.step-dot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;border:1px solid var(--line);background:#fff}
+.required-dot{background:#13877d;color:#fff;border-color:#13877d}.optional-dot{background:#f2f4f7;color:#475467}
+.step-line{height:2px;flex:1;background:#d0d5dd}
+.file-step{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;padding:16px;border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:12px}
+.file-step-number{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;background:#eef8f6;color:#0f766e}
+.file-step-title{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.file-step-title h3{display:inline-block;margin:0 7px 0 0;font-size:15px}.file-step-title small{color:#667085;font-size:10px}
+.required-badge,.optional-badge{display:inline-flex;align-items:center;padding:3px 7px;border-radius:999px;font-size:9px;font-weight:800;vertical-align:middle}
+.required-badge{background:#fef3f2;color:#b42318}.optional-badge{background:#f2f4f7;color:#475467}
+.file-note,.salary-required-columns{margin-top:8px;padding:9px 11px;border-radius:10px;background:#f8fafc;color:#475467;font-size:10px;line-height:1.7}
+.salary-required-columns{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.salary-required-columns b{width:100%;color:#344054}
+.salary-required-columns span{display:inline-flex;padding:3px 7px;border-radius:7px;background:#fff;border:1px solid var(--line);font-weight:700}
+.salary-required-columns small{width:100%;color:#667085}
+.files-page-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:14px}.files-page-actions button{min-width:150px}
+#goSummaryBtn:disabled{opacity:.5;cursor:not-allowed}
+.file-ready{border-color:#a7d9cf;background:#fbfffe}
+@media(max-width:700px){
+  .files-page{max-width:none}.files-page-head{display:block}.files-progress{margin-top:12px;max-width:150px}
+  .file-step{grid-template-columns:1fr;padding:12px}.file-step-title{display:block}.file-step-title small{display:block;margin-top:5px}
+  .files-page-actions{display:grid;grid-template-columns:1fr}.files-page-actions button{width:100%;min-width:0}
+}
+
+/* ===== Salary WhatsApp summary page ===== */
+.salary-send-card{max-width:1100px;margin:0 auto}
+.salary-send-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}
+.salary-send-head h2{margin:0 0 4px}.salary-send-sub{font-size:11px;color:#667085;line-height:1.7}
+.salary-send-security{font-size:10px;padding:6px 9px;border-radius:999px;background:#f2f4f7;color:#475467;white-space:nowrap}
+.salary-send-toolbar{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:9px;margin-bottom:12px}
+.salary-send-toolbar label>span,.salary-message-label>span{display:block;font-size:10px;color:#667085;margin-bottom:4px}
+.salary-send-grid{display:grid;grid-template-columns:310px minmax(0,1fr);gap:12px;align-items:start}
+.salary-send-list-wrap,.salary-preview{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+.salary-send-list-head{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;background:#f8fafc;border-bottom:1px solid var(--line);font-size:11px}
+.salary-send-list{max-height:520px;overflow:auto}
+.salary-emp-item{width:100%;border:0;border-bottom:1px solid #eef2f6;background:#fff;text-align:start;padding:10px 11px;display:flex;justify-content:space-between;gap:10px;align-items:center;cursor:pointer;color:inherit}
+.salary-emp-item:last-child{border-bottom:0}.salary-emp-item:hover{background:#f8fafc}.salary-emp-item.active{background:#eef8f6}
+.salary-emp-main{min-width:0}.salary-emp-main b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.salary-emp-main span{font-size:9px;color:#667085}
+.phone-state,.send-state{font-size:9px;padding:3px 6px;border-radius:999px;white-space:nowrap}
+.send-state.sent{background:#ecfdf3;color:#027a48}.send-state.not-sent{background:#f2f4f7;color:#667085}
+.salary-emp-states{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.phone-ok{background:#ecfdf3;color:#027a48}.phone-missing{background:#fef3f2;color:#b42318}
+.salary-preview{padding:14px;min-height:360px}.salary-send-empty{display:grid;place-items:center;min-height:330px;color:#98a2b3;font-size:12px;text-align:center}
+.salary-preview-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.salary-preview-head h3{margin:0 0 3px;font-size:16px}.salary-preview-head div>div{font-size:10px;color:#667085}
+.salary-source-pill{font-size:10px;padding:5px 8px;border-radius:999px;background:#f2f4f7;color:#475467}
+.salary-preview-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}.salary-preview-kpis>div{padding:9px;border:1px solid var(--line);border-radius:9px}.salary-preview-kpis span{display:block;font-size:9px;color:#667085;margin-bottom:3px}.salary-preview-kpis b{font-size:13px}.salary-preview-kpis .main{background:#f8fafc}
+.salary-message-label textarea{width:100%;resize:vertical;min-height:190px;line-height:1.7;font-family:inherit}
+.salary-send-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:9px;flex-wrap:wrap}.salary-phone-note{font-size:10px;color:#667085;margin-top:8px}
+@media(max-width:820px){
+  .salary-send-toolbar{grid-template-columns:1fr}
+  .salary-send-grid{grid-template-columns:1fr}
+  .salary-send-list{max-height:280px}
+  .salary-preview-kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:520px){
+  .salary-send-head{display:block}.salary-send-security{display:inline-block;margin-top:8px}
+  .salary-preview-kpis{grid-template-columns:1fr 1fr}
+  .salary-send-actions{display:grid;grid-template-columns:1fr}.salary-send-actions button{width:100%}
+}
+
+
+.salary-phone-edit{margin-bottom:11px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#f8fafc}
+.salary-phone-edit label>span{display:block;font-size:10px;color:#667085;margin-bottom:5px}
+.salary-phone-edit-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
+.salary-phone-edit small{display:block;color:#667085;font-size:9px;margin-top:5px;line-height:1.6}
+@media(max-width:520px){.salary-phone-edit-row{grid-template-columns:1fr}.salary-phone-edit-row button{width:100%}}
+
+.approval-bulk{display:grid;grid-template-columns:minmax(220px,1fr) 190px auto;gap:9px;align-items:end;margin-top:12px;padding:11px;border:1px solid var(--line);border-radius:11px;background:#f8fafc}
+.approval-bulk b{display:block;font-size:12px;margin-bottom:3px}.approval-bulk span{display:block;font-size:9px;color:#667085;line-height:1.5}
+@media(max-width:700px){.approval-bulk{grid-template-columns:1fr}.approval-bulk button,.approval-bulk select{width:100%}}
+
+.approval-select-toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:8px 0 2px}
+.approval-select-toolbar span{font-size:10px;color:#667085;margin-inline-start:auto}
+.approval-choose{display:flex;align-items:center;justify-content:center}
+.approval-choose input{width:18px;height:18px;cursor:pointer}
+@media(max-width:700px){.approval-select-toolbar span{width:100%;margin-inline-start:0}}
+
+@media(min-width:901px){
+  #printing .card > .toolbar{
+    display:grid;
+    grid-template-columns:minmax(170px,1.15fr) minmax(145px,1fr) auto auto;
+    gap:7px;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  #printing .card > .approval-bulk{
+    display:grid;
+    grid-template-columns:minmax(220px,1fr) minmax(145px,180px) auto;
+    gap:7px;
+    align-items:center;
+    margin-top:0;
+  }
+  #printing .approval-bulk > div:first-child{display:none}
+  #printing .approval-select-toolbar{
+    margin-top:7px;
+  }
+}
+
+
+.employee-scope-select{min-width:180px}
+.employee-selection-note{font-size:10px;color:#667085}
+@media(max-width:560px){.employee-scope-select{width:100%;min-width:0}}
 </style>
 </head>
 <body>
@@ -461,23 +1048,77 @@ input,select,button{max-width:100%}
   </section>
   <div id="startupError" class="startup-error"></div>
 
-  <section class="card">
-    <div class="upload-row">
-      <input id="fileInput" type="file" accept=".xlsx,.xls">
-      <button id="loadBtn" class="primary">تحليل الملف</button>
-      <button id="clearBtn" class="secondary">مسح البيانات</button>
-    </div>
-    <div id="status" class="status">لم يتم تحميل ملف بعد.</div><div class="status" style="opacity:.6">الإصدار: Mobile Fix 29-08-2026</div>
-    <div id="periodText" class="period"></div>
-    <div class="status">يدعم نوعين من الملفات تلقائيًا: Total Time Card و Transaction. في ملف Transaction يتم تجميع بصمات كل موظف يوميًا وحساب العمل من أول بصمة إلى آخر بصمة، مع تجاهل الأعمدة الإضافية.</div>
-  </section>
-
-  <div class="tabs">
-        <button class="tab active" data-tab="settings">إعدادات الدوام</button>
-        <button class="tab" data-tab="summary">الملخص</button>
-        <button class="tab" data-tab="daily">تحليل الأيام</button>
-        <button class="tab" data-tab="printing">الطباعة والاعتماد</button>
+  <div class="tabs" data-menu-title="نظام الحضور والرواتب">
+        <button type="button" id="languageToggle" class="tab lang-switch">English</button>
+        <button class="tab active" data-tab="uploads">⇧&nbsp; رفع الملفات</button>
+        <button class="tab" data-tab="dashboard">▤&nbsp; لوحة التحليلات</button>
+        <button class="tab" data-tab="summary">▦&nbsp; الملخص</button>
+        <button class="tab" data-tab="salarysend">✆&nbsp; إرسال ملخص الراتب</button>
+        <button class="tab" data-tab="daily">◷&nbsp; تحليل الأيام</button>
+        <button class="tab" data-tab="printing">▣&nbsp; الطباعة والاعتماد</button>
+        <button class="tab" data-tab="settings">⚙&nbsp; إعدادات الدوام</button>
       </div>
+
+  <section id="uploads" class="panel active">
+    <div class="card files-page">
+      <div class="files-page-head">
+        <div>
+          <h2>رفع الملفات</h2>
+          <p>ابدأ بتحميل ملف الحضور والانصراف. ملف المرتبات اختياري ويمكن إضافته قبل أو بعد تحليل الحضور.</p>
+        </div>
+        <div class="files-progress">
+          <span class="step-dot required-dot">1</span>
+          <span class="step-line"></span>
+          <span class="step-dot optional-dot">2</span>
+        </div>
+      </div>
+
+      <div class="file-step required-step">
+        <div class="file-step-number">1</div>
+        <div class="file-step-content">
+          <div class="file-step-title">
+            <div><h3>رفع ملف الحضور والانصراف</h3> <span class="required-badge">إجباري</span></div>
+            <small>يجب تحميله وتحليله قبل احتساب النتائج.</small>
+          </div>
+          <div class="upload-row">
+            <input id="fileInput" type="file" accept=".xlsx,.xls">
+            <button id="loadBtn" class="primary">تحليل ملف الحضور</button>
+          </div>
+          <div id="status" class="status">لم يتم تحميل ملف بعد.</div>
+          <div id="periodText" class="period"></div>
+          <div class="file-note">يدعم ملفات <b>Total Time Card</b> و <b>Transaction</b>. يتم تجميع بصمات الموظف يوميًا وحساب ساعات العمل حسب نوع التقرير.</div>
+        </div>
+      </div>
+
+      <div class="file-step optional-step">
+        <div class="file-step-number">2</div>
+        <div class="file-step-content">
+          <div class="file-step-title">
+            <div><h3>رفع ملف المرتبات</h3> <span class="optional-badge">اختياري</span></div>
+            <small>يمكن تخطي هذه الخطوة، وسيكون مرتب الموظف 0.00 إذا لم يوجد ملف أو كود مطابق.</small>
+          </div>
+          <div class="upload-row salary-upload-row">
+            <input id="salaryFileInput" type="file" accept=".xlsx,.xls">
+            <button id="loadSalaryBtn" class="secondary">تحميل ملف المرتبات</button>
+          </div>
+          <div id="salaryStatus" class="salary-file-status">لم يتم تحميل ملف المرتبات.</div>
+          <div class="salary-required-columns">
+            <b>ملحوظة — الأعمدة المطلوبة في ملف المرتبات:</b>
+            <span>كود الموظف</span>
+            <span>اسم الموظف</span>
+            <span>المرتب الشهري</span>
+            <span>رقم الجوال <em style="font-style:normal;font-weight:400">(اختياري)</em></span>
+            <small>الربط يتم باستخدام كود الموظف فقط. رقم الجوال اختياري ويُستخدم فقط في صفحة إرسال ملخص الراتب عبر واتساب. أي موظف بدون كود أو مرتب مطابق يحتسب مرتبه 0.00.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="files-page-actions">
+        <button id="clearBtn" class="secondary">مسح كل البيانات</button>
+        <button id="goSummaryBtn" class="primary" disabled>الانتقال إلى لوحة التحليلات</button>
+      </div>
+    </div>
+  </section>
 
   <section id="summary" class="panel">
     <div class="kpis">
@@ -486,10 +1127,21 @@ input,select,button{max-width:100%}
       <div class="kpi"><span>إجمالي الساعات المطلوبة</span><b id="kRequired">0.00</b></div>
       <div class="kpi"><span>الإضافي المستحق بعد المعامل</span><b id="kOT">0.00</b></div>
       <div class="kpi"><span>إجمالي أيام الغياب</span><b id="kAbsent">0</b></div>
+      <div class="kpi"><span>إجمالي الرواتب قبل الخصومات</span><b id="kGrossSalary">0.00</b></div>
+      <div class="kpi"><span>إجمالي خصم الدوام</span><b id="kAttendanceDeduction">0.00</b></div>
+      <div class="kpi"><span>إجمالي الجزاءات</span><b id="kPenalties">0.00</b></div>
+      <div class="kpi"><span>إجمالي الرواتب بعد الخصومات</span><b id="kNetSalary">0.00</b></div>
     </div>
     <div class="card">
       <h2>ملخص الموظفين</h2>
+      <div style="font-size:12px;color:#667085;margin-bottom:6px">
+        تصدير Excel يحفظ الملخص، تفاصيل الأيام، إعدادات الموظفين، الرواتب، الخصومات والجزاءات. إذا اخترت موظفين من الملخص سيتم تصدير المحددين فقط.
+      </div>
       <div class="summary-toolbar">
+        <label>
+          <span style="display:block;font-size:12px;color:#667085;margin-bottom:5px">اختيار الموظف</span>
+          <select id="summaryEmployeeSelect" class="employee-scope-select"><option value="">الكل</option></select>
+        </label>
         <label>
           <span style="display:block;font-size:12px;color:#667085;margin-bottom:5px">بحث بالاسم أو كود الموظف</span>
           <input id="summaryEmployeeFilter" type="search" placeholder="اكتب اسم الموظف أو كود الموظف">
@@ -497,30 +1149,116 @@ input,select,button{max-width:100%}
         <button type="button" class="secondary" id="summarySelectFiltered">تحديد نتائج البحث</button>
         <button type="button" class="secondary" id="summarySelectAll">تحديد الكل</button>
         <button type="button" class="secondary" id="summaryClearSelection">إلغاء التحديد</button>
+        <button type="button" class="primary" id="exportExcelBtn">تصدير Excel</button>
         <span id="summarySelectedCount" style="color:#667085;font-size:13px;align-self:center">عرض جميع الموظفين</span>
+        <span class="employee-selection-note">اختر موظفًا فيختفي من القائمة، ثم اختر غيره. «الكل» يعيد جميع الموظفين.</span>
       </div>
       
       <div class="table-wrap"><table>
           <thead><tr>
-            <th>اختيار</th><th>الموظف</th><th>الرقم</th><th>الساعات اليومية</th><th>أيام العمل</th><th>الجمعة</th>
+            <th>اختيار</th><th>الموظف</th><th>الرقم</th><th>الساعات اليومية</th><th>أيام العمل</th><th>أيام الإجازة</th>
             <th>الحضور</th><th>الغياب</th><th>الفعلي</th><th>المطلوب</th><th>الإضافي الفعلي</th><th>الإضافي المستحق</th><th>النقص</th>
+            <th>الراتب الشهري</th><th>خصم الدوام</th><th>الجزاءات</th><th>الصافي</th>
           </tr></thead>
           <tbody id="summaryBody"></tbody>
         </table></div>
     </div>
   </section>
 
-  <section id="settings" class="panel active">
+  
+  <section id="dashboard" class="panel">
+    <div class="card dashboard-card" id="dashboardCapture">
+      <div class="dashboard-head">
+        <div>
+          <h2>لوحة التحليلات</h2>
+          <div class="dashboard-sub">تحليل شامل للحضور والساعات والإضافي والخصومات والجزاءات والرواتب للموظفين المحددين.</div>
+        </div>
+        <div class="dashboard-actions" data-html2canvas-ignore="true">
+          <button type="button" class="secondary" id="dashboardExcelBtn">Excel</button>
+          <button type="button" class="secondary" id="dashboardPdfBtn">PDF</button>
+          <button type="button" class="primary" id="dashboardImageBtn">صورة PNG</button>
+        </div>
+      </div>
+
+      <div class="dashboard-filter" data-html2canvas-ignore="true">
+        <label><span>اختيار الموظف</span>
+          <select id="dashboardEmployeeSelect" class="employee-scope-select"><option value="">الكل</option></select>
+        </label>
+        <label><span>بحث داخل لوحة التحليلات</span>
+          <input id="dashboardEmployeeFilter" type="search" placeholder="اكتب اسم الموظف أو كود الموظف">
+        </label>
+        <span id="dashboardScopeText">يعرض جميع الموظفين</span>
+      </div>
+
+      <div class="dashboard-kpis">
+        <div class="dash-kpi"><span>الموظفون</span><b id="dEmployees">0</b></div>
+        <div class="dash-kpi"><span>الحضور</span><b id="dPresent">0</b></div>
+        <div class="dash-kpi"><span>الغياب</span><b id="dAbsent">0</b></div>
+        <div class="dash-kpi"><span>ساعات العمل</span><b id="dActual">0.00</b></div>
+        <div class="dash-kpi"><span>الإضافي المستحق</span><b id="dOT">0.00</b></div>
+        <div class="dash-kpi"><span>الساعات الناقصة</span><b id="dShortage">0.00</b></div>
+        <div class="dash-kpi"><span>الرواتب قبل الخصومات</span><b id="dGross">0.00</b></div>
+        <div class="dash-kpi"><span>خصم الدوام</span><b id="dDeduction">0.00</b></div>
+        <div class="dash-kpi"><span>الجزاءات</span><b id="dPenalties">0.00</b></div>
+        <div class="dash-kpi dash-kpi-main"><span>صافي الرواتب</span><b id="dNet">0.00</b></div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dash-box">
+          <h3>الحضور والغياب</h3>
+          <div class="donut-wrap">
+            <div class="donut" id="attendanceDonut"><div><b id="attendanceRate">0%</b><span>نسبة الحضور</span></div></div>
+            <div class="dash-legend">
+              <span><i class="legend-dot present-dot"></i> حضور <b id="legendPresent">0</b></span>
+              <span><i class="legend-dot absent-dot"></i> غياب <b id="legendAbsent">0</b></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-box">
+          <h3>تحليل الساعات</h3>
+          <div class="bar-list" id="hoursBars"></div>
+        </div>
+
+        <div class="dash-box">
+          <h3>تحليل الرواتب</h3>
+          <div class="bar-list" id="salaryBars"></div>
+        </div>
+
+        <div class="dash-box">
+          <h3>أعلى الموظفين في الإضافي</h3>
+          <div class="rank-list" id="topOvertime"></div>
+        </div>
+
+        <div class="dash-box">
+          <h3>أعلى الموظفين في النقص</h3>
+          <div class="rank-list" id="topShortage"></div>
+        </div>
+
+        <div class="dash-box">
+          <h3>أعلى الخصومات والجزاءات</h3>
+          <div class="rank-list" id="topDeductions"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section id="settings" class="panel">
     <div class="card settings-card">
-      <div class="settings-head"><h2>إعدادات ساعات الدوام</h2><span id="settingsHeaderCount" style="color:#667085;font-size:13px"></span></div>
+      <div class="settings-head"><h2>إعدادات الدوام والراتب</h2><span id="settingsHeaderCount" style="color:#667085;font-size:13px"></span></div>
 
       <div class="settings-search"><div class="filter-panel">
+        <label>
+          <span style="display:block;font-size:12px;color:#667085;margin-bottom:5px">اختيار الموظف</span>
+          <select id="settingsEmployeeSelect" class="employee-scope-select"><option value="">الكل</option></select>
+        </label>
         <label>
           <span style="display:block;font-size:12px;color:#667085;margin-bottom:5px">بحث سريع عن موظف</span>
           <input id="settingsEmployeeFilter" type="search" placeholder="اكتب اسم الموظف أو كود الموظف">
         </label>
         <button type="button" class="secondary" id="selectFilteredEmployees">تحديد نتائج البحث</button>
         <span id="settingsFilterCount" style="color:#667085;font-size:13px;align-self:center">عرض كل الموظفين</span>
+        <span class="employee-selection-note">الموظف المحدد يختفي من القائمة، و«الكل» يعيد الجميع.</span>
       </div></div>
 
       <div class="bulk-panel">
@@ -540,15 +1278,31 @@ input,select,button{max-width:100%}
           <label><span style="display:block;font-size:12px;color:#667085;margin-bottom:5px">معامل الساعة الإضافية</span>
             <input id="bulkOTMultiplier" type="number" min="0" max="10" step="0.05" value="1.5">
           </label>
-          <label style="display:flex;align-items:center;gap:8px;min-height:42px">
-            <input id="bulkFriday" type="checkbox">
-            <span>الجمعة يوم عمل</span>
-          </label>
-          <label><span style="display:block;font-size:12px;color:#667085;margin-bottom:5px">تطبيق حالة الجمعة؟</span>
-            <select id="bulkFridayMode">
-              <option value="apply">نعم، طبّق حالة الجمعة</option>
-              <option value="ignore">لا تغيّر حالة الجمعة</option>
+          <label><span style="display:block;font-size:12px;color:#667085;margin-bottom:5px">تطبيق الخصم</span>
+            <select id="bulkApplyDeduction">
+              <option value="yes">نعم</option>
+              <option value="no">لا</option>
+              <option value="ignore">لا تغيّر الإعداد</option>
             </select>
+          </label>
+          <div class="setting-wide">
+            <span style="display:block;font-size:12px;color:#667085;margin-bottom:5px">أيام الإجازة الأسبوعية — اختر يومًا أو أكثر</span>
+            <div class="weekday-picker" id="bulkOffDays">
+              <label class="weekday-chip"><input type="checkbox" value="6">السبت</label>
+              <label class="weekday-chip"><input type="checkbox" value="0">الأحد</label>
+              <label class="weekday-chip"><input type="checkbox" value="1">الاثنين</label>
+              <label class="weekday-chip"><input type="checkbox" value="2">الثلاثاء</label>
+              <label class="weekday-chip"><input type="checkbox" value="3">الأربعاء</label>
+              <label class="weekday-chip"><input type="checkbox" value="4">الخميس</label>
+              <label class="weekday-chip"><input type="checkbox" value="5" checked>الجمعة</label>
+            </div>
+            <label style="display:flex;align-items:center;gap:7px;margin-top:7px">
+              <input type="checkbox" id="bulkApplyOffDays" checked>
+              <span>تطبيق أيام الإجازة على الموظفين المحددين</span>
+            </label>
+          </div>
+          <label class="setting-wide"><span style="display:block;font-size:12px;color:#667085;margin-bottom:5px">سبب عدم تطبيق الخصم — يستخدم فقط عند اختيار «لا»</span>
+            <input id="bulkNoDeductionReason" type="text" placeholder="مثال: إجازة معتمدة / مهمة عمل / قرار إداري">
           </label>
           <button type="button" class="primary" id="applyBulkBtn">تطبيق على المحددين</button>
         </div>
@@ -556,6 +1310,105 @@ input,select,button{max-width:100%}
 
       <div id="settingsList" class="settings-grid"></div>
       <div class="settings-savebar"><button id="saveSettingsBtn" class="primary">حفظ وإعادة الحساب</button></div>
+    </div>
+  </section>
+
+
+  <section id="salarysend" class="panel">
+    <div class="card salary-send-card">
+      <div class="salary-send-head">
+        <div>
+          <h2>إرسال ملخص الراتب</h2>
+          <div class="salary-send-sub">اختر الموظف، راجع الملخص، ثم افتح واتساب والرسالة جاهزة. الإرسال النهائي يتم يدويًا من واتساب.</div>
+        </div>
+        <div class="salary-send-security">لا يتم إرسال أي رسالة تلقائيًا</div>
+      </div>
+
+      <div class="salary-send-toolbar">
+        <label>
+          <span>اختيار الموظف</span>
+          <select id="salarySendEmployeeSelect" class="employee-scope-select"><option value="">الكل</option></select>
+        </label>
+        <label>
+          <span>بحث بالاسم أو الكود</span>
+          <input id="salarySendSearch" type="search" placeholder="اكتب اسم الموظف أو كود الموظف">
+        </label>
+        <label>
+          <span>حالة رقم الجوال</span>
+          <select id="salarySendPhoneFilter">
+            <option value="all">الكل</option>
+            <option value="with">لديه رقم جوال</option>
+            <option value="without">بدون رقم جوال</option>
+          </select>
+        </label>
+        <label>
+          <span>حالة الإرسال</span>
+          <select id="salarySendStatusFilter">
+            <option value="all">الكل</option>
+            <option value="not_sent">لم يتم الإرسال</option>
+            <option value="sent">تم الإرسال</option>
+          </select>
+        </label>
+        <label>
+          <span>كود الدولة الافتراضي</span>
+          <input id="salarySendCountryCode" type="text" inputmode="numeric" value="966" maxlength="5" placeholder="966">
+        </label>
+      </div>
+
+      <div class="employee-selection-note" id="salarySendGlobalScope" style="margin:6px 0 10px">الكل — جميع الموظفين</div><div class="salary-send-grid">
+        <div class="salary-send-list-wrap">
+          <div class="salary-send-list-head">
+            <b>الموظفون</b>
+            <span id="salarySendCount">0</span>
+          </div>
+          <div id="salarySendList" class="salary-send-list"></div>
+        </div>
+
+        <div class="salary-preview">
+          <div id="salarySendEmpty" class="salary-send-empty">اختر موظفًا لعرض ملخص الراتب.</div>
+          <div id="salarySendContent" class="salary-send-content" style="display:none">
+            <div class="salary-preview-head">
+              <div>
+                <h3 id="salarySendName"></h3>
+                <div id="salarySendMeta"></div>
+              </div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+                <span id="salarySendSource" class="salary-source-pill"></span>
+                <span id="salarySendStatusBadge" class="salary-source-pill"></span>
+              </div>
+            </div>
+
+            <div class="salary-preview-kpis">
+              <div><span>الراتب الشهري</span><b id="salarySendGrossBase">0.00</b></div>
+              <div><span>خصم الدوام</span><b id="salarySendDeduction">0.00</b></div>
+              <div><span>الجزاءات</span><b id="salarySendPenalties">0.00</b></div>
+              <div class="main"><span>صافي الراتب</span><b id="salarySendNet">0.00</b></div>
+            </div>
+
+            <div class="salary-phone-edit">
+              <label>
+                <span>رقم الجوال للإرسال</span>
+                <div class="salary-phone-edit-row">
+                  <input id="salarySendPhoneEdit" type="tel" inputmode="tel" placeholder="مثال: 05xxxxxxxx أو 9665xxxxxxxx">
+                  <button type="button" class="secondary" id="salarySendSavePhone">حفظ الرقم</button>
+                </div>
+                <small>يمكن كتابة أو تصحيح الرقم هنا. الرقم المحفوظ يدويًا تكون له الأولوية على الرقم الموجود في ملف المرتبات.</small>
+              </label>
+            </div>
+
+            <label class="salary-message-label">
+              <span>معاينة الرسالة</span>
+              <textarea id="salarySendMessage" rows="11"></textarea>
+            </label>
+
+            <div class="salary-send-actions">
+              <button type="button" class="secondary" id="salarySendResetMessage">إعادة إنشاء الرسالة</button>
+              <button type="button" class="primary" id="salarySendWhatsApp">فتح واتساب</button>
+            </div>
+            <div id="salarySendPhoneNote" class="salary-phone-note"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -591,12 +1444,30 @@ input,select,button{max-width:100%}
           <option value="summary">ملخص فقط بدون تفاصيل الأيام</option>
           <option value="full">تقرير كامل مع تفاصيل الأيام</option>
         </select>
-        <select id="printEmployee"><option value="">اختر الموظف</option></select>
-        <button id="printOneBtn" class="secondary">طباعة الموظف المحدد</button>
-        <button id="printAllBtn" class="primary">طباعة جميع الموظفين</button>
+        <select id="printEmployee"><option value="">الكل</option></select>
+        <button id="printOneBtn" class="secondary">طباعة الموظفين المحددين</button>
+        <button id="printAllBtn" class="primary">طباعة الكل</button>
+      </div>
+      <div class="approval-bulk">
+        <div>
+          <b>تحديث حالة الاعتماد</b>
+          <span>حدد موظفًا واحدًا أو أكثر، أو اختر الكل، ثم طبق الحالة المطلوبة.</span>
+        </div>
+        <select id="bulkApprovalStatus">
+          <option value="unspecified">غير محددة</option>
+          <option value="pending">قيد الاعتماد</option>
+          <option value="approved">معتمد</option>
+          <option value="rejected">غير معتمد</option>
+        </select>
+        <button type="button" id="applyBulkApprovalBtn" class="primary">تطبيق على المحدد</button>
+      </div>
+      <div class="approval-select-toolbar">
+        <button type="button" class="secondary" id="approvalSelectAll">تحديد الكل</button>
+        <button type="button" class="secondary" id="approvalClearSelection">إلغاء التحديد</button>
+        <span id="approvalSelectedCount">لم يتم تحديد موظفين</span>
       </div>
       <div class="note" style="margin-top:12px">
-        اختر "ملخص فقط" لطباعة الإجماليات بدون الأيام، أو "تقرير كامل" لإظهار تفاصيل الأيام. حالة الاعتماد الافتراضية غير محددة، لذلك تظهر خانات معتمد / غير معتمد فارغة ليحددها المدير يدويًا بعد الطباعة.
+        اختر موظفًا من القائمة فيتم تحديده ويختفي من القائمة، ثم اختر موظفًا آخر لإضافته. التحديد مرتبط بجميع الصفحات. اختيار "الكل" يلغي التحديد ويعيد جميع الموظفين إلى القوائم. زر "طباعة الموظفين المحددين" يطبع الاختيارات الحالية فقط.
       </div>
       <div id="approvalList" class="settings-grid"></div>
     </div>
@@ -605,13 +1476,49 @@ input,select,button{max-width:100%}
   <div id="printArea" class="print-area"></div>
 </div>
 
+
+<div id="appToast" class="app-toast info" role="status" aria-live="polite">
+  <div id="appToastIcon" class="app-toast-icon">ℹ</div>
+  <div class="app-toast-copy">
+    <b id="appToastTitle">تنبيه</b>
+    <span id="appToastMessage"></span>
+  </div>
+  <button type="button" id="appToastClose" class="app-toast-close" aria-label="إغلاق">×</button>
+</div>
 <script>
 (()=>{
+  let toastTimer=null;
+  function showPopup(message,type='info',title=''){
+    const toast=document.getElementById('appToast');
+    const msg=document.getElementById('appToastMessage');
+    const ttl=document.getElementById('appToastTitle');
+    const icon=document.getElementById('appToastIcon');
+    if(!toast||!msg||!ttl||!icon) return;
+
+    const safeType=['success','error','info'].includes(type)?type:'info';
+    toast.classList.remove('success','error','info','show');
+    toast.classList.add(safeType);
+    const defaultTitle=safeType==='success'?'تمت العملية بنجاح':safeType==='error'?'تعذر تنفيذ العملية':'تنبيه';
+    ttl.textContent=trText(title||defaultTitle);
+    msg.textContent=trText(String(message||''));
+    icon.textContent=safeType==='success'?'✓':safeType==='error'?'!':'ℹ';
+
+    requestAnimationFrame(()=>toast.classList.add('show'));
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(closePopup,safeType==='error'?5200:3200);
+  }
+
+  function closePopup(){
+    clearTimeout(toastTimer);
+    document.getElementById('appToast')?.classList.remove('show');
+  }
+
+
   // Every real page load / refresh starts clean, as requested.
   // Only this application's keys are removed; unrelated browser data is untouched.
   function clearAppSavedData(){
     try{
-      const prefixes=['dailyHours:','fridayWork:','actualWorkDays:','approval:','overtimeMultiplier:'];
+      const prefixes=['salarySendStatus:','manualPhone:','dailyHours:','fridayWork:','offDays:','actualWorkDays:','approval:','overtimeMultiplier:','dailySalary:','manualSalary:','applyDeduction:','noDeductionReason:','penalties:'];
       const remove=[];
       for(let i=0;i<localStorage.length;i++){
         const k=localStorage.key(i);
@@ -670,8 +1577,258 @@ input,select,button{max-width:100%}
 
   let employees=[];
   let reportPeriod={from:'',to:'',raw:''};
+  let salaryMap=new Map();
+  let phoneMap=new Map();
+  let salaryFileName='';
+
+  function normalizeEmployeeId(v){
+    if(v===null || v===undefined) return '';
+    let s=String(v).trim();
+    if(/^\d+\.0+$/.test(s)) s=s.replace(/\.0+$/,'');
+    return s;
+  }
+
+  function excelMonthlySalary(e){
+    const id=normalizeEmployeeId(e?.id);
+    if(!id) return 0;
+    const n=Number(salaryMap.get(id));
+    return Number.isFinite(n) && n>0 ? n : 0;
+  }
+
+  function manualMonthlySalary(e){
+    const raw=localStorage.getItem('manualSalary:'+e.key);
+    if(raw===null || raw==='') return null;
+    const n=Number(raw);
+    return Number.isFinite(n) && n>=0 ? n : null;
+  }
+
+  function salarySource(e){
+    return manualMonthlySalary(e)!==null ? 'M' : (excelMonthlySalary(e)>0 ? 'A' : '—');
+  }
+
+  function monthlySalary(e){
+    const manual=manualMonthlySalary(e);
+    return manual!==null ? manual : excelMonthlySalary(e);
+  }
+
+  function updateFilesPageState(){
+    const ready=employees.length>0;
+    const btn=$('#goSummaryBtn');
+    if(btn) btn.disabled=!ready;
+    document.querySelector('.required-step')?.classList.toggle('file-ready',ready);
+    const dot=document.querySelector('.required-dot');
+    if(dot) dot.textContent=ready?'✓':'1';
+  }
+
+  function openTab(tabName){
+    $$('.tab[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tabName));
+    $$('.panel').forEach(p=>p.classList.toggle('active',p.id===tabName));
+    try{window.scrollTo({top:0,behavior:'smooth'});}catch(_){window.scrollTo(0,0);}
+  }
+
+  function salaryMatched(e){
+    const id=normalizeEmployeeId(e?.id);
+    return !!id && salaryMap.has(id) && excelMonthlySalary(e)>0;
+  }
+  function excelEmployeePhone(e){
+    const id=normalizeEmployeeId(e?.id);
+    return id ? String(phoneMap.get(id)||'').trim() : '';
+  }
+
+  function manualEmployeePhone(e){
+    const raw=localStorage.getItem('manualPhone:'+e.key);
+    return raw===null ? null : String(raw).trim();
+  }
+
+  function employeePhone(e){
+    const manual=manualEmployeePhone(e);
+    return manual!==null ? manual : excelEmployeePhone(e);
+  }
+
+  function phoneSource(e){
+    return manualEmployeePhone(e)!==null ? 'M' : (excelEmployeePhone(e)?'A':'—');
+  }
+
+  function normalizeWhatsAppPhone(raw,countryCode='966'){
+    let digits=String(raw||'').replace(/\D/g,'');
+    let cc=String(countryCode||'966').replace(/\D/g,'')||'966';
+    if(digits.startsWith('00')) digits=digits.slice(2);
+    if(digits.startsWith('+')) digits=digits.slice(1);
+    if(digits.startsWith(cc)) return digits;
+    if(digits.startsWith('0')) digits=digits.slice(1);
+    // Common KSA local mobile format 5xxxxxxxx
+    if(digits.length===9 && digits.startsWith('5')) return cc+digits;
+    // For other local-looking numbers, apply selected default country code.
+    if(digits.length>=7 && digits.length<=10 && !digits.startsWith(cc)) return cc+digits;
+    return digits;
+  }
+
+
   const $=s=>document.querySelector(s);
   const $$=s=>[...document.querySelectorAll(s)];
+  let currentLang=localStorage.getItem('appLanguage')==='en'?'en':'ar';
+
+  const AR_EN={
+    'تحليل ساعات الموظفين':'Employee Hours Analysis','⇧  رفع الملفات':'⇧  Upload Files','رفع الملفات':'Upload Files',
+    'ابدأ بتحميل ملف الحضور والانصراف. ملف المرتبات اختياري ويمكن إضافته قبل أو بعد تحليل الحضور.':'Start by uploading the attendance file. The payroll file is optional and can be added before or after attendance analysis.',
+    'رفع ملف الحضور والانصراف':'Upload Attendance File','إجباري':'Required','يجب تحميله وتحليله قبل احتساب النتائج.':'It must be uploaded and analyzed before results can be calculated.',
+    'رفع ملف المرتبات':'Upload Payroll File','اختياري':'Optional','يمكن تخطي هذه الخطوة، وسيكون مرتب الموظف 0.00 إذا لم يوجد ملف أو كود مطابق.':'You may skip this step. Employee salary will be 0.00 when no payroll file or matching ID exists.',
+    'ملحوظة — الأعمدة المطلوبة في ملف المرتبات:':'Note — required payroll file columns:','كود الموظف':'Employee ID','اسم الموظف':'Employee Name',
+    'الربط يتم باستخدام كود الموظف فقط. عمود الاسم للمراجعة، وأي موظف بدون كود أو مرتب مطابق يحتسب مرتبه 0.00.':'Matching uses Employee ID only. The name column is for review; any employee without a matching ID or salary is calculated as 0.00.',
+    'مسح كل البيانات':'Clear All Data','الانتقال إلى الملخص':'Go to Summary','الانتقال إلى لوحة التحليلات':'Go to Analytics Dashboard','ملف الحضور مطلوب':'Attendance File Required','يجب أولًا تحميل وتحليل ملف الحضور والانصراف.':'You must first upload and analyze the attendance file.',
+    
+    'تحليل ملف الحضور':'Analyze Attendance','تحميل ملف المرتبات':'Load Payroll File','لم يتم تحميل ملف المرتبات.':'No payroll file loaded.',
+    'الراتب الشهري':'Monthly Salary','إرسال ملخص الراتب':'Send Salary Summary',
+    'حالة الإرسال':'Send Status',
+    'رقم الجوال للإرسال':'Mobile Number for Sending','حفظ الرقم':'Save Number',
+    'يمكن كتابة أو تصحيح الرقم هنا. الرقم المحفوظ يدويًا تكون له الأولوية على الرقم الموجود في ملف المرتبات.':'You can enter or correct the number here. A manually saved number takes priority over the payroll file number.',
+'لم يتم الإرسال':'Not Sent','تم الإرسال':'Sent','حالة إرسال ملخص الراتب':'Salary Summary Send Status',
+'رقم الجوال':'Mobile Number','رقم الجوال (اختياري)':'Mobile Number (Optional)',
+    'لا يتم إرسال أي رسالة تلقائيًا':'No message is sent automatically','بحث بالاسم أو الكود':'Search by name or ID','حالة رقم الجوال':'Mobile Status',
+    'لديه رقم جوال':'Has Mobile Number','بدون رقم جوال':'No Mobile Number','كود الدولة الافتراضي':'Default Country Code','الموظفون':'Employees',
+    'معاينة الرسالة':'Message Preview','إعادة إنشاء الرسالة':'Regenerate Message','فتح واتساب':'Open WhatsApp',
+    'رقم متوفر':'Number Available','بدون رقم':'No Number','مصدر الراتب':'Salary Source',
+    
+    'مصدر الراتب':'Salary Source','A — مرتب مرتبط من ملف Excel':'A — Salary from Excel file','M — مرتب مدخل يدويًا من إعدادات الدوام':'M — Salary entered manually in Work Settings',
+    'A = ملف Excel   |   M = إدخال يدوي':'A = Excel File | M = Manual Entry',
+'مرتبط من ملف المرتبات بكود الموظف':'Linked from payroll file by employee ID','لا يوجد مرتب مطابق — القيمة 0.00':'No matching salary — value is 0.00',
+
+    'الحساب بالساعات العشرية. البرنامج يتعرف تلقائيًا على أعمدة الحضور المطلوبة حتى لو ملف Excel يحتوي على أعمدة أو معلومات إضافية أو تغير ترتيب الأعمدة.':'Hours are calculated in decimal format. The system automatically detects the required attendance columns even when the Excel file contains extra columns or a different column order.',
+    'تحليل الملف':'Analyze File','مسح البيانات':'Clear Data','لم يتم تحميل ملف بعد.':'No file loaded yet.',
+    'الإصدار: Mobile Fix 29-08-2026':'Version: Mobile Fix 29-08-2026',
+    'يدعم نوعين من الملفات تلقائيًا: Total Time Card و Transaction. في ملف Transaction يتم تجميع بصمات كل موظف يوميًا وحساب العمل من أول بصمة إلى آخر بصمة، مع تجاهل الأعمدة الإضافية.':'Automatically supports Total Time Card and Transaction files. Transaction punches are grouped per employee per day and work time is calculated from the first to the last punch; extra columns are ignored.',
+    '▦  الملخص':'▦  Summary','◷  تحليل الأيام':'◷  Daily Analysis','▣  الطباعة والاعتماد':'▣  Print & Approval','⚙  إعدادات الدوام':'⚙  Work Settings',
+    'الملخص':'Summary','تحليل الأيام':'Daily Analysis','الطباعة والاعتماد':'Print & Approval',
+    'تغيير حالة الاعتماد للكل':'Change Approval Status for All','تحديث حالة الاعتماد':'Update Approval Status','يطبق على جميع الموظفين المعروضين حاليًا في صفحة الطباعة.':'Applies to all employees currently shown on the Print page.',
+    'تطبيق على الكل':'Apply to All',
+    'تطبيق على المحدد':'Apply to Selected',
+    'المحدد حاليًا:':'Currently selected:','لم يتم تحديد موظفين — يتم عرض الجميع':'No employees selected — showing all',
+'تحديد الموظف':'Select Employee','لم يتم تحديد موظفين':'No Employees Selected',
+
+'إعدادات الدوام':'Work Settings',
+    'عدد الموظفين':'Employees','إجمالي ساعات العمل':'Total Work Hours','إجمالي الساعات المطلوبة':'Total Required Hours','الإضافي المستحق بعد المعامل':'Adjusted Overtime','إجمالي أيام الغياب':'Total Absence Days',
+    'ملخص الموظفين':'Employee Summary',
+    'تصدير Excel يحفظ الملخص، تفاصيل الأيام، إعدادات الموظفين، الرواتب، الخصومات والجزاءات. إذا اخترت موظفين من الملخص سيتم تصدير المحددين فقط.':'Excel export saves the summary, daily details, employee settings, salaries, deductions and penalties. If employees are selected, only those employees will be exported.',
+    'بحث بالاسم أو كود الموظف':'Search by employee name or ID','اكتب اسم الموظف أو كود الموظف':'Enter employee name or ID',
+    'تحديد نتائج البحث':'Select Search Results','تحديد الكل':'Select All','إلغاء التحديد':'Clear Selection','تصدير Excel':'Export Excel','عرض جميع الموظفين':'Showing All Employees',
+    'اختيار':'Select','الموظف':'Employee','الرقم':'ID','الساعات اليومية':'Daily Hours','أيام العمل':'Work Days','أيام الإجازة':'Days Off','الحضور':'Present','الغياب':'Absent','الفعلي':'Actual','المطلوب':'Required','الإضافي الفعلي':'Actual OT','الإضافي المستحق':'Adjusted OT','النقص':'Shortage','الراتب الشهري':'Monthly Salary','خصم الدوام':'Attendance Deduction','الجزاءات':'Penalties','الصافي':'Net',
+    'إعدادات الدوام والراتب':'Work & Salary Settings','بحث سريع عن موظف':'Quick Employee Search','عرض كل الموظفين':'Showing All Employees','تعديل مجموعة موظفين':'Bulk Employee Update',
+    'عدد ساعات العمل اليومية':'Daily Work Hours','أيام العمل الفعلية بالشهر':'Actual Work Days per Month','معامل الساعة الإضافية':'Overtime Multiplier','تطبيق الخصم':'Apply Deduction','نعم':'Yes','لا':'No','لا تغيّر الإعداد':'Keep Current Setting',
+    'أيام الإجازة الأسبوعية — اختر يومًا أو أكثر':'Weekly Days Off — choose one or more','تطبيق أيام الإجازة على الموظفين المحددين':'Apply days off to selected employees',
+    'سبب عدم تطبيق الخصم — يستخدم فقط عند اختيار «لا»':'Reason for Not Applying Deduction — used only when No is selected',
+    'مثال: إجازة معتمدة / مهمة عمل / قرار إداري':'Example: approved leave / work assignment / management decision',
+    'تطبيق على المحددين':'Apply to Selected','حفظ وإعادة الحساب':'Save & Recalculate',
+    'اختر الموظف':'Select Employee','الكل':'All',
+    'اختيار الموظف':'Select Employee',
+    'اختر موظفًا لإضافته':'Choose an employee to add',
+    'طباعة الموظفين المحددين':'Print Selected Employees',
+
+    'اختر اسمًا ثم اسمًا آخر لإضافة أكثر من موظف، واختر «الكل» للعودة للجميع.':'Choose one employee then another to add multiple employees. Choose All to show everyone again.',
+    'الاختيار تراكمي، و«الكل» يعيد عرض جميع الموظفين.':'Selection is cumulative; All shows everyone again.',
+'اختر الموظف من القائمة بالأعلى لتصفية قائمة الاعتماد بالأسفل وتحديده تلقائيًا للتحديث، أو اترك القائمة بدون اختيار لعرض جميع الموظفين.':'Choose an employee above to filter the approval list below and select them automatically for updating, or leave it blank to show all employees.','كل الأيام':'All Days','حضور (أي يوم تم العمل فيه)':'Present (any day with work)','إضافي':'Overtime','نقص ساعات':'Short Hours','بصمة غير مكتملة':'Incomplete Punch','غياب':'Absent','إجازة':'Day Off',
+    'التاريخ':'Date','اليوم':'Day','الدخول':'Check In','الخروج':'Check Out','الحالة':'Status',
+    'ملخص فقط بدون تفاصيل الأيام':'Summary Only','تقرير كامل مع تفاصيل الأيام':'Full Report with Daily Details','طباعة الموظف المحدد':'Print Selected Employee','طباعة جميع الموظفين':'Print All Employees',
+    'اختر "ملخص فقط" لطباعة الإجماليات بدون الأيام، أو "تقرير كامل" لإظهار تفاصيل الأيام. حالة الاعتماد الافتراضية غير محددة، لذلك تظهر خانات معتمد / غير معتمد فارغة ليحددها المدير يدويًا بعد الطباعة.':'Choose Summary Only to print totals without daily rows, or Full Report to include daily details. Approval is left unspecified by default so the manager can mark Approved / Not Approved after printing.',
+    'السبت':'Saturday','الأحد':'Sunday','الاثنين':'Monday','الثلاثاء':'Tuesday','الأربعاء':'Wednesday','الخميس':'Thursday','الجمعة':'Friday',
+    'ساعات العمل اليومية':'Daily Work Hours','أيام العمل الفعلية':'Actual Work Days','معامل الإضافي':'Overtime Multiplier','أيام الإجازة الأسبوعية':'Weekly Days Off',
+    'نعم، يطبق الخصم':'Yes, Apply Deduction','لا يطبق الخصم':'Do Not Apply Deduction','سبب عدم تطبيق الخصم':'Reason for No Deduction','يُطلب عند اختيار عدم تطبيق الخصم':'Required when deduction is not applied',
+    'الساعات الفعلية':'Actual Hours','المطلوب للشهر':'Monthly Required','الخصم المحسوب':'Calculated Deduction','الخصم المطبق':'Applied Deduction','صافي الراتب':'Net Salary',
+    'الجزاءات الإدارية':'Administrative Penalties','سبب الجزاء والمبلغ المخصوم من الراتب.':'Penalty reason and amount deducted from salary.','+ إضافة جزاء':'+ Add Penalty',
+    'سبب الجزاء':'Penalty Reason','مبلغ الجزاء':'Penalty Amount','حذف الجزاء':'Delete Penalty','مثال: مخالفة تعليمات العمل':'Example: work policy violation',
+    'معتمد':'Approved','غير معتمد':'Not Approved','غير محدد':'Not Specified',
+    'تمت العملية بنجاح':'Operation Completed','تعذر تنفيذ العملية':'Operation Failed','تنبيه':'Notice','تم الحفظ':'Saved','تم تصدير Excel':'Excel Exported','تجهيز التصدير':'Preparing Export','فشل التصدير':'Export Failed','بيانات مطلوبة':'Required Information',
+    'حسنًا':'OK','إغلاق':'Close',
+    'لا توجد جزاءات':'No Penalties','بدون سبب':'No Reason',
+    'ساعة':'hrs','يوم':'day','رقم الموظف':'Employee ID',
+    'ملخص ساعات الموظف':'Employee Hours Summary','الفترة غير محددة في الملف':'Period not specified in file','إعدادات الدوام':'Work Settings','نتيجة احتساب الساعات':'Hours Calculation Result',
+    'الراتب والخصومات والجزاءات':'Salary, Deductions & Penalties','إجمالي الراتب':'Gross Salary','خصم الدوام المحسوب':'Calculated Attendance Deduction','خصم الدوام المطبق':'Applied Attendance Deduction','إجمالي الجزاءات':'Total Penalties','الصافي قبل الجزاءات':'Net Before Penalties','صافي الراتب النهائي':'Final Net Salary',
+    'تطبيق خصم الدوام':'Apply Attendance Deduction','سبب عدم تطبيق خصم الدوام':'Reason for Not Applying Attendance Deduction','تفاصيل الجزاءات الإدارية':'Administrative Penalty Details',
+    'اسم المعتمد:':'Approver Name:','التوقيع:':'Signature:','الموظف:':'Employee:','المدير المباشر:':'Direct Manager:','التاريخ:':'Date:','حالة الاعتماد':'Approval Status',
+    'تفاصيل الأيام':'Daily Details','الإعدادات':'Settings','معلومات التقرير':'Report Information',
+    '▤  لوحة التحليلات':'▤  Analytics Dashboard','لوحة التحليلات':'Analytics Dashboard',
+    'تحليل شامل للحضور والساعات والإضافي والخصومات والجزاءات والرواتب للموظفين المحددين.':'Comprehensive analysis of attendance, hours, overtime, deductions, penalties and payroll for the selected employees.',
+    'صورة PNG':'PNG Image','بحث داخل لوحة التحليلات':'Search Analytics Dashboard','يعرض جميع الموظفين':'Showing all employees',
+    'الموظفون':'Employees','ساعات العمل':'Work Hours','الساعات الناقصة':'Shortage Hours','الرواتب قبل الخصومات':'Payroll Before Deductions','صافي الرواتب':'Net Payroll',
+    'الحضور والغياب':'Attendance & Absence','نسبة الحضور':'Attendance Rate','تحليل الساعات':'Hours Analysis','تحليل الرواتب':'Payroll Analysis',
+    'أعلى الموظفين في الإضافي':'Top Overtime Employees','أعلى الموظفين في النقص':'Top Shortage Employees','أعلى الخصومات والجزاءات':'Highest Deductions & Penalties',
+    'تحليل الموظفين':'Employee Analysis','إجمالي الرواتب قبل الخصومات':'Total Payroll Before Deductions','إجمالي الرواتب بعد الخصومات':'Total Payroll After Deductions',
+    'لا توجد بيانات.':'No data.','إجمالي الرواتب':'Total Payroll'
+    
+  };
+  const EN_AR=Object.fromEntries(Object.entries(AR_EN).map(([a,e])=>[e,a]));
+
+  function trText(value){
+    let s=String(value??'');
+    if(currentLang==='ar'){
+      if(EN_AR[s]) return EN_AR[s];
+      return s;
+    }
+    if(AR_EN[s]) return AR_EN[s];
+
+    // Common dynamic messages/labels.
+    s=s.replace(/^عدد الموظفين:\s*(\d+)$/,(_,n)=>`Employees: ${n}`);
+    s=s.replace(/^تم تحديد\s*(\d+)\s*موظف.*$/,(_,n)=>`${n} employee(s) selected — applied across all pages`);
+    s=s.replace(/^عرض كل الموظفين\s*\((\d+)\)$/,(_,n)=>`Showing all employees (${n})`);
+    s=s.replace(/^نتائج البحث:\s*(\d+)$/,(_,n)=>`Search results: ${n}`);
+    s=s.replace(/^رقم\s+(.+)$/,(_,n)=>`ID ${n}`);
+    s=s.replace(/^إجمالي الجزاءات الحالية:\s*(.+)$/,(_,n)=>`Current penalties total: ${n}`);
+    s=s.replace(/^تم تصدير\s*(\d+)\s*موظف إلى\s*(.+)\.$/,(_,n,f)=>`Exported ${n} employee(s) to ${f}.`);
+    s=s.replace(/^تم إنشاء ملف Excel بنجاح لعدد\s*(\d+)\s*موظف\.\nاسم الملف:\s*(.+)$/,(_,n,f)=>`Excel file created successfully for ${n} employee(s).\nFile name: ${f}`);
+    s=s.replace(/^الفترة من\s*(.+)\s*إلى\s*(.+)$/,(_,a,b)=>`Period from ${a} to ${b}`);
+    s=s.replace(/^تاريخ الطباعة:\s*(.+)$/,(_,v)=>`Print date: ${v}`);
+    s=s.replace(/^وقت الطباعة:\s*(.+)$/,(_,v)=>`Print time: ${v}`);
+    s=s.replace(/^الساعات الفعلية$/, 'Actual Hours');
+    s=s.replace(/^المطلوب للشهر$/, 'Monthly Required');
+    return s;
+  }
+
+  function translateElement(root=document.body){
+    if(!root) return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    const nodes=[];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(n=>{
+      const raw=n.nodeValue;
+      const trimmed=raw.trim();
+      if(!trimmed) return;
+      const translated=trText(trimmed);
+      if(translated!==trimmed){
+        const lead=raw.match(/^\s*/)?.[0]||'';
+        const tail=raw.match(/\s*$/)?.[0]||'';
+        n.nodeValue=lead+translated+tail;
+      }
+    });
+    root.querySelectorAll?.('[placeholder]').forEach(el=>{
+      const v=el.getAttribute('placeholder');
+      const nv=trText(v);
+      if(nv!==v) el.setAttribute('placeholder',nv);
+    });
+    root.querySelectorAll?.('[aria-label]').forEach(el=>{
+      const v=el.getAttribute('aria-label');
+      const nv=trText(v);
+      if(nv!==v) el.setAttribute('aria-label',nv);
+    });
+  }
+
+  function applyLanguageToUI(){
+    document.documentElement.lang=currentLang==='ar'?'ar':'en';
+    document.documentElement.dir=currentLang==='ar'?'rtl':'ltr';
+    const tabs=document.querySelector('.tabs');
+    if(tabs) tabs.dataset.menuTitle=currentLang==='ar'?'نظام الحضور والرواتب':'Attendance & Payroll';
+    const btn=document.getElementById('languageToggle');
+    if(btn) btn.textContent=currentLang==='ar'?'English':'العربية';
+    translateElement(document.body);
+  }
+
+  function setLanguage(lang){
+    currentLang=lang==='en'?'en':'ar';
+    localStorage.setItem('appLanguage',currentLang);
+    // Re-render dynamic areas from their Arabic source templates then translate.
+    try{ renderAll(); }catch(_){}
+    applyLanguageToUI();
+    showPopup(currentLang==='ar'?'تم تغيير لغة البرنامج إلى العربية.':'Application language changed to English.','success',currentLang==='ar'?'تم تغيير اللغة':'Language Changed');
+  }
+
 
   function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
   function mins(v){const n=Number(v);return Number.isFinite(n)?n:0;}
@@ -685,9 +1842,18 @@ input,select,button{max-width:100%}
   function weightedOvertimeMinutes(e,rawMinutes){
     return (Number(rawMinutes)||0)*overtimeMultiplier(e);
   }
-  function isFriday(d){
-    const w=String(d.weekday||'').toLowerCase();
-    return w==='friday'||w.includes('fri')||w.includes('الجمعة');
+  function weekdayIndex(d){
+    const w=String(d.weekday||'').trim().toLowerCase();
+    if(w.includes('sunday')||w==='sun'||w.includes('الأحد')||w.includes('الاحد')) return 0;
+    if(w.includes('monday')||w==='mon'||w.includes('الاثنين')||w.includes('الإثنين')) return 1;
+    if(w.includes('tuesday')||w==='tue'||w.includes('الثلاثاء')) return 2;
+    if(w.includes('wednesday')||w==='wed'||w.includes('الأربعاء')||w.includes('الاربعاء')) return 3;
+    if(w.includes('thursday')||w==='thu'||w.includes('الخميس')) return 4;
+    if(w.includes('friday')||w==='fri'||w.includes('الجمعة')) return 5;
+    if(w.includes('saturday')||w==='sat'||w.includes('السبت')) return 6;
+    const m=String(d.date||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(m) return new Date(Date.UTC(+m[1],+m[2]-1,+m[3])).getUTCDay();
+    return -1;
   }
   function storageNumber(key,def){
     const raw=localStorage.getItem(key);
@@ -696,10 +1862,55 @@ input,select,button{max-width:100%}
     return Number.isFinite(n)?n:def;
   }
   function dailyHours(e){return Math.max(0,Math.min(24,storageNumber('dailyHours:'+e.key,8)));}
-  function fridayWork(e){
-    const raw=localStorage.getItem('fridayWork:'+e.key);
-    return raw===null?false:raw==='true';
+  function offDays(e){
+    const raw=localStorage.getItem('offDays:'+e.key);
+    if(raw!==null){
+      try{
+        const arr=JSON.parse(raw);
+        if(Array.isArray(arr)) return arr.map(Number).filter(n=>n>=0&&n<=6);
+      }catch(_){}
+    }
+    // Compatibility with the old Friday setting. Default weekly off = Friday.
+    const old=localStorage.getItem('fridayWork:'+e.key);
+    return old==='true'?[]:[5];
   }
+  function isOffDay(e,d){return offDays(e).includes(weekdayIndex(d));}
+  function dayNames(indices){
+    const names=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+    const arr=(indices||[]).map(Number).filter(n=>n>=0&&n<=6);
+    return arr.length?arr.map(n=>names[n]).join('، '):'لا توجد إجازة أسبوعية';
+  }
+  function dailySalary(e){
+    const days=actualWorkDays(e);
+    return days>0 ? monthlySalary(e)/days : 0;
+  }
+  function applyDeduction(e){
+    const raw=localStorage.getItem('applyDeduction:'+e.key);
+    return raw===null?true:raw==='true';
+  }
+  function noDeductionReason(e){return localStorage.getItem('noDeductionReason:'+e.key)||'';}
+  function penalties(e){
+    const raw=localStorage.getItem('penalties:'+e.key);
+    if(raw===null||raw==='') return [];
+    try{
+      const arr=JSON.parse(raw);
+      if(!Array.isArray(arr)) return [];
+      return arr.map((p,i)=>({id:String(p.id||('p'+i)),reason:String(p.reason||'').trim(),amount:Math.max(0,Number(p.amount)||0)}))
+                .filter(p=>p.reason||p.amount>0);
+    }catch(_){ return []; }
+  }
+  function totalPenalties(e){return penalties(e).reduce((s,p)=>s+(Number(p.amount)||0),0);}
+  function penaltyRowsHtml(e){
+    const rows=penalties(e);
+    const list=rows.length?rows:[{reason:'',amount:0}];
+    return list.map(p=>`
+      <div class="penalty-row" data-penalty-row="${esc(e.key)}">
+        <label><span>سبب الجزاء</span><input type="text" data-penalty-reason="${esc(e.key)}" value="${esc(p.reason)}" placeholder="مثال: مخالفة تعليمات العمل"></label>
+        <label><span>مبلغ الجزاء</span><input type="number" min="0" step="0.01" data-penalty-amount="${esc(e.key)}" value="${Number(p.amount||0).toFixed(2)}"></label>
+        <button type="button" class="secondary penalty-remove" data-remove-penalty="${esc(e.key)}">حذف الجزاء</button>
+      </div>`).join('');
+  }
+
   function actualWorkDays(e){
     const raw=localStorage.getItem('actualWorkDays:'+e.key);
     if(raw===null || raw===''){
@@ -1076,6 +2287,95 @@ input,select,button{max-width:100%}
     return out.filter(e=>e.days.length);
   }
 
+
+  const salaryHeaderAliases={
+    id:['employee id','employee code','emp id','emp code','code','id','كود الموظف','رقم الموظف','كود','الرقم'],
+    name:['employee name','name','full name','اسم الموظف','الموظف','الاسم'],
+    salary:['monthly salary','salary','basic salary','monthly wage','المرتب الشهري','الراتب الشهري','المرتب','الراتب'],
+    phone:['mobile','mobile number','phone','phone number','employee mobile','رقم الجوال','الجوال','رقم الموبايل','الموبايل','رقم الهاتف','الهاتف']
+  };
+
+  function detectSalaryHeader(row){
+    const id=findHeaderIndex(row,salaryHeaderAliases.id);
+    const name=findHeaderIndex(row,salaryHeaderAliases.name);
+    const salary=findHeaderIndex(row,salaryHeaderAliases.salary);
+    const phone=findHeaderIndex(row,salaryHeaderAliases.phone);
+    return id>=0 && salary>=0 ? {id,name,salary,phone} : null;
+  }
+
+  function salaryNumber(v){
+    if(v===null || v===undefined || v==='') return 0;
+    if(typeof v==='number') return Number.isFinite(v)?Math.max(0,v):0;
+    const s=String(v).trim().replace(/[,\s]/g,'').replace(/[^\d.\-]/g,'');
+    const n=Number(s);
+    return Number.isFinite(n)?Math.max(0,n):0;
+  }
+
+  async function loadSalaryFile(){
+    const file=$('#salaryFileInput')?.files?.[0];
+    if(!file){ showPopup('اختر ملف المرتبات Excel أولًا.','error'); return; }
+    $('#salaryStatus').textContent='جاري قراءة ملف المرتبات...';
+    const ready=await ensureXLSX();
+    if(!ready){
+      $('#salaryStatus').textContent='تعذر تحميل قارئ Excel.';
+      showPopup('تعذر تحميل قارئ Excel لملف المرتبات.','error');
+      return;
+    }
+    try{
+      const buf=await file.arrayBuffer();
+      const wb=XLSX.read(buf,{type:'array',cellDates:true});
+      const nextMap=new Map();
+      const nextPhoneMap=new Map();
+      let validRows=0, headerFound=false;
+
+      for(const sn of wb.SheetNames){
+        const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null,raw:true});
+        let headerIndex=-1, map=null;
+        for(let i=0;i<Math.min(rows.length,30);i++){
+          map=detectSalaryHeader(rows[i]||[]);
+          if(map){ headerIndex=i; headerFound=true; break; }
+        }
+        if(!map) continue;
+        for(let i=headerIndex+1;i<rows.length;i++){
+          const row=rows[i]||[];
+          const id=normalizeEmployeeId(cell(row,map.id));
+          if(!id) continue;
+          nextMap.set(id,salaryNumber(cell(row,map.salary)));
+          const phone=map.phone>=0 ? String(cell(row,map.phone)??'').trim() : '';
+          if(phone) nextPhoneMap.set(id,phone);
+          validRows++;
+        }
+      }
+
+      if(!headerFound){
+        salaryMap=new Map();
+        phoneMap=new Map();
+        salaryFileName='';
+        $('#salaryStatus').textContent='لم يتم العثور على أعمدة كود الموظف والمرتب الشهري.';
+        renderAll();
+        showPopup('ملف المرتبات يجب أن يحتوي على كود الموظف والمرتب الشهري.','error','صيغة ملف غير مدعومة');
+        return;
+      }
+
+      salaryMap=nextMap;
+      phoneMap=nextPhoneMap;
+      salaryFileName=file.name;
+      const matched=employees.filter(e=>salaryMatched(e)).length;
+      const missing=employees.length-matched;
+      $('#salaryStatus').textContent=`تم تحميل ${validRows} سجل مرتب من ${file.name}${employees.length?` — مطابق: ${matched} — بدون مرتب/كود: ${missing}`:''}.`;
+      renderAll();
+      showPopup(`تم ربط ملف المرتبات. الموظفون المطابقون بالكود: ${matched}${employees.length?` من ${employees.length}`:''}. أي موظف بدون كود أو مرتب سيظهر مرتبه 0.00.`,'success','تم تحميل المرتبات');
+    }catch(err){
+      console.error(err);
+      salaryMap=new Map();
+      phoneMap=new Map();
+      salaryFileName='';
+      $('#salaryStatus').textContent='خطأ في قراءة ملف المرتبات.';
+      renderAll();
+      showPopup('خطأ في قراءة ملف المرتبات: '+(err.message||err),'error');
+    }
+  }
+
   async function loadFile(){
     const file=$('#fileInput').files[0];
     if(!file){$('#status').textContent='اختر ملف Excel أولًا.';return;}
@@ -1121,6 +2421,10 @@ input,select,button{max-width:100%}
 
       employees=mergeEmployeeLists(all);
       const typeLabel=[...new Set(detectedTypes)].join(' + ');
+      if(salaryMap.size){
+        const matched=employees.filter(e=>salaryMatched(e)).length;
+        $('#salaryStatus').textContent=`ملف المرتبات: ${salaryFileName||''} — مطابق: ${matched} — بدون مرتب/كود: ${employees.length-matched}.`;
+      }
 
       $('#status').textContent=employees.length
         ? `تم تحميل ${employees.length} موظف من ${file.name}. نوع البيانات: ${typeLabel||'تقرير حضور'}.`
@@ -1137,8 +2441,7 @@ input,select,button{max-width:100%}
 
   function dayCalc(e,d){
     const dailyReq=dailyHours(e)*60;
-    const friday=isFriday(d);
-    const scheduled=!friday || fridayWork(e);
+    const scheduled=!isOffDay(e,d);
 
     let required=scheduled ? dailyReq : 0;
     let overtime=0;
@@ -1147,7 +2450,7 @@ input,select,button{max-width:100%}
     let status='present';
 
     if(!scheduled){
-      // Friday / rest day:
+      // Weekly off / rest day:
       // no required hours and no absence.
       // Any hours actually worked are fully overtime.
       if(d.actual>0){
@@ -1195,11 +2498,11 @@ input,select,button{max-width:100%}
     // A day counts as regular attendance only when it is a scheduled workday.
     // Working on an off-Friday remains overtime and does not replace a required workday.
     const presentDays=days.filter(d=>d.scheduled && (d.actual>0 || d.hasPunch)).length;
-    const absentDays=Math.max(0,targetDays-presentDays);
+    const absentDays=days.filter(d=>d.scheduled && d.status==='absent').length;
 
     // Overtime is calculated day by day:
     // scheduled day => only hours above daily requirement;
-    // off-Friday => all worked hours.
+    // weekly off day => all worked hours.
     const overtime=days.reduce((s,d)=>s+d.overtime,0);
 
     // Credit regular hours only up to the daily requirement.
@@ -1222,7 +2525,42 @@ input,select,button{max-width:100%}
       absentDays,
       presentDays,
       targetDays,
-      regularCredited
+      regularCredited,
+      attendanceShortage:days.reduce((s,d)=>s+(d.scheduled?d.shortage:0),0),
+      grossSalary:monthlySalary(e),
+      calculatedDeduction:(()=>{
+        const h=dailyHours(e);
+        if(h<=0) return 0;
+        const shortMin=days.reduce((s,d)=>s+(d.scheduled?d.shortage:0),0);
+        return (shortMin/60)*(dailySalary(e)/h);
+      })(),
+      appliedDeduction:(()=>{
+        const h=dailyHours(e);
+        if(!applyDeduction(e)||h<=0) return 0;
+        const shortMin=days.reduce((s,d)=>s+(d.scheduled?d.shortage:0),0);
+        return (shortMin/60)*(dailySalary(e)/h);
+      })(),
+      netBeforePenalties:(()=>{
+        const gross=monthlySalary(e);
+        if(!applyDeduction(e)) return gross;
+        const h=dailyHours(e);
+        if(h<=0) return gross;
+        const shortMin=days.reduce((s,d)=>s+(d.scheduled?d.shortage:0),0);
+        return Math.max(0,gross-(shortMin/60)*(dailySalary(e)/h));
+      })(),
+      penaltiesTotal:totalPenalties(e),
+      netSalary:(()=>{
+        const gross=monthlySalary(e);
+        let base=gross;
+        if(applyDeduction(e)){
+          const h=dailyHours(e);
+          if(h>0){
+            const shortMin=days.reduce((s,d)=>s+(d.scheduled?d.shortage:0),0);
+            base=Math.max(0,gross-(shortMin/60)*(dailySalary(e)/h));
+          }
+        }
+        return Math.max(0,base-totalPenalties(e));
+      })()
     };
   }
 
@@ -1234,22 +2572,28 @@ input,select,button{max-width:100%}
       return `<tr data-summary-row="${esc((e.name+' '+e.id).toLowerCase())}" data-summary-key="${esc(e.key)}">
         <td><label class="summary-select"><input type="checkbox" data-summary-select="${esc(e.key)}"></label></td>
         <td class="name">${esc(e.name)}</td><td>${esc(e.id)}</td>
-        <td>${dailyHours(e).toFixed(2)}</td><td>${actualWorkDays(e)}</td><td>${fridayWork(e)?'عمل':'إجازة'}</td>
+        <td>${dailyHours(e).toFixed(2)}</td><td>${actualWorkDays(e)}</td><td>${esc(dayNames(offDays(e)))}</td>
         <td>${c.presentDays}</td><td>${c.absentDays}</td>
         <td>${hours(c.actual)} ساعة</td><td>${hours(c.required)} ساعة</td>
         <td class="good">${hours(c.overtime)} ساعة</td>
         <td class="good">${hours(c.weightedOvertime)} ساعة</td>
         <td class="${c.shortage>0?'bad':''}">${hours(c.shortage)} ساعة</td>
+        <td>${monthlySalary(e).toFixed(2)} <small title="${salarySource(e)==="M"?"يدوي":"Excel"}">(${salarySource(e)})</small></td>
+        <td class="${c.appliedDeduction>0?'bad':''}">${c.appliedDeduction.toFixed(2)}</td>
+        <td class="${c.penaltiesTotal>0?'bad':''}">${c.penaltiesTotal.toFixed(2)}</td>
+        <td class="good">${c.netSalary.toFixed(2)}</td>
       </tr>`;
-    }).join(''):'<tr><td colspan="13">ارفع ملف Excel لعرض النتائج.</td></tr>';
+    }).join(''):'<tr><td colspan="17">ارفع ملف Excel لعرض النتائج.</td></tr>';
 
     bindSummarySelection();
     updateSummaryKPIs();
     renderSettings();
     populateSelects();
     renderDaily();
-    renderApprovals();
+    renderApprovals();    renderDashboard();    renderSalarySend();    renderSalarySendPreview(false);    updateFilesPageState();
   }
+
+
 
   function renderSettings(){
     $('#settingsList').innerHTML=employees.length?employees.map(e=>`
@@ -1269,50 +2613,132 @@ input,select,button{max-width:100%}
         <label><span>معامل الإضافي</span>
           <input type="number" min="0" max="10" step="0.05" data-otmult="${esc(e.key)}" value="${overtimeMultiplier(e)}">
         </label>
-        <label class="check">
-          <input type="checkbox" data-friday="${esc(e.key)}" ${fridayWork(e)?'checked':''}>
-          <span style="font-size:14px;color:#152238">الجمعة يوم عمل</span>
-        </label>
+        <div class="setting-wide">
+          <span style="font-size:12px;color:#667085">أيام الإجازة الأسبوعية</span>
+          <div class="weekday-picker">
+            ${[
+              [6,'السبت'],[0,'الأحد'],[1,'الاثنين'],[2,'الثلاثاء'],[3,'الأربعاء'],[4,'الخميس'],[5,'الجمعة']
+            ].map(([n,name])=>`<label class="weekday-chip"><input type="checkbox" data-offday="${esc(e.key)}" value="${n}" ${offDays(e).includes(n)?'checked':''}>${name}</label>`).join('')}
+          </div>
+        </div>
+        <div class="payroll-grid">
+          <label><span>الراتب الشهري</span>
+            <input type="number" min="0" step="0.01" data-salary="${esc(e.key)}" value="${monthlySalary(e).toFixed(2)}">
+            <div class="salary-source-note">${salarySource(e)==='M'?'M — مرتب مدخل يدويًا من إعدادات الدوام':salarySource(e)==='A'?'A — مرتب مرتبط من ملف Excel':'لا يوجد مرتب مطابق — القيمة 0.00'}</div>
+          </label>
+          <label><span>تطبيق الخصم</span>
+            <select data-deduct="${esc(e.key)}">
+              <option value="yes" ${applyDeduction(e)?'selected':''}>نعم، يطبق الخصم</option>
+              <option value="no" ${!applyDeduction(e)?'selected':''}>لا يطبق الخصم</option>
+            </select>
+          </label>
+          <label class="reason-wrap"><span>سبب عدم تطبيق الخصم</span>
+            <input type="text" data-deduct-reason="${esc(e.key)}" value="${esc(noDeductionReason(e))}" placeholder="يُطلب عند اختيار عدم تطبيق الخصم" ${applyDeduction(e)?'disabled':''}>
+          </label>
+        </div>
         <div class="setting-stat"><span>الساعات الفعلية</span><b>${hours(e.actual)} ساعة</b></div>
         <div class="setting-stat"><span>المطلوب للشهر</span><b>${hours(calcEmployee(e).required)} ساعة</b></div>
         <div class="setting-stat"><span>الإضافي المستحق × ${overtimeMultiplier(e).toFixed(2)}</span><b class="good">${hours(calcEmployee(e).weightedOvertime)} ساعة</b></div>
+        <div class="setting-stat"><span>الخصم المحسوب</span><b class="bad">${calcEmployee(e).calculatedDeduction.toFixed(2)}</b></div>
+        <div class="setting-stat"><span>الخصم المطبق</span><b>${calcEmployee(e).appliedDeduction.toFixed(2)}</b></div>
+        <div class="setting-stat"><span>صافي الراتب</span><b class="good">${calcEmployee(e).netSalary.toFixed(2)}</b></div>
+        <div class="setting-wide">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+            <div><b>الجزاءات الإدارية</b><div style="font-size:12px;color:#667085">سبب الجزاء والمبلغ المخصوم من الراتب.</div></div>
+            <button type="button" class="secondary" data-add-penalty="${esc(e.key)}">+ إضافة جزاء</button>
+          </div>
+          <div class="penalty-list" data-penalty-list="${esc(e.key)}">${penaltyRowsHtml(e)}</div>
+          <div class="penalty-total">إجمالي الجزاءات الحالية: <b>${totalPenalties(e).toFixed(2)}</b></div>
+        </div>
       </div>`).join(''):'<div>ارفع الملف أولًا.</div>';
     const hc=$('#settingsHeaderCount'); if(hc) hc.textContent=employees.length?`عدد الموظفين: ${employees.length}`:'';
     bindSelectionEvents();
+    $$('[data-add-penalty]').forEach(btn=>btn.addEventListener('click',()=>{
+      const key=btn.dataset.addPenalty;
+      const list=$(`[data-penalty-list="${CSS.escape(key)}"]`);
+      if(!list) return;
+      const row=document.createElement('div');
+      row.className='penalty-row';
+      row.dataset.penaltyRow=key;
+      row.innerHTML=`<label><span>سبب الجزاء</span><input type="text" data-penalty-reason="${esc(key)}" placeholder="مثال: مخالفة تعليمات العمل"></label>
+      <label><span>مبلغ الجزاء</span><input type="number" min="0" step="0.01" data-penalty-amount="${esc(key)}" value="0.00"></label>
+      <button type="button" class="secondary penalty-remove" data-remove-penalty="${esc(key)}">حذف الجزاء</button>`;
+      list.appendChild(row);
+      row.querySelector('[data-remove-penalty]')?.addEventListener('click',()=>row.remove());
+    }));
+    $$('[data-remove-penalty]').forEach(btn=>btn.addEventListener('click',()=>{
+      btn.closest('[data-penalty-row]')?.remove();
+    }));
+
+    $$('[data-deduct]').forEach(sel=>sel.addEventListener('change',()=>{
+      const key=sel.dataset.deduct;
+      const reason=$(`[data-deduct-reason="${CSS.escape(key)}"]`);
+      if(reason){
+        reason.disabled=sel.value!=='no';
+        if(sel.value!=='no') reason.value='';
+      }
+    }));
     filterSettingsEmployees();
   }
 
   function selectedEmployeeKeys(){
-    return $$('[data-select-employee]:checked').map(x=>x.dataset.selectEmployee);
+    return summarySelection.size ? [...summarySelection] : [];
   }
   function updateSelectedCount(){
     const el=$('#selectedCount');
-    if(el) el.textContent='تم تحديد '+selectedEmployeeKeys().length+' موظف';
+    if(el) el.textContent=summarySelection.size?'تم تحديد '+summarySelection.size+' موظف — التحديد مطبق على جميع الصفحات':'لم يتم تحديد موظفين — عرض الجميع';
   }
   function bindSelectionEvents(){
-    $$('[data-select-employee]').forEach(ch=>ch.addEventListener('change',updateSelectedCount));
+    $$('[data-select-employee]').forEach(ch=>{
+      ch.checked=summarySelection.has(ch.dataset.selectEmployee);
+      ch.addEventListener('change',()=>{
+        if(ch.checked) summarySelection.add(ch.dataset.selectEmployee);
+        else summarySelection.delete(ch.dataset.selectEmployee);
+        syncGlobalSelection();
+      });
+    });
     updateSelectedCount();
   }
   function applyBulk(){
     const keys=selectedEmployeeKeys();
-    if(!keys.length){$('#status').textContent='حدد موظفًا واحدًا على الأقل لتطبيق التعديل الجماعي.';return;}
+    if(!keys.length){$('#status').textContent='حدد موظفًا واحدًا على الأقل لتطبيق التعديل الجماعي.';showPopup('حدد موظفًا واحدًا على الأقل لتطبيق التعديل الجماعي.','error');return;}
+
     let h=Number($('#bulkHours').value);
     if(!Number.isFinite(h)) h=8;
     h=Math.max(0,Math.min(24,h));
+
     let wd=Number($('#bulkWorkDays').value);
-    if(!Number.isFinite(wd)) wd=0;
+    if(!Number.isFinite(wd)) wd=30;
     wd=Math.max(0,Math.min(31,Math.round(wd)));
+
     let mult=Number($('#bulkOTMultiplier').value);
     if(!Number.isFinite(mult)) mult=1.5;
     mult=Math.max(0,Math.min(10,mult));
-    const applyFriday=$('#bulkFridayMode').value==='apply';
-    const friday=$('#bulkFriday').checked;
+
+    const deductMode=$('#bulkApplyDeduction').value;
+    const reason=String($('#bulkNoDeductionReason').value||'').trim();
+    if(deductMode==='no' && !reason){
+      $('#status').textContent='اكتب سبب عدم تطبيق الخصم قبل تطبيق التعديل الجماعي.';
+      return;
+    }
+
+    const selectedOffDays=$$('#bulkOffDays input[type="checkbox"]:checked').map(x=>Number(x.value));
+    const applyOff=$('#bulkApplyOffDays').checked;
+
     for(const key of keys){
       localStorage.setItem('dailyHours:'+key,String(h));
       localStorage.setItem('actualWorkDays:'+key,String(wd));
       localStorage.setItem('overtimeMultiplier:'+key,String(mult));
-      if(applyFriday) localStorage.setItem('fridayWork:'+key,String(friday));
+
+      if(applyOff) localStorage.setItem('offDays:'+key,JSON.stringify(selectedOffDays));
+
+      if(deductMode!=='ignore'){
+        const apply=deductMode==='yes';
+        localStorage.setItem('applyDeduction:'+key,String(apply));
+        localStorage.setItem('noDeductionReason:'+key,apply?'':reason);
+      }
     }
+
     $('#status').textContent='تم تحديث '+keys.length+' موظف وإعادة الحساب.';
     renderAll();
   }
@@ -1325,7 +2751,10 @@ input,select,button{max-width:100%}
     const q=normalizeSearch($('#settingsEmployeeFilter')?.value);
     let visible=0;
     $$('#settingsList [data-settings-row]').forEach(row=>{
-      const hit=!q || normalizeSearch(row.dataset.settingsRow).includes(q);
+      const key=row.querySelector('[data-select-employee]')?.dataset.selectEmployee||'';
+      const matchesSelection=summarySelection.size===0 || summarySelection.has(key);
+      const matchesSearch=!q || normalizeSearch(row.dataset.settingsRow).includes(q);
+      const hit=matchesSelection && matchesSearch;
       row.classList.toggle('hidden-by-filter',!hit);
       if(hit) visible++;
     });
@@ -1337,13 +2766,89 @@ input,select,button{max-width:100%}
     $$('#settingsList [data-settings-row]').forEach(row=>{
       if(!row.classList.contains('hidden-by-filter')){
         const ch=row.querySelector('[data-select-employee]');
-        if(ch) ch.checked=true;
+        if(ch) summarySelection.add(ch.dataset.selectEmployee);
       }
     });
-    updateSelectedCount();
+    syncGlobalSelection();
   }
 
   const summarySelection=new Set();
+
+  const employeeScopeSelectIds=[
+    'summaryEmployeeSelect',
+    'dashboardEmployeeSelect',
+    'settingsEmployeeSelect',
+    'salarySendEmployeeSelect'
+  ];
+
+  function populateEmployeeScopeSelects(){
+    employeeScopeSelectIds.forEach(id=>{
+      const s=$('#'+id);
+      if(!s) return;
+
+      const remaining=employees
+        .map((e,idx)=>({e,idx}))
+        .filter(x=>!summarySelection.has(x.e.key));
+
+      s.innerHTML=
+        '<option value="__add__">اختر موظفًا لإضافته</option>'+
+        '<option value="">الكل</option>'+
+        remaining.map(({e,idx})=>
+          `<option value="${idx}" data-emp-key="${esc(e.key)}">${esc(e.name)}${e.id?' ['+esc(e.id)+']':''}</option>`
+        ).join('');
+
+      s.value='__add__';
+    });
+  }
+
+  function handleEmployeeScopeSelect(select){
+    const idx=select?.value ?? '';
+    if(idx==='__add__') return;
+    if(idx===''){
+      summarySelection.clear();
+      syncGlobalSelection();
+      showPopup('تم عرض جميع الموظفين في جميع الصفحات.','info','عرض الكل');
+      return;
+    }
+    const e=employees[Number(idx)];
+    if(!e) return;
+    summarySelection.add(e.key);
+    syncGlobalSelection();
+    showPopup(`تمت إضافة ${e.name} إلى التحديد في جميع الصفحات.`, 'success', 'تم التحديد');
+  }
+
+  function activeEmployees(){
+    return summarySelection.size
+      ? employees.filter(e=>summarySelection.has(e.key))
+      : employees.slice();
+  }
+
+  function syncGlobalSelection(){
+    // Settings checkboxes
+    $$('[data-select-employee]').forEach(ch=>{
+      ch.checked=summarySelection.has(ch.dataset.selectEmployee);
+    });
+    // Summary checkboxes
+    $$('[data-summary-select]').forEach(ch=>{
+      ch.checked=summarySelection.has(ch.dataset.summarySelect);
+    });
+    updateSelectedCount();
+    applySummaryFilter();
+    filterSettingsEmployees();
+    populateSelects();
+    renderDaily();
+    renderApprovals();
+    renderDashboard();
+    renderSalarySend();
+    renderSalarySendPreview(false);
+    const scopeText=summarySelection.size
+      ? (summarySelection.size===1
+          ? `الموظف المحدد: ${activeEmployees()[0]?.name||''}`
+          : `المحدد حاليًا: ${summarySelection.size} موظف`)
+      : 'الكل — جميع الموظفين';
+    if($('#salarySendGlobalScope')) $('#salarySendGlobalScope').textContent=scopeText+' — نفس الاختيار في جميع الصفحات';
+  }
+
 
   function summaryVisibleEmployees(){
     const q=normalizeSearch($('#summaryEmployeeFilter')?.value);
@@ -1362,7 +2867,20 @@ input,select,button{max-width:100%}
     $('#kRequired').textContent=hours(calcs.reduce((s,c)=>s+c.required,0))+' ساعة';
     $('#kOT').textContent=hours(calcs.reduce((s,c)=>s+c.weightedOvertime,0))+' ساعة';
     $('#kAbsent').textContent=calcs.reduce((s,c)=>s+c.absentDays,0);
+    const payroll=list.reduce((a,e)=>{
+      const c=calcEmployee(e);
+      a.gross+=c.grossSalary||0;
+      a.deduction+=c.appliedDeduction||0;
+      a.penalties+=c.penaltiesTotal||0;
+      a.net+=c.netSalary||0;
+      return a;
+    },{gross:0,deduction:0,penalties:0,net:0});
+    if($('#kGrossSalary')) $('#kGrossSalary').textContent=payroll.gross.toFixed(2);
+    if($('#kAttendanceDeduction')) $('#kAttendanceDeduction').textContent=payroll.deduction.toFixed(2);
+    if($('#kPenalties')) $('#kPenalties').textContent=payroll.penalties.toFixed(2);
+    if($('#kNetSalary')) $('#kNetSalary').textContent=payroll.net.toFixed(2);
   }
+
 
   function updateSummarySelectedCount(){
     const el=$('#summarySelectedCount');
@@ -1389,13 +2907,19 @@ input,select,button{max-width:100%}
       ch.addEventListener('change',()=>{
         if(ch.checked) summarySelection.add(ch.dataset.summarySelect);
         else summarySelection.delete(ch.dataset.summarySelect);
-        applySummaryFilter();
+        syncGlobalSelection();
       });
     });
     applySummaryFilter();
   }
 
   function saveSettings(){
+    $$('#settingsList [data-salary]').forEach(inp=>{
+      const key=inp.dataset.salary;
+      let v=Number(inp.value);
+      if(!Number.isFinite(v) || v<0) v=0;
+      localStorage.setItem('manualSalary:'+key,String(v));
+    });
     $$('#settingsList [data-hours]').forEach(inp=>{
       let v=Number(inp.value); if(!Number.isFinite(v)) v=8; v=Math.max(0,Math.min(24,v));
       localStorage.setItem('dailyHours:'+inp.dataset.hours,String(v));
@@ -1412,19 +2936,88 @@ input,select,button{max-width:100%}
       v=Math.max(0,Math.min(10,v));
       localStorage.setItem('overtimeMultiplier:'+inp.dataset.otmult,String(v));
     });
-    $$('#settingsList [data-friday]').forEach(inp=>{
-      localStorage.setItem('fridayWork:'+inp.dataset.friday,String(inp.checked));
+    const groupedOffDays={};
+    $$('#settingsList [data-offday]').forEach(inp=>{
+      const key=inp.dataset.offday;
+      if(!groupedOffDays[key]) groupedOffDays[key]=[];
+      if(inp.checked) groupedOffDays[key].push(Number(inp.value));
     });
-    $('#status').textContent='تم حفظ إعدادات الدوام وإعادة حساب المطلوب والإضافي والنقص والغياب.';
+    Object.entries(groupedOffDays).forEach(([key,days])=>{
+      localStorage.setItem('offDays:'+key,JSON.stringify(days));
+    });
+
+    let validationError='';
+    $$('#settingsList [data-deduct]').forEach(sel=>{
+      const key=sel.dataset.deduct;
+      const apply=sel.value==='yes';
+      const reason=$(`[data-deduct-reason="${CSS.escape(key)}"]`);
+      const reasonText=String(reason?.value||'').trim();
+      if(!apply && !reasonText && !validationError){
+        const emp=employees.find(e=>e.key===key);
+        validationError='اكتب سبب عدم تطبيق الخصم للموظف '+(emp?emp.name:key)+'.';
+      }
+      localStorage.setItem('applyDeduction:'+key,String(apply));
+      localStorage.setItem('noDeductionReason:'+key,apply?'':reasonText);
+    });
+    if(validationError){
+      $('#status').textContent=validationError;
+      showPopup(validationError,'error','بيانات مطلوبة');
+      return;
+    }
+
+    employees.forEach(e=>{
+      const rows=$$(`[data-penalty-row="${CSS.escape(e.key)}"]`);
+      const list=[];
+      rows.forEach((row,i)=>{
+        const reason=String(row.querySelector('[data-penalty-reason]')?.value||'').trim();
+        let amount=Number(row.querySelector('[data-penalty-amount]')?.value||0);
+        if(!Number.isFinite(amount)) amount=0;
+        amount=Math.max(0,amount);
+        if(reason || amount>0) list.push({id:'p'+Date.now()+'_'+i,reason,amount});
+      });
+      localStorage.setItem('penalties:'+e.key,JSON.stringify(list));
+    });
+
+    $('#status').textContent='تم حفظ إعدادات الدوام والرواتب والجزاءات وإعادة الحساب.';
+    showPopup('تم حفظ إعدادات الدوام والرواتب والخصومات والجزاءات وإعادة الحساب بنجاح.','success','تم الحفظ');
     renderAll();
   }
 
   function populateSelects(){
-    for(const id of ['dailyEmployee','printEmployee']){
-      const s=$( '#'+id ); const old=s.value;
-      s.innerHTML='<option value="">اختر الموظف</option>'+employees.map((e,i)=>`<option value="${i}">${esc(e.name)}${e.id?' ['+esc(e.id)+']':''}</option>`).join('');
-      if(old!==''&&employees[Number(old)])s.value=old;
+    // Daily Analysis remains a single employee detail page and follows the global scope.
+    const allowed=activeEmployees();
+    const daily=$('#dailyEmployee');
+    if(daily){
+      const oldKey=daily.selectedOptions[0]?.dataset?.empKey||'';
+      daily.innerHTML='<option value="">اختر الموظف</option>'+allowed.map(e=>{
+        const idx=employees.indexOf(e);
+        return `<option value="${idx}" data-emp-key="${esc(e.key)}">${esc(e.name)}${e.id?' ['+esc(e.id)+']':''}</option>`;
+      }).join('');
+      if(oldKey){
+        const opt=[...daily.options].find(o=>o.dataset.empKey===oldKey);
+        if(opt) daily.value=opt.value;
+      }
+      if(summarySelection.size===1 && allowed.length===1){
+        daily.value=String(employees.indexOf(allowed[0]));
+      }
     }
+
+    // Print & Approval uses the same cumulative global employee selector as the other pages.
+    const printSel=$('#printEmployee');
+    if(printSel){
+      const remaining=employees
+        .map((e,idx)=>({e,idx}))
+        .filter(x=>!summarySelection.has(x.e.key));
+      printSel.innerHTML=
+        '<option value="__add__">اختر موظفًا لإضافته</option>'+
+        '<option value="">الكل</option>'+
+        remaining.map(({e,idx})=>
+          `<option value="${idx}" data-emp-key="${esc(e.key)}">${esc(e.name)}${e.id?' ['+esc(e.id)+']':''}</option>`
+        ).join('');
+      printSel.value='__add__';
+    }
+
+    populateEmployeeScopeSelects();
   }
 
   function renderDaily(){
@@ -1466,9 +3059,21 @@ input,select,button{max-width:100%}
     }).join('');
   }
 
+  let approvalSelection=summarySelection;
+
+  function approvalVisibleEmployees(){
+    return activeEmployees();
+  }
+
   function renderApprovals(){
-    $('#approvalList').innerHTML=employees.length?employees.map(e=>`
-      <div class="setting-row" style="grid-template-columns:2fr 1.5fr 1fr">
+    const list=approvalVisibleEmployees();
+    // Uses the same global employee selection as all other pages.
+
+    $('#approvalList').innerHTML=list.length?list.map(e=>`
+      <div class="setting-row" style="grid-template-columns:42px 2fr 1.5fr 1fr">
+        <label class="approval-choose" title="تحديد الموظف">
+          <input type="checkbox" data-approval-select="${esc(e.key)}" ${summarySelection.size && summarySelection.has(e.key)?'checked':''}>
+        </label>
         <div class="emp"><b>${esc(e.name)}</b>${e.id?` <span style="color:#667085">[${esc(e.id)}]</span>`:''}</div>
         <label><span>حالة الاعتماد</span>
           <select data-approval="${esc(e.key)}">
@@ -1480,12 +3085,76 @@ input,select,button{max-width:100%}
         </label>
         <button type="button" class="secondary" data-saveapproval="${esc(e.key)}">حفظ الحالة</button>
       </div>`).join(''):'<div>ارفع الملف أولًا.</div>';
+
+    $$('[data-approval-select]').forEach(chk=>chk.addEventListener('change',()=>{
+      if(chk.checked) summarySelection.add(chk.dataset.approvalSelect);
+      else summarySelection.delete(chk.dataset.approvalSelect);
+      syncGlobalSelection();
+    }));
+
     $$('[data-saveapproval]').forEach(btn=>btn.addEventListener('click',()=>{
       const key=btn.dataset.saveapproval;
       const sel=$(`[data-approval="${CSS.escape(key)}"]`);
       localStorage.setItem('approval:'+key,sel.value);
       $('#status').textContent='تم حفظ حالة الاعتماد.';
+      showPopup('تم حفظ حالة اعتماد الموظف.','success','تم تحديث الاعتماد');
     }));
+    updateApprovalSelectionCount();
+  }
+
+  function updateApprovalSelectionCount(){
+    const el=$('#approvalSelectedCount');
+    if(!el) return;
+    const n=summarySelection.size;
+    el.textContent=n?`المحدد حاليًا: ${n} موظف`:'لم يتم تحديد موظفين — يتم عرض الجميع';
+  }
+
+  function selectAllApprovals(){
+    employees.forEach(e=>summarySelection.add(e.key));
+    syncGlobalSelection();
+  }
+
+  function clearApprovalSelection(){
+    summarySelection.clear();
+    syncGlobalSelection();
+  }
+
+  function syncPrintEmployeeApprovalFilter(){
+    const idx=$('#printEmployee')?.value ?? '';
+    if(idx==='__add__') return;
+    if(idx===''){
+      summarySelection.clear();
+      syncGlobalSelection();
+      showPopup('تم عرض جميع الموظفين في جميع الصفحات.','info','عرض الكل');
+      return;
+    }
+    const e=employees[Number(idx)];
+    if(!e) return;
+    summarySelection.add(e.key);
+    syncGlobalSelection();
+    showPopup(`تمت إضافة ${e.name} إلى التحديد في جميع الصفحات.`, 'success', 'تم التحديد');
+  }
+
+  function applyBulkApproval(){
+    const status=$('#bulkApprovalStatus')?.value||'unspecified';
+    if(!summarySelection.size){
+      showPopup('حدد موظفًا واحدًا أو أكثر لتطبيق حالة الاعتماد.','error','لم يتم تحديد موظفين');
+      return;
+    }
+    const list=activeEmployees();
+    if(!list.length){
+      showPopup('لا يوجد موظفون لتطبيق حالة الاعتماد عليهم.','error','لا توجد بيانات');
+      return;
+    }
+    list.forEach(e=>localStorage.setItem('approval:'+e.key,status));
+    renderApprovals();
+    const labels={
+      unspecified:'غير محددة',
+      pending:'قيد الاعتماد',
+      approved:'معتمد',
+      rejected:'غير معتمد'
+    };
+    showPopup(`تم تغيير حالة الاعتماد إلى "${labels[status]}" لعدد ${list.length} موظف.`, 'success', 'تم تحديث الاعتماد');
   }
 
   function printDateTimeText(){
@@ -1531,7 +3200,7 @@ input,select,button{max-width:100%}
         <div class="print-info-grid">
           <div class="print-info-item"><span>الساعات اليومية</span><b>${dailyHours(e).toFixed(2)} ساعة</b></div>
           <div class="print-info-item"><span>أيام العمل الفعلية</span><b>${actualWorkDays(e)} يوم</b></div>
-          <div class="print-info-item"><span>يوم الجمعة</span><b>${fridayWork(e)?'يوم عمل':'إجازة'}</b></div>
+          <div class="print-info-item"><span>أيام الإجازة</span><b>${esc(dayNames(offDays(e)))}</b></div>
           <div class="print-info-item"><span>معامل الساعة الإضافية</span><b>${overtimeMultiplier(e).toFixed(2)}</b></div>
         </div>
       </div>
@@ -1547,6 +3216,22 @@ input,select,button{max-width:100%}
           <div class="print-result-item"><span>أيام الحضور</span><b>${c.presentDays} يوم</b></div>
           <div class="print-result-item"><span>أيام الغياب</span><b>${c.absentDays} يوم</b></div>
           <div class="print-result-item"><span>إجمالي أيام العمل</span><b>${actualWorkDays(e)} يوم</b></div>
+        </div>
+      </div>
+
+      <div class="print-section">
+        <div class="print-section-title">الراتب والخصومات والجزاءات <small style="font-weight:400;font-size:9px">A = ملف Excel &nbsp; | &nbsp; M = إدخال يدوي</small></div>
+        <div class="print-result-grid">
+          <div class="print-result-item"><span>الراتب الشهري</span><b>${monthlySalary(e).toFixed(2)} <small style="font-size:10px">(${salarySource(e)})</small></b></div>
+          <div class="print-result-item"><span>إجمالي الراتب</span><b>${c.grossSalary.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>خصم الدوام المحسوب</span><b>${c.calculatedDeduction.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>خصم الدوام المطبق</span><b>${c.appliedDeduction.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>إجمالي الجزاءات</span><b>${c.penaltiesTotal.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>الصافي قبل الجزاءات</span><b>${c.netBeforePenalties.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>صافي الراتب النهائي</span><b>${c.netSalary.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>تطبيق خصم الدوام</span><b>${applyDeduction(e)?'نعم':'لا'}</b></div>
+          <div class="print-result-item" style="grid-column:span 2"><span>سبب عدم تطبيق خصم الدوام</span><b>${applyDeduction(e)?'—':esc(noDeductionReason(e)||'غير مذكور')}</b></div>
+          <div class="print-result-item" style="grid-column:span 2"><span>تفاصيل الجزاءات الإدارية</span><b>${penalties(e).length?penalties(e).map((p,i)=>`${i+1}) ${esc(p.reason||'بدون سبب')} — ${Number(p.amount||0).toFixed(2)}`).join('<br>'):'لا توجد جزاءات'}</b></div>
         </div>
       </div>
 
@@ -1598,7 +3283,7 @@ input,select,button{max-width:100%}
         <div class="print-info-grid">
           <div class="print-info-item"><span>الساعات اليومية</span><b>${dailyHours(e).toFixed(2)} ساعة</b></div>
           <div class="print-info-item"><span>أيام العمل</span><b>${actualWorkDays(e)} يوم</b></div>
-          <div class="print-info-item"><span>الجمعة</span><b>${fridayWork(e)?'يوم عمل':'إجازة'}</b></div>
+          <div class="print-info-item"><span>أيام الإجازة</span><b>${esc(dayNames(offDays(e)))}</b></div>
           <div class="print-info-item"><span>معامل الإضافي</span><b>${overtimeMultiplier(e).toFixed(2)}</b></div>
           <div class="print-info-item"><span>الفعلي</span><b>${hours(c.actual)} ساعة</b></div>
           <div class="print-info-item"><span>المطلوب</span><b>${hours(c.required)} ساعة</b></div>
@@ -1616,6 +3301,22 @@ input,select,button{max-width:100%}
       </table>
         </div>
       </div>
+      <div class="print-section">
+        <div class="print-section-title">الراتب والخصومات والجزاءات <small style="font-weight:400;font-size:9px">A = ملف Excel &nbsp; | &nbsp; M = إدخال يدوي</small></div>
+        <div class="print-result-grid">
+          <div class="print-result-item"><span>الراتب الشهري</span><b>${monthlySalary(e).toFixed(2)} <small style="font-size:10px">(${salarySource(e)})</small></b></div>
+          <div class="print-result-item"><span>إجمالي الراتب</span><b>${c.grossSalary.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>خصم الدوام المحسوب</span><b>${c.calculatedDeduction.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>خصم الدوام المطبق</span><b>${c.appliedDeduction.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>إجمالي الجزاءات</span><b>${c.penaltiesTotal.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>الصافي قبل الجزاءات</span><b>${c.netBeforePenalties.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>صافي الراتب النهائي</span><b>${c.netSalary.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>تطبيق خصم الدوام</span><b>${applyDeduction(e)?'نعم':'لا'}</b></div>
+          <div class="print-result-item" style="grid-column:span 2"><span>سبب عدم تطبيق خصم الدوام</span><b>${applyDeduction(e)?'—':esc(noDeductionReason(e)||'غير مذكور')}</b></div>
+          <div class="print-result-item" style="grid-column:span 2"><span>تفاصيل الجزاءات الإدارية</span><b>${penalties(e).length?penalties(e).map((p,i)=>`${i+1}) ${esc(p.reason||'بدون سبب')} — ${Number(p.amount||0).toFixed(2)}`).join('<br>'):'لا توجد جزاءات'}</b></div>
+        </div>
+      </div>
+
       <div class="signature-grid">
         <div class="signature-box">توقيع الموظف</div>
         <div class="signature-box">توقيع المدير المباشر</div>
@@ -1640,6 +3341,7 @@ input,select,button{max-width:100%}
     const type=$('#printType')?$('#printType').value:'summary';
     const renderer=type==='full'?printEmployeeHtml:printEmployeeSummaryHtml;
     $('#printArea').innerHTML=list.map(renderer).join('');
+    applyLanguageToUI();
     setTimeout(()=>window.print(),100);
   }
 
@@ -1682,15 +3384,529 @@ input,select,button{max-width:100%}
   }
 
 $$('.tab').forEach(b=>b.addEventListener('click',()=>{
-    $$('.tab').forEach(x=>x.classList.remove('active'));$$('.panel').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');$('#'+b.dataset.tab).classList.add('active');
+    if(!b.dataset.tab) return;
+    if(b.dataset.tab!=='uploads' && !employees.length){
+      showPopup('يجب أولًا تحميل وتحليل ملف الحضور والانصراف.','error','ملف الحضور مطلوب');
+      openTab('uploads');
+      return;
+    }
+    openTab(b.dataset.tab);
   }));
   $('#loadBtn').addEventListener('click',loadFile);
-$('#clearBtn').addEventListener('click',()=>{employees=[];reportPeriod={from:'',to:'',raw:''};$('#fileInput').value='';$('#periodText').textContent='';$('#status').textContent='تم مسح بيانات الملف.';renderAll();});
+$('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear();approvalSelection.clear();reportPeriod={from:'',to:'',raw:''};salaryMap=new Map();phoneMap=new Map();salaryFileName='';$('#fileInput').value='';if($('#salaryFileInput')) $('#salaryFileInput').value='';if($('#salaryStatus')) $('#salaryStatus').textContent='لم يتم تحميل ملف المرتبات.';$('#periodText').textContent='';$('#status').textContent='تم مسح بيانات الملف.';renderAll();openTab('uploads');});
+  $('#loadSalaryBtn')?.addEventListener('click',loadSalaryFile);
+  $('#goSummaryBtn')?.addEventListener('click',()=>{if(employees.length) openTab('dashboard');});
   $('#saveSettingsBtn').addEventListener('click',saveSettings);
+  $('#applyBulkApprovalBtn')?.addEventListener('click',applyBulkApproval);
+  employeeScopeSelectIds.forEach(id=>{
+    $('#'+id)?.addEventListener('change',function(){ handleEmployeeScopeSelect(this); });
+  });
+  $('#approvalSelectAll')?.addEventListener('click',selectAllApprovals);
+  $('#approvalClearSelection')?.addEventListener('click',clearApprovalSelection);
   $('#applyBulkBtn').addEventListener('click',applyBulk);
   $('#settingsEmployeeFilter').addEventListener('input',filterSettingsEmployees);
   $('#selectFilteredEmployees').addEventListener('click',selectFilteredSettings);
+  $('#salarySendSearch')?.addEventListener('input',renderSalarySend);
+  $('#salarySendPhoneFilter')?.addEventListener('change',renderSalarySend);
+  $('#salarySendStatusFilter')?.addEventListener('change',renderSalarySend);
+  $('#salarySendWhatsApp')?.addEventListener('click',openSalaryWhatsApp);
+  $('#salarySendResetMessage')?.addEventListener('click',()=>renderSalarySendPreview(true));
+  $('#salarySendSavePhone')?.addEventListener('click',saveSalarySendPhone);
+
+
+
+
+  let salarySendSelectedKey='';
+
+  function salarySendStatus(e){
+    return localStorage.getItem('salarySendStatus:'+e.key)==='sent' ? 'sent' : 'not_sent';
+  }
+
+  function setSalarySendStatus(e,status){
+    if(!e) return;
+    localStorage.setItem('salarySendStatus:'+e.key,status==='sent'?'sent':'not_sent');
+  }
+
+  function salarySendEmployees(){
+    const q=normalizeSearch($('#salarySendSearch')?.value);
+    const mode=$('#salarySendPhoneFilter')?.value||'all';
+    const sendMode=$('#salarySendStatusFilter')?.value||'all';
+    return activeEmployees().filter(e=>{
+      const searchOk=!q || normalizeSearch((e.name||'')+' '+(e.id||'')).includes(q);
+      const hasPhone=!!employeePhone(e);
+      const phoneOk=mode==='all' || (mode==='with'&&hasPhone) || (mode==='without'&&!hasPhone);
+      const status=salarySendStatus(e);
+      const statusOk=sendMode==='all' || status===sendMode;
+      return searchOk && phoneOk && statusOk;
+    });
+  }
+
+  function salaryMessageFor(e){
+    const c=calcEmployee(e);
+    const period=reportPeriod.from ? `${reportPeriod.from}${reportPeriod.to?' إلى '+reportPeriod.to:''}` : 'الفترة الحالية';
+    return [
+      `مرحبًا ${e.name||''}،`,
+      ``,
+      `ملخص الراتب عن ${period}:`,
+      `الراتب الشهري: ${monthlySalary(e).toFixed(2)}`,
+      `خصم الدوام: ${c.appliedDeduction.toFixed(2)}`,
+      `الجزاءات: ${c.penaltiesTotal.toFixed(2)}`,
+      `صافي الراتب: ${c.netSalary.toFixed(2)}`,
+      ``,
+      `ملخص الحضور:`,
+      `أيام الحضور: ${c.presentDays}`,
+      `أيام الغياب: ${c.absentDays}`,
+      `ساعات العمل: ${hours(c.actual)}`,
+      `الإضافي المستحق: ${hours(c.weightedOvertime)}`,
+      `الساعات الناقصة: ${hours(c.shortage)}`,
+      ``,
+      `هذه الرسالة ملخص معلوماتي للراتب.`
+    ].join('\n');
+  }
+
+  function renderSalarySend(){
+    const list=salarySendEmployees();
+    const box=$('#salarySendList');
+    if(!box) return;
+
+    $('#salarySendCount').textContent=list.length;
+    box.innerHTML=list.length?list.map(e=>{
+      const phone=employeePhone(e);
+      return `<button type="button" class="salary-emp-item ${salarySendSelectedKey===e.key?'active':''}" data-salary-send-key="${esc(e.key)}">
+        <span class="salary-emp-main"><b>${esc(e.name)}</b><span>${e.id?'كود: '+esc(e.id):'بدون كود'}</span></span>
+        <span class="salary-emp-states">
+          <span class="phone-state ${phone?'phone-ok':'phone-missing'}">${phone?'رقم متوفر':'بدون رقم'}</span>
+          <span class="send-state ${salarySendStatus(e)==='sent'?'sent':'not-sent'}">${salarySendStatus(e)==='sent'?'تم الإرسال':'لم يتم الإرسال'}</span>
+        </span>
+      </button>`;
+    }).join(''):'<div style="padding:18px;text-align:center;color:#98a2b3;font-size:11px">لا توجد نتائج.</div>';
+
+    $$('[data-salary-send-key]').forEach(btn=>btn.addEventListener('click',()=>{
+      salarySendSelectedKey=btn.dataset.salarySendKey;
+      renderSalarySend();
+      renderSalarySendPreview();
+    }));
+
+    const selected=employees.find(e=>e.key===salarySendSelectedKey);
+    if(selected && !list.some(e=>e.key===selected.key)){
+      salarySendSelectedKey='';
+      renderSalarySendPreview();
+    }
+  }
+
+  function renderSalarySendPreview(resetMessage=true){
+    const e=employees.find(x=>x.key===salarySendSelectedKey);
+    const empty=$('#salarySendEmpty'), content=$('#salarySendContent');
+    if(!empty||!content) return;
+    if(!e){
+      empty.style.display='grid';content.style.display='none';return;
+    }
+    empty.style.display='none';content.style.display='block';
+    const c=calcEmployee(e);
+    const phone=employeePhone(e);
+    $('#salarySendName').textContent=e.name||'';
+    $('#salarySendMeta').textContent=`${e.id?'كود الموظف: '+e.id+' — ':''}${phone?'الجوال: '+phone+' ('+phoneSource(e)+')':'لا يوجد رقم جوال'}`;
+    const phoneEdit=$('#salarySendPhoneEdit');
+    if(phoneEdit) phoneEdit.value=phone;
+    $('#salarySendSource').textContent=`مصدر الراتب: ${salarySource(e)}`;
+    const sendStatus=salarySendStatus(e);
+    $('#salarySendStatusBadge').textContent=sendStatus==='sent'?'تم الإرسال':'لم يتم الإرسال';
+    $('#salarySendStatusBadge').className='salary-source-pill send-state '+(sendStatus==='sent'?'sent':'not-sent');
+    $('#salarySendGrossBase').textContent=monthlySalary(e).toFixed(2);
+    $('#salarySendDeduction').textContent=c.appliedDeduction.toFixed(2);
+    $('#salarySendPenalties').textContent=c.penaltiesTotal.toFixed(2);
+    $('#salarySendNet').textContent=c.netSalary.toFixed(2);
+    if(resetMessage) $('#salarySendMessage').value=salaryMessageFor(e);
+    $('#salarySendWhatsApp').disabled=!phone;
+    $('#salarySendPhoneNote').textContent=phone
+      ? 'سيتم فتح واتساب على رقم الموظف والرسالة جاهزة للمراجعة والإرسال.'
+      : 'لا يوجد رقم جوال لهذا الموظف في ملف المرتبات. أضف رقم الجوال ثم أعد تحميل الملف.';
+    if(currentLang==='en') translateElement($('#salarysend'));
+  }
+
+  function saveSalarySendPhone(){
+    const e=employees.find(x=>x.key===salarySendSelectedKey);
+    if(!e) return;
+    const raw=String($('#salarySendPhoneEdit')?.value||'').trim();
+    if(!raw){
+      localStorage.setItem('manualPhone:'+e.key,'');
+      renderSalarySend();
+      renderSalarySendPreview(false);
+      showPopup('تم حفظ رقم الجوال كقيمة فارغة.','success','تم تحديث الرقم');
+      return;
+    }
+    const digits=raw.replace(/\D/g,'');
+    if(digits.length<8){
+      showPopup('رقم الجوال قصير أو غير صالح. راجع الرقم قبل الحفظ.','error','تحقق من رقم الجوال');
+      return;
+    }
+    localStorage.setItem('manualPhone:'+e.key,raw);
+    renderSalarySend();
+    renderSalarySendPreview(false);
+    showPopup('تم حفظ رقم الجوال اليدوي وسيتم استخدامه بدل رقم ملف المرتبات.','success','تم تحديث الرقم');
+  }
+
+  function openSalaryWhatsApp(){
+    const e=employees.find(x=>x.key===salarySendSelectedKey);
+    if(!e) return;
+    const typed=String($('#salarySendPhoneEdit')?.value||'').trim();
+    const raw=typed || employeePhone(e);
+    if(typed && typed!==employeePhone(e)) localStorage.setItem('manualPhone:'+e.key,typed);
+    if(!raw){
+      showPopup('لا يوجد رقم جوال لهذا الموظف.','error','رقم الجوال غير متوفر');
+      return;
+    }
+    const cc=$('#salarySendCountryCode')?.value||'966';
+    const phone=normalizeWhatsAppPhone(raw,cc);
+    if(phone.length<8){
+      showPopup('رقم الجوال غير صالح لفتح واتساب.','error','تحقق من الرقم');
+      return;
+    }
+    const msg=$('#salarySendMessage')?.value||salaryMessageFor(e);
+    const url=`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    setSalarySendStatus(e,'sent');
+    window.open(url,'_blank','noopener,noreferrer');
+    renderSalarySend();
+    renderSalarySendPreview(false);
+    showPopup('تم تسجيل حالة الموظف: تم الإرسال بعد فتح واتساب.','success','حالة الإرسال');
+  }
+
+  function dashboardEmployees(){
+    const q=normalizeSearch($('#dashboardEmployeeFilter')?.value);
+    return activeEmployees().filter(e=>!q || normalizeSearch(e.name+' '+e.id).includes(q));
+  }
+
+  function dashboardData(){
+    const list=dashboardEmployees();
+    const rows=list.map(e=>({e,c:calcEmployee(e)}));
+    return {
+      list,rows,
+      employees:list.length,
+      present:rows.reduce((s,x)=>s+x.c.presentDays,0),
+      absent:rows.reduce((s,x)=>s+x.c.absentDays,0),
+      actual:rows.reduce((s,x)=>s+x.c.actual,0),
+      required:rows.reduce((s,x)=>s+x.c.required,0),
+      ot:rows.reduce((s,x)=>s+x.c.weightedOvertime,0),
+      shortage:rows.reduce((s,x)=>s+x.c.shortage,0),
+      gross:rows.reduce((s,x)=>s+x.c.grossSalary,0),
+      deduction:rows.reduce((s,x)=>s+x.c.appliedDeduction,0),
+      penalties:rows.reduce((s,x)=>s+x.c.penaltiesTotal,0),
+      net:rows.reduce((s,x)=>s+x.c.netSalary,0)
+    };
+  }
+
+  function dashboardBar(label,value,max,unit=''){
+    const pct=max>0?Math.max(0,Math.min(100,(value/max)*100)):0;
+    return `<div class="bar-row"><span>${esc(label)}</span><div class="bar-track"><div class="bar-fill" style="width:${pct.toFixed(1)}%"></div></div><b>${Number(value).toFixed(2)}${unit}</b></div>`;
+  }
+
+  function dashboardRanks(items,valueFn,unit=''){
+    const ranked=items.map(({e,c})=>({name:e.name,value:valueFn(c,e)}))
+      .sort((a,b)=>b.value-a.value).slice(0,5);
+    if(!ranked.length || ranked.every(x=>!x.value)) return `<div style="font-size:11px;color:#667085">لا توجد بيانات.</div>`;
+    return ranked.map((x,i)=>`<div class="rank-row"><span class="rank-no">${i+1}</span><span class="rank-name">${esc(x.name)}</span><span class="rank-value">${Number(x.value).toFixed(2)}${unit}</span></div>`).join('');
+  }
+
+  function renderDashboard(){
+    const d=dashboardData();
+    $('#dEmployees').textContent=d.employees;
+    $('#dPresent').textContent=d.present;
+    $('#dAbsent').textContent=d.absent;
+    $('#dActual').textContent=hours(d.actual);
+    $('#dOT').textContent=hours(d.ot);
+    $('#dShortage').textContent=hours(d.shortage);
+    $('#dGross').textContent=d.gross.toFixed(2);
+    $('#dDeduction').textContent=d.deduction.toFixed(2);
+    $('#dPenalties').textContent=d.penalties.toFixed(2);
+    $('#dNet').textContent=d.net.toFixed(2);
+
+    const totalAttendance=d.present+d.absent;
+    const rate=totalAttendance?d.present/totalAttendance*100:0;
+    $('#attendanceRate').textContent=rate.toFixed(1)+'%';
+    $('#legendPresent').textContent=d.present;
+    $('#legendAbsent').textContent=d.absent;
+    $('#attendanceDonut').style.background=`conic-gradient(#13877d 0deg,#13877d ${(rate*3.6).toFixed(1)}deg,#e9eef3 ${(rate*3.6).toFixed(1)}deg 360deg)`;
+
+    const hourVals=[d.actual,d.required,d.ot,d.shortage].map(x=>Number(hours(x)));
+    const hourMax=Math.max(1,...hourVals);
+    $('#hoursBars').innerHTML=[
+      dashboardBar('الساعات الفعلية',hourVals[0],hourMax),
+      dashboardBar('الساعات المطلوبة',hourVals[1],hourMax),
+      dashboardBar('الإضافي المستحق',hourVals[2],hourMax),
+      dashboardBar('الساعات الناقصة',hourVals[3],hourMax)
+    ].join('');
+
+    const salaryVals=[d.gross,d.deduction,d.penalties,d.net];
+    const salaryMax=Math.max(1,...salaryVals);
+    $('#salaryBars').innerHTML=[
+      dashboardBar('إجمالي الرواتب',d.gross,salaryMax),
+      dashboardBar('خصم الدوام',d.deduction,salaryMax),
+      dashboardBar('الجزاءات',d.penalties,salaryMax),
+      dashboardBar('صافي الرواتب',d.net,salaryMax)
+    ].join('');
+
+    $('#topOvertime').innerHTML=dashboardRanks(d.rows,c=>Number(hours(c.weightedOvertime)),' h');
+    $('#topShortage').innerHTML=dashboardRanks(d.rows,c=>Number(hours(c.shortage)),' h');
+    $('#topDeductions').innerHTML=dashboardRanks(d.rows,c=>(c.appliedDeduction||0)+(c.penaltiesTotal||0));
+
+    $('#dashboardScopeText').textContent=summarySelection.size
+      ? `يعرض ${d.employees} من الموظفين المحددين`
+      : `يعرض ${d.employees} موظف`;
+    if(currentLang==='en') translateElement($('#dashboard'));
+  }
+
+  function ensureDashboardExportLibs(){
+    const load=(src,test)=>new Promise(resolve=>{
+      if(test()){resolve(true);return;}
+      const s=document.createElement('script');s.src=src;s.async=true;
+      s.onload=()=>resolve(test());s.onerror=()=>resolve(false);document.head.appendChild(s);
+    });
+    return load('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',()=>!!window.html2canvas)
+      .then(ok=>ok?load('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',()=>!!window.jspdf):false);
+  }
+
+  async function dashboardCanvas(){
+    const ok=await ensureDashboardExportLibs();
+    if(!ok || !window.html2canvas) throw new Error('تعذر تحميل أداة استخراج لوحة التحليلات.');
+    return html2canvas($('#dashboardCapture'),{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+  }
+
+  async function exportDashboardImage(){
+    try{
+      showPopup('جاري تجهيز صورة لوحة التحليلات...','info','تجهيز الصورة');
+      const canvas=await dashboardCanvas();
+      const a=document.createElement('a');
+      a.download='HR_Analytics_Dashboard.png';
+      a.href=canvas.toDataURL('image/png');
+      a.click();
+      showPopup('تم استخراج لوحة التحليلات كصورة PNG.','success','تم استخراج الصورة');
+    }catch(err){showPopup(err.message||err,'error');}
+  }
+
+  async function exportDashboardPdf(){
+    try{
+      showPopup('جاري تجهيز PDF للوحة التحليلات...','info','تجهيز PDF');
+      const canvas=await dashboardCanvas();
+      if(!window.jspdf?.jsPDF) throw new Error('تعذر تحميل أداة PDF.');
+      const {jsPDF}=window.jspdf;
+      const img=canvas.toDataURL('image/jpeg',0.94);
+      const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+      const pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+      const margin=7, maxW=pw-margin*2, maxH=ph-margin*2;
+      const ratio=Math.min(maxW/canvas.width,maxH/canvas.height);
+      const w=canvas.width*ratio,h=canvas.height*ratio;
+      pdf.addImage(img,'JPEG',(pw-w)/2,(ph-h)/2,w,h);
+      pdf.save('HR_Analytics_Dashboard.pdf');
+      showPopup('تم استخراج لوحة التحليلات PDF بنجاح.','success','تم استخراج PDF');
+    }catch(err){showPopup(err.message||err,'error');}
+  }
+
+  function exportDashboardExcel(){
+    const d=dashboardData();
+    if(!d.rows.length){showPopup('لا توجد بيانات في لوحة التحليلات للتصدير.','error');return;}
+    ensureXLSX().then(ok=>{
+      if(!ok){showPopup('تعذر تحميل أداة Excel.','error');return;}
+      const wb=XLSX.utils.book_new();
+      const totals=[
+        ['لوحة تحليلات الحضور والرواتب'],
+        ['عدد الموظفين',d.employees],['أيام الحضور',d.present],['أيام الغياب',d.absent],
+        ['ساعات العمل',Number(hours(d.actual))],['الساعات المطلوبة',Number(hours(d.required))],
+        ['الإضافي المستحق',Number(hours(d.ot))],['الساعات الناقصة',Number(hours(d.shortage))],
+        ['إجمالي الرواتب قبل الخصومات',d.gross],['خصم الدوام',d.deduction],['الجزاءات',d.penalties],['صافي الرواتب',d.net]
+      ];
+      const detail=[['كود الموظف','الموظف','الحضور','الغياب','الساعات الفعلية','المطلوبة','الإضافي المستحق','النقص','إجمالي الراتب','خصم الدوام','الجزاءات','الصافي']];
+      d.rows.forEach(({e,c})=>detail.push([e.id||'',e.name,c.presentDays,c.absentDays,Number(hours(c.actual)),Number(hours(c.required)),Number(hours(c.weightedOvertime)),Number(hours(c.shortage)),c.grossSalary,c.appliedDeduction,c.penaltiesTotal,c.netSalary]));
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(exportRows(totals)),sheetName('التحليلات','Analytics'));
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(exportRows(detail)),sheetName('الموظفون','Employees'));
+      XLSX.writeFile(wb,'HR_Analytics_Dashboard.xlsx',{compression:true});
+      showPopup('تم استخراج بيانات لوحة التحليلات إلى Excel.','success','تم تصدير Excel');
+    });
+  }
+
+  function exportRows(rows){
+    if(currentLang!=='en') return rows;
+    return rows.map(row=>Array.isArray(row)?row.map(v=>typeof v==='string'?trText(v):v):row);
+  }
+  function sheetName(ar,en){ return currentLang==='en'?en:ar; }
+
+  function exportEmployees(){
+    if(!employees.length){
+      $('#status').textContent='لا توجد بيانات لتصديرها. حمّل ملف الحضور أولًا.';
+      showPopup('لا توجد بيانات لتصديرها. حمّل ملف الحضور أولًا.','error');
+      return;
+    }
+
+    const chosen=summarySelection.size
+      ? employees.filter(e=>summarySelection.has(e.key))
+      : employees.slice();
+
+    if(!chosen.length){
+      $('#status').textContent='لا يوجد موظفون محددون للتصدير.';
+      showPopup('لا يوجد موظفون محددون للتصدير.','error');
+      return;
+    }
+
+    $('#status').textContent='جاري تجهيز ملف Excel...';
+    showPopup('جاري تجهيز ملف Excel بالنتائج النهائية والتفاصيل.','info','تجهيز التصدير');
+
+    ensureXLSX().then(ok=>{
+      if(!ok || typeof XLSX==='undefined'){
+        $('#status').textContent='تعذر تحميل أداة إنشاء Excel. تحقق من اتصال الإنترنت ثم أعد المحاولة.';
+        showPopup('تعذر تجهيز ملف Excel. تحقق من اتصال الإنترنت ثم أعد المحاولة.','error','فشل التصدير');
+        return;
+      }
+
+      try{
+        const wb=XLSX.utils.book_new();
+        const now=new Date();
+        const generatedAt=now.toLocaleString('ar-SA');
+
+        // ----- Summary sheet -----
+        const summaryRows=[
+          ['تقرير ساعات ورواتب الموظفين'],
+          ['فترة التقرير', reportPeriod.from||'', reportPeriod.to||''],
+          ['تاريخ ووقت التصدير', generatedAt],
+          [],
+          [
+            'كود الموظف','اسم الموظف','رقم الجوال','حالة إرسال ملخص الراتب','الساعات اليومية','أيام العمل الفعلية',
+            'أيام الإجازة الأسبوعية','معامل الإضافي','الساعات الفعلية','الساعات المطلوبة',
+            'الإضافي الفعلي','الإضافي المستحق','الساعات الناقصة','أيام الحضور','أيام الغياب',
+            'الراتب الشهري','مصدر الراتب','إجمالي الراتب','خصم الدوام المحسوب','خصم الدوام المطبق',
+            'تطبيق خصم الدوام','سبب عدم تطبيق الخصم','إجمالي الجزاءات',
+            'الصافي قبل الجزاءات','صافي الراتب النهائي'
+          ]
+        ];
+
+        chosen.forEach(e=>{
+          const c=calcEmployee(e);
+          summaryRows.push([
+            e.id||'', e.name||'', dailyHours(e), actualWorkDays(e),
+            dayNames(offDays(e)), overtimeMultiplier(e),
+            Number(hours(c.actual)), Number(hours(c.required)),
+            Number(hours(c.overtime)), Number(hours(c.weightedOvertime)),
+            Number(hours(c.shortage)), c.presentDays, c.absentDays,
+            monthlySalary(e), salarySource(e), c.grossSalary, c.calculatedDeduction, c.appliedDeduction,
+            applyDeduction(e)?'نعم':'لا',
+            applyDeduction(e)?'':noDeductionReason(e),
+            c.penaltiesTotal, c.netBeforePenalties, c.netSalary
+          ]);
+        });
+
+        const wsSummary=XLSX.utils.aoa_to_sheet(exportRows(summaryRows));
+        wsSummary['!cols']=[
+          {wch:14},{wch:24},{wch:14},{wch:16},{wch:24},{wch:14},
+          {wch:15},{wch:15},{wch:15},{wch:17},{wch:15},{wch:12},{wch:12},
+          {wch:14},{wch:12},{wch:14},{wch:18},{wch:18},{wch:16},{wch:30},{wch:16},{wch:18},{wch:18}
+        ];
+        XLSX.utils.book_append_sheet(wb,wsSummary,sheetName('الملخص','Summary'));
+
+        // ----- Daily details sheet -----
+        const dailyRows=[[
+          'كود الموظف','اسم الموظف','التاريخ','اليوم','دخول','خروج',
+          'الساعات الفعلية','الساعات المطلوبة','الإضافي الفعلي','الإضافي المستحق',
+          'الساعات الناقصة','الحالة','يوم إجازة أسبوعية','عدد البصمات'
+        ]];
+
+        chosen.forEach(e=>{
+          const c=calcEmployee(e);
+          c.days.forEach(d=>{
+            const status=d.status==='absent'?'غياب':
+              d.status==='incomplete'?'بصمة غير مكتملة':
+              d.status==='short'?'نقص ساعات':
+              d.status==='off'?'إجازة':
+              d.status==='overtime'?'إضافي':'حضور';
+
+            dailyRows.push([
+              e.id||'', e.name||'', d.date||'', d.weekday||'',
+              d.clockIn||'', d.clockOut||'',
+              Number(hours(d.actual)), Number(hours(d.required)),
+              Number(hours(d.overtime)), Number(hours(weightedOvertimeMinutes(e,d.overtime))),
+              Number(hours(d.shortage)), status,
+              isOffDay(e,d)?'نعم':'لا',
+              Number(d.punchCount||0)
+            ]);
+          });
+        });
+
+        const wsDaily=XLSX.utils.aoa_to_sheet(exportRows(dailyRows));
+        wsDaily['!cols']=[
+          {wch:14},{wch:24},{wch:13},{wch:13},{wch:11},{wch:11},
+          {wch:15},{wch:16},{wch:15},{wch:17},{wch:15},{wch:18},{wch:18},{wch:12}
+        ];
+        XLSX.utils.book_append_sheet(wb,wsDaily,sheetName('تفاصيل الأيام','Daily Details'));
+
+        // ----- Settings sheet -----
+        const settingsRows=[[
+          'كود الموظف','اسم الموظف','الساعات اليومية','أيام العمل الفعلية',
+          'أيام الإجازة الأسبوعية','معامل الإضافي','الراتب الشهري','مصدر الراتب',
+          'تطبيق خصم الدوام','سبب عدم تطبيق الخصم'
+        ]];
+
+        chosen.forEach(e=>{
+          settingsRows.push([
+            e.id||'',e.name||'',employeePhone(e),salarySendStatus(e)==='sent'?'تم الإرسال':'لم يتم الإرسال',dailyHours(e),actualWorkDays(e),
+            dayNames(offDays(e)),overtimeMultiplier(e),monthlySalary(e),salarySource(e),
+            applyDeduction(e)?'نعم':'لا',
+            applyDeduction(e)?'':noDeductionReason(e)
+          ]);
+        });
+
+        const wsSettings=XLSX.utils.aoa_to_sheet(exportRows(settingsRows));
+        wsSettings['!cols']=[
+          {wch:14},{wch:24},{wch:14},{wch:16},{wch:26},
+          {wch:14},{wch:14},{wch:18},{wch:34}
+        ];
+        XLSX.utils.book_append_sheet(wb,wsSettings,sheetName('الإعدادات','Settings'));
+
+        // ----- Penalties sheet -----
+        const penaltyRows=[[
+          'كود الموظف','اسم الموظف','رقم الجزاء','سبب الجزاء','مبلغ الجزاء'
+        ]];
+        chosen.forEach(e=>{
+          const list=penalties(e);
+          if(list.length){
+            list.forEach((p,i)=>{
+              penaltyRows.push([e.id||'',e.name||'',i+1,p.reason||'',Number(p.amount||0)]);
+            });
+          }else{
+            penaltyRows.push([e.id||'',e.name||'','','لا توجد جزاءات',0]);
+          }
+        });
+
+        const wsPenalties=XLSX.utils.aoa_to_sheet(exportRows(penaltyRows));
+        wsPenalties['!cols']=[
+          {wch:14},{wch:24},{wch:12},{wch:40},{wch:16}
+        ];
+        XLSX.utils.book_append_sheet(wb,wsPenalties,sheetName('الجزاءات','Penalties'));
+
+        // ----- Source/metadata sheet -----
+        const metaRows=[
+          ['نوع التقرير','نسخة محفوظة من نظام تحليل ساعات الموظفين'],
+          ['فترة من',reportPeriod.from||''],
+          ['فترة إلى',reportPeriod.to||''],
+          ['عدد الموظفين المصدّرين',chosen.length],
+          ['تاريخ ووقت التصدير',generatedAt],
+          ['ملاحظة','هذا الملف يحتوي على النتيجة النهائية والإعدادات والتفاصيل وقت التصدير.']
+        ];
+        const wsMeta=XLSX.utils.aoa_to_sheet(exportRows(metaRows));
+        wsMeta['!cols']=[{wch:24},{wch:60}];
+        XLSX.utils.book_append_sheet(wb,wsMeta,sheetName('معلومات التقرير','Report Info'));
+
+        const period=(reportPeriod.from&&reportPeriod.to)
+          ? reportPeriod.from.replaceAll('-','')+'_'+reportPeriod.to.replaceAll('-','')
+          : now.toISOString().slice(0,10).replaceAll('-','');
+        const fileName='HR_Attendance_Result_'+period+'.xlsx';
+
+        XLSX.writeFile(wb,fileName,{compression:true});
+        $('#status').textContent=`تم تصدير ${chosen.length} موظف إلى ${fileName}.`;
+        showPopup(`تم إنشاء ملف Excel بنجاح لعدد ${chosen.length} موظف.\nاسم الملف: ${fileName}`,'success','تم تصدير Excel');
+      }catch(err){
+        console.error(err);
+        $('#status').textContent='حدث خطأ أثناء إنشاء ملف Excel: '+(err?.message||err);
+        showPopup('حدث خطأ أثناء إنشاء ملف Excel: '+(err?.message||err),'error','فشل التصدير');
+      }
+    });
+  }
 
   $('#summaryEmployeeFilter').addEventListener('input',applySummaryFilter);
   $('#summarySelectFiltered').addEventListener('click',()=>{
@@ -1700,33 +3916,59 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];reportPeriod={from:'',
         summarySelection.add(row.dataset.summaryKey);
       }
     });
-    applySummaryFilter();
+    syncGlobalSelection();
   });
   $('#summarySelectAll').addEventListener('click',()=>{
     employees.forEach(e=>summarySelection.add(e.key));
-    applySummaryFilter();
+    syncGlobalSelection();
   });
+  $('#exportExcelBtn').addEventListener('click',exportEmployees);
   $('#summaryClearSelection').addEventListener('click',()=>{
     summarySelection.clear();
-    applySummaryFilter();
+    syncGlobalSelection();
   });
 
   $('#selectAllEmployees').addEventListener('click',()=>{
-    $$('[data-select-employee]').forEach(x=>x.checked=true);updateSelectedCount();
+    employees.forEach(e=>summarySelection.add(e.key));
+    syncGlobalSelection();
   });
   $('#clearSelectedEmployees').addEventListener('click',()=>{
-    $$('[data-select-employee]').forEach(x=>x.checked=false);updateSelectedCount();
+    summarySelection.clear();
+    syncGlobalSelection();
   });
   $('#dailyEmployee').addEventListener('change',renderDaily);
   $('#dailyFilter').addEventListener('change',renderDaily);
+  $('#printEmployee').addEventListener('change',syncPrintEmployeeApprovalFilter);
   $('#printOneBtn').addEventListener('click',()=>{
-    const idx=$('#printEmployee').value;
-    if(idx===''){$('#status').textContent='اختر موظفًا للطباعة أولًا.';return;}
-    doPrint([employees[Number(idx)]]);
+    if(!summarySelection.size){
+      showPopup('حدد موظفًا واحدًا أو أكثر أولًا للطباعة.','error','لم يتم تحديد موظفين');
+      return;
+    }
+    doPrint(activeEmployees());
   });
-  $('#printAllBtn').addEventListener('click',()=>doPrint(employees));
+  $('#printAllBtn').addEventListener('click',()=>doPrint(employees.slice()));
+  const languageObserver=new MutationObserver(mutations=>{
+    if(currentLang!=='en') return;
+    mutations.forEach(m=>{
+      m.addedNodes.forEach(node=>{
+        if(node.nodeType===1) translateElement(node);
+        else if(node.nodeType===3 && node.parentElement) translateElement(node.parentElement);
+      });
+    });
+  });
+  languageObserver.observe(document.querySelector('.wrap')||document.body,{childList:true,subtree:true});
+
+  $('#dashboardEmployeeFilter')?.addEventListener('input',renderDashboard);
+  $('#dashboardExcelBtn')?.addEventListener('click',exportDashboardExcel);
+  $('#dashboardPdfBtn')?.addEventListener('click',exportDashboardPdf);
+  $('#dashboardImageBtn')?.addEventListener('click',exportDashboardImage);
+
+  $('#appToastClose')?.addEventListener('click',closePopup);
+  $('#languageToggle')?.addEventListener('click',()=>setLanguage(currentLang==='ar'?'en':'ar'));
+
   try{
     resetFreshUI();
+    applyLanguageToUI();
   }catch(err){
     console.error('Startup error:',err);
     showStartupError(err && err.message ? err.message : err);
