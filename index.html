@@ -7,8 +7,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="format-detection" content="telephone=no">
-<title>تحليل ساعات الموظفين</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Fcp-wemvnlhlTjfkQ00cyLe9EQ4-5i3nB6Yx6SRLYCQ8JWAstdiWZVbKhMWcNLPw9QXNKHQK47RRE97RjNXAKvxX8EKAAAC11ogE5uzIy3eYoy-Jf90KOEY6FXgNXRoS9tpRyANFEP83e_zoKoPexH9dR03D7-u_eVc2ZDJ9624jf01DzgCAZZZtjCt2pa00rcIlvkTVhquMwEeM1p6YKOfFQUcgPHia1vtlJAmFccbbhQwAoHUvr5D1zwjD_bwfd-b7Yn9n7JcsEUN2AJY5UhnU8_6p7NH0fuli6vEyK8rQL7Fvb2P6zhai14oVFJTz4tR4PY1arq9o4BSlZmg3fg" charset="UTF-8"></script><style>
+<title>تحليل ساعات الموظفين - Mobile Fix</title>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Rt0PCi8LJbhHYASEpj8GJU5PyE_9Fd_tj59GMyK_iyXuSdYTv2Qnz1GhnuNgBzgFkLV-zB09q9QizDoV07fwd-8BRxUcaXVOByU9LEsBrb9fMJsrgaj0PZqZ_nCWF2dF-6rUUnMgxJvKmUmz9GxGGzftdz4pUOpiRGvNHk-jQhvyFw4_f5UjXde5GtBCgmc3zJPU-UWom6F4osO0pvC_-FoJY85vVwf9gMCDfjVFjhWl3T-fZEziWG986MHKGHoa48BU0aRjthAvfBllcrLcvbHslYDOflSbRRjEFbtpDS-9d3q-gwqLDnOgwEN3mf683Lp-bnJI4UIOciovmUkpfQ" charset="UTF-8"></script><style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#152238;--muted:#667085;--line:#dfe5ec;
   --primary:#0f766e;--primary-dark:#155e75;--good:#027a48;--bad:#b42318;--warn:#b54708;
@@ -437,6 +437,20 @@ input,select,button{max-width:100%}
   }
 }
 
+
+.startup-error{
+  display:none;
+  background:#fff3f0;
+  border:1px solid #f0a39a;
+  color:#8a1c12;
+  border-radius:12px;
+  padding:12px 14px;
+  margin:10px 0;
+  direction:rtl;
+  font-size:13px;
+  line-height:1.6;
+}
+.startup-error.show{display:block}
 </style>
 </head>
 <body>
@@ -445,6 +459,7 @@ input,select,button{max-width:100%}
     <h1>تحليل ساعات الموظفين</h1>
     <p>الحساب بالساعات العشرية. البرنامج يتعرف تلقائيًا على أعمدة الحضور المطلوبة حتى لو ملف Excel يحتوي على أعمدة أو معلومات إضافية أو تغير ترتيب الأعمدة.</p>
   </section>
+  <div id="startupError" class="startup-error"></div>
 
   <section class="card">
     <div class="upload-row">
@@ -452,7 +467,7 @@ input,select,button{max-width:100%}
       <button id="loadBtn" class="primary">تحليل الملف</button>
       <button id="clearBtn" class="secondary">مسح البيانات</button>
     </div>
-    <div id="status" class="status">لم يتم تحميل ملف بعد.</div>
+    <div id="status" class="status">لم يتم تحميل ملف بعد.</div><div class="status" style="opacity:.6">الإصدار: Mobile Fix 29-08-2026</div>
     <div id="periodText" class="period"></div>
     <div class="status">يدعم نوعين من الملفات تلقائيًا: Total Time Card و Transaction. في ملف Transaction يتم تجميع بصمات كل موظف يوميًا وحساب العمل من أول بصمة إلى آخر بصمة، مع تجاهل الأعمدة الإضافية.</div>
   </section>
@@ -485,15 +500,13 @@ input,select,button{max-width:100%}
         <span id="summarySelectedCount" style="color:#667085;font-size:13px;align-self:center">عرض جميع الموظفين</span>
       </div>
       
-      <div class="table-wrap">
-        <div class="table-wrap"><table>
+      <div class="table-wrap"><table>
           <thead><tr>
             <th>اختيار</th><th>الموظف</th><th>الرقم</th><th>الساعات اليومية</th><th>أيام العمل</th><th>الجمعة</th>
             <th>الحضور</th><th>الغياب</th><th>الفعلي</th><th>المطلوب</th><th>الإضافي الفعلي</th><th>الإضافي المستحق</th><th>النقص</th>
           </tr></thead>
           <tbody id="summaryBody"></tbody>
         </table></div>
-      </div>
     </div>
   </section>
 
@@ -560,15 +573,13 @@ input,select,button{max-width:100%}
           <option value="off">إجازة</option>
         </select>
       </div>
-      <div class="table-wrap">
-        <div class="table-wrap"><table>
+      <div class="table-wrap"><table>
           <thead><tr>
             <th>التاريخ</th><th>اليوم</th><th>الدخول</th><th>الخروج</th>
             <th>الفعلي</th><th>المطلوب</th><th>الإضافي الفعلي</th><th>الإضافي المستحق</th><th>النقص</th><th>الحالة</th>
           </tr></thead>
           <tbody id="dailyBody"></tbody>
         </table></div>
-      </div>
     </div>
   </section>
 
@@ -1631,6 +1642,45 @@ input,select,button{max-width:100%}
     $('#printArea').innerHTML=list.map(renderer).join('');
     setTimeout(()=>window.print(),100);
   }
+
+  function showStartupError(message){
+    try{
+      const box=document.getElementById('startupError');
+      if(box){
+        box.textContent='حدث خطأ أثناء تشغيل الصفحة: '+String(message||'خطأ غير معروف');
+        box.classList.add('show');
+      }
+    }catch(_){}
+  }
+
+  function resetFreshUI(){
+    try{
+      employees=[];
+      reportPeriod={from:'',to:'',raw:''};
+
+      const fi=$('#fileInput');
+      if(fi) fi.value='';
+
+      const period=$('#periodText');
+      if(period) period.textContent='';
+
+      const status=$('#status');
+      if(status) status.textContent='لم يتم تحميل ملف بعد.';
+
+      try{ summarySelection.clear(); }catch(_){}
+
+      const sf=$('#settingsEmployeeFilter');
+      if(sf) sf.value='';
+      const smf=$('#summaryEmployeeFilter');
+      if(smf) smf.value='';
+
+      renderAll();
+    }catch(err){
+      console.error(err);
+      showStartupError(err && err.message ? err.message : err);
+    }
+  }
+
 $$('.tab').forEach(b=>b.addEventListener('click',()=>{
     $$('.tab').forEach(x=>x.classList.remove('active'));$$('.panel').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');$('#'+b.dataset.tab).classList.add('active');
@@ -1675,7 +1725,12 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];reportPeriod={from:'',
     doPrint([employees[Number(idx)]]);
   });
   $('#printAllBtn').addEventListener('click',()=>doPrint(employees));
-  resetFreshUI();
+  try{
+    resetFreshUI();
+  }catch(err){
+    console.error('Startup error:',err);
+    showStartupError(err && err.message ? err.message : err);
+  }
 })();
 </script>
 </body>
