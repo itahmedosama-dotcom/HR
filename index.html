@@ -2,10 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="format-detection" content="telephone=no">
 <title>تحليل ساعات الموظفين</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=O2SDAUptS6ceHw4DhJbDtDTTjmOKqJsKA07pCLqVvGjgkzn_nJHEVKrViQRmrsdcApuqbEMjvTfxJw7V4ljNKaMNRUFGqODDO0iyH0LC9WdXY59HEx-iw4ZwiwCnKpDyiSVlmsHvZqWHne8eA2nC3NRHbCvP47MF-8ig-ogRX5dD8HQL45ogszX8ZRbxKkcaDIsHxdIEwtENi10vL0O1UH2QjVydIb7gblhb5hyJgc0R9NCsxD0dL6PLiW9_ZMN0iy7_SLKh6gHujFnXsfBj18pCJgMu5R-WdYjYdS_wV0yETgokPTXF_JXxXm3N6EWXpuVpkQQXyCCJUT7JVxhFaw" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=ls7MWu6riNN6_Fdm6xUhyehtVvV72wLDSyWyrn-XFtqHn4If1fgz3MdvEnkIR2gyyTX74JR-x9Qwa_CVxCgT6mhq7wcTNjLOZnmJLn3mQxOrIsVSpj5lCiOG4dNZ3vcdFL4FcQ2c3Vs_AmTR02nusTG9JomHLYeJzuySnLdzWVhYesFU40esNEoj5C-wD-2GOXmusjH0i-W7hm__9e8QHhacd6QDzf-k6bGRHxuhglmi8bXxuQrRQUH0cvNwWOGhpiB1u-D7Ec6Us5j6Sd_5lzju2E_yq3yCiCl8GYkM9ptTw3LsIuBsBAN4X0qLbamzSuLfKM-2pt_S5LUbLcZxPQ" charset="UTF-8"></script><style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#152238;--muted:#667085;--line:#dfe5ec;
   --primary:#0f766e;--primary-dark:#155e75;--good:#027a48;--bad:#b42318;--warn:#b54708;
@@ -20,6 +23,10 @@ body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var
 input,select,button{font:inherit;min-height:42px;border-radius:10px}
 input,select{border:1px solid #cfd7e3;background:#fff;padding:9px 11px}
 input[type=file]{flex:1;min-width:260px}
+@media(max-width:600px){
+  input[type=file]{min-width:0!important;width:100%!important}
+  input[type=file]::file-selector-button{min-height:40px;margin-inline-end:8px}
+}
 button{border:0;padding:9px 15px;font-weight:700;cursor:pointer}
 .primary{background:var(--primary);color:#fff}.secondary{background:#edf2f7;color:#344054}.danger{background:#fee4e2;color:#b42318}
 .status{margin-top:9px;color:var(--muted);font-size:13px}
@@ -279,12 +286,6 @@ input,select,button{max-width:100%}
   .setting-row>div:last-child{min-width:0!important}
 
   .table-wrap,
-  .card>div:has(>table){
-    width:100%!important;
-    max-width:100%!important;
-    overflow-x:auto!important;
-    -webkit-overflow-scrolling:touch;
-  }
   table{min-width:760px}
 }
 
@@ -496,6 +497,67 @@ input,select,button{max-width:100%}
 
 <script>
 (()=>{
+  // Every real page load / refresh starts clean, as requested.
+  // Only this application's keys are removed; unrelated browser data is untouched.
+  function clearAppSavedData(){
+    try{
+      const prefixes=['dailyHours:','fridayWork:','actualWorkDays:','approval:','overtimeMultiplier:'];
+      const remove=[];
+      for(let i=0;i<localStorage.length;i++){
+        const k=localStorage.key(i);
+        if(k && prefixes.some(p=>k.startsWith(p))) remove.push(k);
+      }
+      remove.forEach(k=>localStorage.removeItem(k));
+    }catch(_){}
+  }
+  clearAppSavedData();
+
+  try{
+    if('scrollRestoration' in history) history.scrollRestoration='manual';
+    window.scrollTo(0,0);
+  }catch(_){}
+
+  let xlsxLoadingPromise=null;
+  function ensureXLSX(){
+    if(window.XLSX) return Promise.resolve(true);
+    if(xlsxLoadingPromise) return xlsxLoadingPromise;
+
+    const sources=[
+      'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+      'https://cdn.sheetjs.com/xlsx-0.18.5/package/dist/xlsx.full.min.js'
+    ];
+
+    xlsxLoadingPromise=new Promise(resolve=>{
+      let i=0;
+      const tryNext=()=>{
+        if(window.XLSX){resolve(true);return;}
+        if(i>=sources.length){xlsxLoadingPromise=null;resolve(false);return;}
+        const s=document.createElement('script');
+        s.src=sources[i++];
+        s.async=true;
+        const timer=setTimeout(()=>{
+          s.onload=s.onerror=null;
+          try{s.remove();}catch(_){}
+          tryNext();
+        },8000);
+        s.onload=()=>{
+          clearTimeout(timer);
+          if(window.XLSX) resolve(true);
+          else tryNext();
+        };
+        s.onerror=()=>{
+          clearTimeout(timer);
+          try{s.remove();}catch(_){}
+          tryNext();
+        };
+        document.head.appendChild(s);
+      };
+      tryNext();
+    });
+    return xlsxLoadingPromise;
+  }
+
   let employees=[];
   let reportPeriod={from:'',to:'',raw:''};
   const $=s=>document.querySelector(s);
@@ -715,7 +777,12 @@ input,select,button{max-width:100%}
   async function loadFile(){
     const file=$('#fileInput').files[0];
     if(!file){$('#status').textContent='اختر ملف Excel أولًا.';return;}
-    if(typeof XLSX==='undefined'){$('#status').textContent='تعذر تحميل مكتبة Excel. افتح الصفحة مع اتصال بالإنترنت.';return;}
+    $('#status').textContent='جاري تجهيز قارئ Excel...';
+    const xlsxReady=await ensureXLSX();
+    if(!xlsxReady){
+      $('#status').textContent='تعذر تحميل قارئ Excel. الصفحة نفسها تعمل، لكن تحليل ملف Excel يحتاج اتصال إنترنت عند أول تحليل.';
+      return;
+    }
     try{
       const buf=await file.arrayBuffer();
       const wb=XLSX.read(buf,{type:'array',cellDates:true});
@@ -1267,7 +1334,7 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];reportPeriod={from:'',
     doPrint([employees[Number(idx)]]);
   });
   $('#printAllBtn').addEventListener('click',()=>doPrint(employees));
-  renderAll();
+  resetFreshUI();
 })();
 </script>
 </body>
