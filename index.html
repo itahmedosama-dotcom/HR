@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="format-detection" content="telephone=no">
 <title>تحليل ساعات الموظفين</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=ls7MWu6riNN6_Fdm6xUhyehtVvV72wLDSyWyrn-XFtqHn4If1fgz3MdvEnkIR2gyyTX74JR-x9Qwa_CVxCgT6mhq7wcTNjLOZnmJLn3mQxOrIsVSpj5lCiOG4dNZ3vcdFL4FcQ2c3Vs_AmTR02nusTG9JomHLYeJzuySnLdzWVhYesFU40esNEoj5C-wD-2GOXmusjH0i-W7hm__9e8QHhacd6QDzf-k6bGRHxuhglmi8bXxuQrRQUH0cvNwWOGhpiB1u-D7Ec6Us5j6Sd_5lzju2E_yq3yCiCl8GYkM9ptTw3LsIuBsBAN4X0qLbamzSuLfKM-2pt_S5LUbLcZxPQ" charset="UTF-8"></script><style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Fcp-wemvnlhlTjfkQ00cyLe9EQ4-5i3nB6Yx6SRLYCQ8JWAstdiWZVbKhMWcNLPw9QXNKHQK47RRE97RjNXAKvxX8EKAAAC11ogE5uzIy3eYoy-Jf90KOEY6FXgNXRoS9tpRyANFEP83e_zoKoPexH9dR03D7-u_eVc2ZDJ9624jf01DzgCAZZZtjCt2pa00rcIlvkTVhquMwEeM1p6YKOfFQUcgPHia1vtlJAmFccbbhQwAoHUvr5D1zwjD_bwfd-b7Yn9n7JcsEUN2AJY5UhnU8_6p7NH0fuli6vEyK8rQL7Fvb2P6zhai14oVFJTz4tR4PY1arq9o4BSlZmg3fg" charset="UTF-8"></script><style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#152238;--muted:#667085;--line:#dfe5ec;
   --primary:#0f766e;--primary-dark:#155e75;--good:#027a48;--bad:#b42318;--warn:#b54708;
@@ -71,143 +71,6 @@ td.name{text-align:right;font-weight:700}.good{color:var(--good);font-weight:800
 @media(max-width:600px){
   .wrap{padding:10px}.kpis{grid-template-columns:1fr 1fr}.setting-row{grid-template-columns:1fr}
   .setting-row .emp{grid-column:auto}.toolbar>*{width:100%}
-}
-
-
-@media print{
-  @page{
-    size:A4 portrait;
-    margin:10mm;
-  }
-  html,body{
-    background:#fff!important;
-    color:#000!important;
-    margin:0!important;
-    padding:0!important;
-    font-family:Tahoma,Arial,sans-serif!important;
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-  }
-  .wrap > *:not(.print-area){display:none!important}
-  .print-area{
-    display:block!important;
-    width:100%!important;
-    max-width:none!important;
-    margin:0!important;
-    padding:0!important;
-  }
-  .print-employee{
-    width:100%!important;
-    max-width:190mm!important;
-    margin:0 auto!important;
-    padding:0!important;
-    box-sizing:border-box!important;
-    page-break-after:always;
-    break-after:page;
-  }
-  .print-employee:last-child{
-    page-break-after:auto;
-    break-after:auto;
-  }
-  .print-head{
-    text-align:center!important;
-    border-bottom:2px solid #222!important;
-    padding:0 0 10px!important;
-    margin-bottom:12px!important;
-  }
-  .print-head h1{
-    font-size:20px!important;
-    margin:0 0 6px!important;
-    line-height:1.3!important;
-  }
-  .print-head .pname{
-    font-size:16px!important;
-    font-weight:700!important;
-    margin:4px 0!important;
-  }
-  .print-period{
-    font-size:13px!important;
-    font-weight:700!important;
-    margin-top:4px!important;
-  }
-  .print-datetime{
-    display:flex!important;
-    justify-content:space-between!important;
-    gap:12px!important;
-    font-size:11px!important;
-    color:#333!important;
-    margin-top:7px!important;
-    border-top:1px solid #bbb!important;
-    padding-top:6px!important;
-  }
-  .print-meta{
-    display:grid!important;
-    grid-template-columns:repeat(3,1fr)!important;
-    gap:6px!important;
-    margin:0 0 12px!important;
-  }
-  .print-box{
-    min-height:48px!important;
-    border:1px solid #999!important;
-    border-radius:5px!important;
-    padding:6px 8px!important;
-    text-align:center!important;
-    font-size:10.5px!important;
-    box-sizing:border-box!important;
-    background:#fff!important;
-  }
-  .print-box b{
-    display:block!important;
-    font-size:13px!important;
-    margin-top:3px!important;
-    color:#000!important;
-  }
-  .print-employee table{
-    width:100%!important;
-    min-width:0!important;
-    border-collapse:collapse!important;
-    table-layout:fixed!important;
-    margin:8px 0 12px!important;
-    font-size:10.5px!important;
-  }
-  .print-employee th,
-  .print-employee td{
-    border:1px solid #888!important;
-    padding:5px 3px!important;
-    text-align:center!important;
-    vertical-align:middle!important;
-    word-break:break-word!important;
-  }
-  .print-employee th{
-    font-weight:700!important;
-    background:#f2f2f2!important;
-  }
-  .signature-grid{
-    display:grid!important;
-    grid-template-columns:repeat(3,1fr)!important;
-    gap:16px!important;
-    margin-top:18px!important;
-  }
-  .signature-box{
-    min-height:46px!important;
-    border-top:1px solid #333!important;
-    padding-top:6px!important;
-    text-align:center!important;
-    font-size:11px!important;
-  }
-  .approval-box{
-    margin-top:20px!important;
-    border:1px solid #888!important;
-    padding:10px!important;
-    font-size:11px!important;
-    text-align:center!important;
-  }
-  .print-note{
-    font-size:10px!important;
-    color:#444!important;
-    text-align:center!important;
-    margin-top:8px!important;
-  }
 }
 
 
@@ -339,6 +202,241 @@ input,select,button{max-width:100%}
   .setting-row .emp{grid-column:1!important}
 }
 
+
+@page{
+  size:A4 portrait;
+  margin:9mm;
+}
+@page fullReport{
+  size:A4 landscape;
+  margin:8mm;
+}
+
+@media print{
+  html,body{
+    background:#fff!important;
+    color:#111!important;
+    margin:0!important;
+    padding:0!important;
+    width:100%!important;
+    max-width:none!important;
+    overflow:visible!important;
+    font-family:Tahoma,Arial,sans-serif!important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  .wrap > *:not(.print-area){display:none!important}
+
+  .print-area{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:visible!important;
+  }
+
+  .print-employee{
+    direction:rtl!important;
+    width:100%!important;
+    max-width:190mm!important;
+    margin:0 auto!important;
+    padding:0!important;
+    box-sizing:border-box!important;
+    page-break-after:always;
+    break-after:page;
+    overflow:visible!important;
+  }
+  .print-employee.print-full{
+    page:fullReport;
+    max-width:275mm!important;
+  }
+  .print-employee:last-child{
+    page-break-after:auto;
+    break-after:auto;
+  }
+
+  .print-report-header{
+    border:1.5px solid #2f4858!important;
+    border-radius:7px!important;
+    overflow:hidden!important;
+    margin-bottom:10px!important;
+  }
+  .print-title{
+    background:#eef3f6!important;
+    text-align:center!important;
+    padding:9px 10px!important;
+    border-bottom:1px solid #9aa9b3!important;
+  }
+  .print-title h1{
+    margin:0!important;
+    font-size:20px!important;
+    line-height:1.25!important;
+    color:#102a43!important;
+  }
+  .print-title .pname{
+    font-size:16px!important;
+    font-weight:700!important;
+    margin-top:4px!important;
+  }
+  .print-title .print-period{
+    font-size:12px!important;
+    font-weight:600!important;
+    margin-top:3px!important;
+  }
+  .print-datetime{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    padding:6px 10px!important;
+    font-size:10px!important;
+    background:#fff!important;
+  }
+  .print-datetime span:first-child{text-align:right!important}
+  .print-datetime span:last-child{text-align:left!important}
+
+  .print-section{
+    border:1px solid #aab5bd!important;
+    border-radius:6px!important;
+    margin:0 0 9px!important;
+    overflow:hidden!important;
+    break-inside:avoid!important;
+  }
+  .print-section-title{
+    margin:0!important;
+    padding:6px 9px!important;
+    background:#f1f4f6!important;
+    border-bottom:1px solid #b7c1c8!important;
+    font-size:12px!important;
+    font-weight:700!important;
+    color:#213547!important;
+  }
+
+  .print-info-grid{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    width:100%!important;
+  }
+  .print-result-grid{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    width:100%!important;
+  }
+  .print-info-item,
+  .print-result-item{
+    min-width:0!important;
+    min-height:48px!important;
+    padding:7px 6px!important;
+    text-align:center!important;
+    border-inline-start:1px solid #d1d8dd!important;
+    border-bottom:1px solid #d1d8dd!important;
+    box-sizing:border-box!important;
+  }
+  .print-info-item:nth-child(4n+1),
+  .print-result-item:nth-child(4n+1){
+    border-inline-start:0!important;
+  }
+  .print-info-item:nth-last-child(-n+4),
+  .print-result-item:nth-last-child(-n+4){
+    border-bottom:0!important;
+  }
+  .print-info-item span,
+  .print-result-item span{
+    display:block!important;
+    font-size:9.5px!important;
+    color:#56616a!important;
+    margin-bottom:3px!important;
+    line-height:1.2!important;
+  }
+  .print-info-item b,
+  .print-result-item b{
+    display:block!important;
+    font-size:13px!important;
+    color:#111!important;
+    line-height:1.25!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  .print-result-item.emphasis b{
+    font-size:14px!important;
+  }
+
+  .print-table-wrap{
+    width:100%!important;
+    overflow:visible!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  .print-table{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    border-collapse:collapse!important;
+    table-layout:fixed!important;
+    margin:0!important;
+    font-size:8.5px!important;
+  }
+  .print-table th,
+  .print-table td{
+    border:1px solid #aeb7bd!important;
+    padding:4px 2px!important;
+    text-align:center!important;
+    vertical-align:middle!important;
+    word-break:normal!important;
+    overflow-wrap:anywhere!important;
+    line-height:1.2!important;
+  }
+  .print-table th{
+    background:#eef2f4!important;
+    font-weight:700!important;
+  }
+
+  .signature-grid{
+    display:grid!important;
+    grid-template-columns:repeat(3,1fr)!important;
+    gap:22px!important;
+    margin-top:20px!important;
+    break-inside:avoid!important;
+  }
+  .signature-box{
+    min-height:48px!important;
+    border-top:1px solid #333!important;
+    padding-top:7px!important;
+    text-align:center!important;
+    font-size:11px!important;
+  }
+
+  .approval-box{
+    margin-top:18px!important;
+    border:1px solid #8f9aa2!important;
+    border-radius:6px!important;
+    padding:10px 12px!important;
+    font-size:11px!important;
+    text-align:center!important;
+    break-inside:avoid!important;
+  }
+  .approval-options{
+    display:flex!important;
+    justify-content:center!important;
+    gap:28px!important;
+    margin:7px 0 10px!important;
+    font-size:12px!important;
+  }
+  .approval-line{
+    display:flex!important;
+    justify-content:center!important;
+    gap:28px!important;
+    flex-wrap:wrap!important;
+  }
+
+  .table-wrap{
+    overflow:visible!important;
+    width:100%!important;
+    max-width:100%!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -356,7 +454,7 @@ input,select,button{max-width:100%}
     </div>
     <div id="status" class="status">لم يتم تحميل ملف بعد.</div>
     <div id="periodText" class="period"></div>
-    <div class="status">يدعم وجود عناوين شركة، ملاحظات، أعمدة إضافية، أو تغيير ترتيب الأعمدة. البرنامج يستخدم فقط بيانات الموظف والتاريخ واليوم والدخول والخروج وإجمالي وقت العمل.</div>
+    <div class="status">يدعم نوعين من الملفات تلقائيًا: Total Time Card و Transaction. في ملف Transaction يتم تجميع بصمات كل موظف يوميًا وحساب العمل من أول بصمة إلى آخر بصمة، مع تجاهل الأعمدة الإضافية.</div>
   </section>
 
   <div class="tabs">
@@ -457,6 +555,7 @@ input,select,button{max-width:100%}
           <option value="present">حضور (أي يوم تم العمل فيه)</option>
           <option value="overtime">إضافي</option>
           <option value="short">نقص ساعات</option>
+          <option value="incomplete">بصمة غير مكتملة</option>
           <option value="absent">غياب</option>
           <option value="off">إجازة</option>
         </select>
@@ -713,6 +812,193 @@ input,select,button{max-width:100%}
     return 0;
   }
 
+
+  const transactionAliases={
+    employeeId:['employee id','employeeid','emp id','empid','employee code','code','كود الموظف','رقم الموظف'],
+    employeeName:['first name','employee name','name','اسم الموظف','الموظف'],
+    department:['department','dept','القسم'],
+    date:['date','التاريخ','تاريخ'],
+    time:['time','punch time','وقت البصمة','الوقت'],
+    punchState:['punch state','state','status','نوع البصمة','حالة البصمة']
+  };
+
+  function detectTransactionHeader(row){
+    const map={};
+    for(const [key,aliases] of Object.entries(transactionAliases)){
+      map[key]=findHeaderIndex(row,aliases);
+    }
+    const valid=map.employeeId>=0 && map.employeeName>=0 && map.date>=0 && map.time>=0;
+    return valid?map:null;
+  }
+
+  function findTransactionHeader(rows){
+    for(let i=0;i<Math.min(rows.length,80);i++){
+      const map=detectTransactionHeader(rows[i]||[]);
+      if(map) return {rowIndex:i,map};
+    }
+    return null;
+  }
+
+  function timeToMinutes(v){
+    if(v instanceof Date && !isNaN(v)){
+      return v.getHours()*60+v.getMinutes()+v.getSeconds()/60;
+    }
+    if(typeof v==='number' && Number.isFinite(v)){
+      // Excel time serial (fraction of a day)
+      if(v>=0 && v<1) return v*24*60;
+    }
+    const s=String(v??'').trim();
+    const m=s.match(/^(\d{1,2}):([0-5]\d)(?::([0-5]\d))?/);
+    if(!m) return null;
+    return Number(m[1])*60+Number(m[2])+(Number(m[3]||0)/60);
+  }
+
+  function minutesToClock(v){
+    if(v===null || !Number.isFinite(v)) return '';
+    let total=Math.round(v*60);
+    total=((total%(24*3600))+(24*3600))%(24*3600);
+    const h=Math.floor(total/3600);
+    const m=Math.floor((total%3600)/60);
+    const s=total%60;
+    return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+(s?':'+String(s).padStart(2,'0'):'');
+  }
+
+  function weekdayForDate(dateStr){
+    const m=String(dateStr).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(!m) return '';
+    const names=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    return names[new Date(Date.UTC(Number(m[1]),Number(m[2])-1,Number(m[3]))).getUTCDay()];
+  }
+
+  function eachDate(from,to){
+    const out=[];
+    const a=String(from).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const b=String(to).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(!a||!b) return out;
+    let d=new Date(Date.UTC(Number(a[1]),Number(a[2])-1,Number(a[3])));
+    const end=new Date(Date.UTC(Number(b[1]),Number(b[2])-1,Number(b[3])));
+    let guard=0;
+    while(d<=end && guard<370){
+      out.push(
+        d.getUTCFullYear()+'-'+
+        String(d.getUTCMonth()+1).padStart(2,'0')+'-'+
+        String(d.getUTCDate()).padStart(2,'0')
+      );
+      d.setUTCDate(d.getUTCDate()+1);
+      guard++;
+    }
+    return out;
+  }
+
+  function parseTransactionRows(rows){
+    const found=findTransactionHeader(rows);
+    if(!found) return null;
+
+    const {rowIndex,map}=found;
+    const employeeMap=new Map();
+    let minDate='',maxDate='';
+
+    for(let i=rowIndex+1;i<rows.length;i++){
+      const row=rows[i]||[];
+      const id=String(cell(row,map.employeeId)??'').trim();
+      const name=String(cell(row,map.employeeName)??'').trim();
+      const date=dateText(cell(row,map.date));
+      const timeRaw=cell(row,map.time);
+      const tmin=timeToMinutes(timeRaw);
+
+      if(!id || !name || !dateLike(date) || tmin===null) continue;
+
+      if(!minDate || date<minDate) minDate=date;
+      if(!maxDate || date>maxDate) maxDate=date;
+
+      const key=id||name;
+      if(!employeeMap.has(key)){
+        employeeMap.set(key,{
+          id,
+          name,
+          key,
+          department:map.department>=0?String(cell(row,map.department)??''):'',
+          rawDays:new Map()
+        });
+      }
+      const emp=employeeMap.get(key);
+      if(!emp.rawDays.has(date)) emp.rawDays.set(date,[]);
+      emp.rawDays.get(date).push({
+        minutes:tmin,
+        clock:String(timeRaw??'').trim(),
+        punchState:map.punchState>=0?String(cell(row,map.punchState)??''):''
+      });
+    }
+
+    if(!employeeMap.size) return null;
+
+    const calendar=eachDate(minDate,maxDate);
+    const employees=[...employeeMap.values()].map(emp=>{
+      const days=calendar.map(date=>{
+        const punches=(emp.rawDays.get(date)||[]).slice().sort((a,b)=>a.minutes-b.minutes);
+        const hasPunch=punches.length>0;
+        const first=hasPunch?punches[0]:null;
+        const last=punches.length>1?punches[punches.length-1]:null;
+        let actual=0;
+
+        // Transaction exports can contain incorrect/repeated Check In/Check Out labels.
+        // Therefore actual time is safely derived from first punch to last punch of the day.
+        if(first && last){
+          actual=Math.max(0,last.minutes-first.minutes);
+        }
+
+        return {
+          date,
+          weekday:weekdayForDate(date),
+          clockIn:first?minutesToClock(first.minutes):'',
+          clockOut:last?minutesToClock(last.minutes):'',
+          actual,
+          hasPunch,
+          punchCount:punches.length,
+          sourceType:'transaction',
+          sourceDuty:0,
+          sourceAbsent:0,
+          sourceTotalWT:0
+        };
+      });
+
+      return {
+        id:emp.id,
+        name:emp.name,
+        key:emp.key,
+        department:emp.department,
+        sourceType:'transaction',
+        days,
+        actual:days.reduce((s,d)=>s+d.actual,0)
+      };
+    });
+
+    return {
+      employees,
+      period:{from:minDate,to:maxDate,raw:'Transaction '+minDate+' - '+maxDate},
+      type:'Transaction'
+    };
+  }
+
+  function mergeEmployeeLists(list){
+    const map=new Map();
+    for(const e of list){
+      if(!map.has(e.key)){
+        map.set(e.key,{...e,days:[...e.days]});
+        continue;
+      }
+      const target=map.get(e.key);
+      const byDate=new Map(target.days.map(d=>[d.date,d]));
+      for(const d of e.days){
+        const old=byDate.get(d.date);
+        if(!old || (d.actual||0)>(old.actual||0)) byDate.set(d.date,d);
+      }
+      target.days=[...byDate.values()].sort((a,b)=>a.date.localeCompare(b.date));
+      target.actual=target.days.reduce((s,d)=>s+(d.actual||0),0);
+    }
+    return [...map.values()];
+  }
+
   function parseRows(rows){
     const out=[];
     let current=null;
@@ -758,12 +1044,17 @@ input,select,button{max-width:100%}
         }
       }
 
+      const clockInValue=String(cell(row,headerMap.clockIn)??'').trim();
+      const clockOutValue=String(cell(row,headerMap.clockOut)??'').trim();
       current.days.push({
         date:dateText(dv),
-        weekday:String(cell(row,headerMap.weekday)??''),
-        clockIn:String(cell(row,headerMap.clockIn)??''),
-        clockOut:String(cell(row,headerMap.clockOut)??''),
+        weekday:String(cell(row,headerMap.weekday)??'') || weekdayForDate(dateText(dv)),
+        clockIn:clockInValue,
+        clockOut:clockOutValue,
         actual:actual,
+        hasPunch:actual>0 || !!clockInValue || !!clockOutValue,
+        punchCount:(clockInValue?1:0)+(clockOutValue?1:0),
+        sourceType:'total-card',
         sourceDuty:minutesFromCell(cell(row,headerMap.dutyDuration)),
         sourceAbsent:minutesFromCell(cell(row,headerMap.absent)),
         sourceTotalWT:minutesFromCell(cell(row,headerMap.totalWT))
@@ -786,17 +1077,46 @@ input,select,button{max-width:100%}
     try{
       const buf=await file.arrayBuffer();
       const wb=XLSX.read(buf,{type:'array',cellDates:true});
-      let all=[]; reportPeriod={from:'',to:'',raw:''};
+      let all=[];
+      let detectedTypes=[];
+      reportPeriod={from:'',to:'',raw:''};
+
       for(const sn of wb.SheetNames){
         const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null,raw:true});
-        if(!reportPeriod.from) reportPeriod=parsePeriod(rows);
-        all=all.concat(parseRows(rows));
+
+        // Type 1: raw Transaction export (one punch per row)
+        const transaction=parseTransactionRows(rows);
+        if(transaction){
+          all=all.concat(transaction.employees);
+          detectedTypes.push(transaction.type);
+          if(!reportPeriod.from){
+            reportPeriod=transaction.period;
+          }else{
+            if(transaction.period.from && transaction.period.from<reportPeriod.from) reportPeriod.from=transaction.period.from;
+            if(transaction.period.to && transaction.period.to>reportPeriod.to) reportPeriod.to=transaction.period.to;
+          }
+          continue;
+        }
+
+        // Type 2: Total Time Card (one calculated day per employee)
+        const cardEmployees=parseRows(rows);
+        if(cardEmployees.length){
+          all=all.concat(cardEmployees);
+          detectedTypes.push('Total Time Card');
+          const p=parsePeriod(rows);
+          if(p.from && !reportPeriod.from) reportPeriod=p;
+        }
       }
-      employees=all;
+
+      employees=mergeEmployeeLists(all);
+      const typeLabel=[...new Set(detectedTypes)].join(' + ');
+
       $('#status').textContent=employees.length
-        ? `تم تحميل ${employees.length} موظف من ${file.name}. تم تجاهل أي أعمدة أو معلومات إضافية غير مطلوبة.`
-        : `لم يتم العثور على بيانات حضور معروفة داخل ${file.name}. يجب أن يحتوي التقرير على اسم الموظف وصف أعمدة يتضمن Date/التاريخ و Total Time/ساعات العمل أو Clock In و Clock Out.`;
-      $('#periodText').textContent=reportPeriod.from?`فترة التقرير: من ${reportPeriod.from} إلى ${reportPeriod.to}`:'';
+        ? `تم تحميل ${employees.length} موظف من ${file.name}. نوع البيانات: ${typeLabel||'تقرير حضور'}.`
+        : `لم يتم العثور على صيغة حضور مدعومة. النظام يدعم Total Time Card أو Transaction الذي يحتوي Employee ID / First Name / Date / Time.`;
+      $('#periodText').textContent=reportPeriod.from
+        ? `فترة التقرير: من ${reportPeriod.from} إلى ${reportPeriod.to}${typeLabel?' — '+typeLabel:''}`
+        : '';
       renderAll();
     }catch(err){
       console.error(err);$('#status').textContent='خطأ في قراءة الملف: '+(err.message||err);
@@ -826,10 +1146,17 @@ input,select,button{max-width:100%}
         status='off';
       }
     }else if(d.actual<=0){
-      // Scheduled workday with no attendance.
-      absent=dailyReq>0;
-      shortage=dailyReq;
-      status='absent';
+      if(d.hasPunch){
+        // There is at least one punch, so the employee was present,
+        // but a reliable duration cannot be calculated.
+        absent=false;
+        shortage=dailyReq;
+        status='incomplete';
+      }else{
+        absent=dailyReq>0;
+        shortage=dailyReq;
+        status='absent';
+      }
     }else{
       const diff=d.actual-dailyReq;
       if(diff>0){
@@ -856,7 +1183,7 @@ input,select,button{max-width:100%}
 
     // A day counts as regular attendance only when it is a scheduled workday.
     // Working on an off-Friday remains overtime and does not replace a required workday.
-    const presentDays=days.filter(d=>d.scheduled && d.actual>0).length;
+    const presentDays=days.filter(d=>d.scheduled && (d.actual>0 || d.hasPunch)).length;
     const absentDays=Math.max(0,targetDays-presentDays);
 
     // Overtime is calculated day by day:
@@ -1103,7 +1430,7 @@ input,select,button{max-width:100%}
     if(filter==='present'){
       // "حضور" means any day the employee actually worked,
       // including days with overtime or shortage.
-      days=days.filter(d=>d.actual>0);
+      days=days.filter(d=>d.actual>0 || d.hasPunch);
     }else if(filter!=='all'){
       days=days.filter(d=>d.status===filter);
     }
@@ -1115,8 +1442,8 @@ input,select,button{max-width:100%}
     }
 
     $('#dailyBody').innerHTML=days.map(d=>{
-      const label=d.status==='absent'?'غياب':d.status==='short'?'نقص ساعات':d.status==='off'?'إجازة':d.status==='overtime'?'إضافي':'حضور';
-      const cls=d.status==='absent'?'b-absent':d.status==='short'?'b-short':d.status==='off'?'b-off':d.status==='overtime'?'b-ot':'b-present';
+      const label=d.status==='absent'?'غياب':d.status==='incomplete'?'بصمة غير مكتملة':d.status==='short'?'نقص ساعات':d.status==='off'?'إجازة':d.status==='overtime'?'إضافي':'حضور';
+      const cls=d.status==='absent'?'b-absent':d.status==='incomplete'?'b-short':d.status==='short'?'b-short':d.status==='off'?'b-off':d.status==='overtime'?'b-ot':'b-present';
       return `<tr>
         <td>${esc(d.date)}</td><td>${esc(d.weekday)}</td><td>${esc(d.clockIn||'-')}</td><td>${esc(d.clockOut||'-')}</td>
         <td>${hours(d.actual)}</td><td>${hours(d.required)}</td>
@@ -1171,62 +1498,63 @@ input,select,button{max-width:100%}
   function printEmployeeSummaryHtml(e){
     const c=calcEmployee(e);
     const ap=approval(e);
-    const yes=ap==='approved'?'☑':'☐', no=ap==='rejected'?'☑':'☐', pend=ap==='pending'?'☑':'☐';
-    return `<section class="print-employee">
-      <div class="print-head">
-        <h1>ملخص ساعات الموظف</h1>
-        <div class="pname">${esc(e.name)}${e.id?' - رقم '+esc(e.id):''}</div>
-        <div class="print-period">${reportPeriod.from?`الفترة من ${reportPeriod.from} إلى ${reportPeriod.to}`:'الفترة غير محددة في الملف'}</div>
+    const yes=ap==='approved'?'☑':'☐';
+    const no=ap==='rejected'?'☑':'☐';
+    const dt=printDateTimeText();
+
+    return `<section class="print-employee print-summary">
+      <div class="print-report-header">
+        <div class="print-title">
+          <h1>ملخص ساعات الموظف</h1>
+          <div class="pname">${esc(e.name)}${e.id?' — رقم الموظف: '+esc(e.id):''}</div>
+          <div class="print-period">${reportPeriod.from?`الفترة من ${reportPeriod.from} إلى ${reportPeriod.to}`:'الفترة غير محددة في الملف'}</div>
+        </div>
         <div class="print-datetime">
-          <span>تاريخ الطباعة: ${printDateTimeText().date}</span>
-          <span>وقت الطباعة: ${printDateTimeText().time}</span>
+          <span>تاريخ الطباعة: ${dt.date}</span>
+          <span>وقت الطباعة: ${dt.time}</span>
         </div>
       </div>
-      <div class="print-meta">
-        <div class="print-box">الساعات اليومية<b>${dailyHours(e).toFixed(2)} ساعة</b></div>
-        <div class="print-box">أيام العمل الفعلية<b>${actualWorkDays(e)} يوم</b></div>
-        <div class="print-box">الجمعة<b>${fridayWork(e)?'يوم عمل':'إجازة'}</b></div>
-        <div class="print-box">الساعات الفعلية<b>${hours(c.actual)} ساعة</b></div>
-        <div class="print-box">الساعات المطلوبة<b>${hours(c.required)} ساعة</b></div>
-        <div class="print-box">الإضافي الفعلي<b>${hours(c.overtime)} ساعة</b></div>
-        <div class="print-box">معامل الإضافي<b>${overtimeMultiplier(e).toFixed(2)}</b></div>
-        <div class="print-box">الإضافي المستحق<b>${hours(c.weightedOvertime)} ساعة</b></div>
-        <div class="print-box">الساعات الناقصة<b>${hours(c.shortage)} ساعة</b></div>
-        <div class="print-box">أيام الحضور<b>${c.presentDays}</b></div>
-        <div class="print-box">أيام الغياب<b>${c.absentDays}</b></div>
+
+      <div class="print-section">
+        <div class="print-section-title">إعدادات الدوام</div>
+        <div class="print-info-grid">
+          <div class="print-info-item"><span>الساعات اليومية</span><b>${dailyHours(e).toFixed(2)} ساعة</b></div>
+          <div class="print-info-item"><span>أيام العمل الفعلية</span><b>${actualWorkDays(e)} يوم</b></div>
+          <div class="print-info-item"><span>يوم الجمعة</span><b>${fridayWork(e)?'يوم عمل':'إجازة'}</b></div>
+          <div class="print-info-item"><span>معامل الساعة الإضافية</span><b>${overtimeMultiplier(e).toFixed(2)}</b></div>
+        </div>
       </div>
-      <div style="margin-top:18px;border:1px solid #aaa;padding:12px">
-        <div class="table-wrap"><table style="width:100%;border-collapse:collapse;min-width:0">
-          <tr>
-            <th style="border:1px solid #aaa;padding:8px">الفعلي</th>
-            <th style="border:1px solid #aaa;padding:8px">المطلوب</th>
-            <th style="border:1px solid #aaa;padding:8px">الإضافي الفعلي</th>
-            <th style="border:1px solid #aaa;padding:8px">الإضافي المستحق</th>
-            <th style="border:1px solid #aaa;padding:8px">النقص</th>
-            <th style="border:1px solid #aaa;padding:8px">الحضور</th>
-            <th style="border:1px solid #aaa;padding:8px">الغياب</th>
-          </tr>
-          <tr>
-            <td style="border:1px solid #aaa;padding:10px;text-align:center">${hours(c.actual)} ساعة</td>
-            <td style="border:1px solid #aaa;padding:10px;text-align:center">${hours(c.required)} ساعة</td>
-            <td style="border:1px solid #aaa;padding:10px;text-align:center">${hours(c.overtime)} ساعة</td>
-            <td style="border:1px solid #aaa;padding:10px;text-align:center">${hours(c.weightedOvertime)} ساعة</td>
-            <td style="border:1px solid #aaa;padding:10px;text-align:center">${hours(c.shortage)} ساعة</td>
-            <td style="border:1px solid #aaa;padding:10px;text-align:center">${c.presentDays}</td>
-            <td style="border:1px solid #aaa;padding:10px;text-align:center">${c.absentDays}</td>
-          </tr>
-        </table></div>
+
+      <div class="print-section">
+        <div class="print-section-title">نتيجة احتساب الساعات</div>
+        <div class="print-result-grid">
+          <div class="print-result-item emphasis"><span>الساعات الفعلية</span><b>${hours(c.actual)} ساعة</b></div>
+          <div class="print-result-item emphasis"><span>الساعات المطلوبة</span><b>${hours(c.required)} ساعة</b></div>
+          <div class="print-result-item emphasis"><span>الإضافي الفعلي</span><b>${hours(c.overtime)} ساعة</b></div>
+          <div class="print-result-item emphasis"><span>الإضافي المستحق</span><b>${hours(c.weightedOvertime)} ساعة</b></div>
+          <div class="print-result-item"><span>الساعات الناقصة</span><b>${hours(c.shortage)} ساعة</b></div>
+          <div class="print-result-item"><span>أيام الحضور</span><b>${c.presentDays} يوم</b></div>
+          <div class="print-result-item"><span>أيام الغياب</span><b>${c.absentDays} يوم</b></div>
+          <div class="print-result-item"><span>إجمالي أيام العمل</span><b>${actualWorkDays(e)} يوم</b></div>
+        </div>
       </div>
+
       <div class="signature-grid">
         <div class="signature-box">توقيع الموظف</div>
         <div class="signature-box">توقيع المدير المباشر</div>
         <div class="signature-box">التاريخ</div>
       </div>
+
       <div class="approval-box">
-        <b>الاعتماد النهائي:</b>
-        &nbsp;&nbsp; ${yes} معتمد
-        &nbsp;&nbsp; ${no} غير معتمد
-        <div style="margin-top:12px">اسم المعتمد: ____________________ &nbsp;&nbsp;&nbsp; التوقيع: ____________________</div>
+        <b>الاعتماد النهائي</b>
+        <div class="approval-options">
+          <span>${yes} معتمد</span>
+          <span>${no} غير معتمد</span>
+        </div>
+        <div class="approval-line">
+          <span>اسم المعتمد: ______________________________</span>
+          <span>التوقيع: ______________________________</span>
+        </div>
       </div>
     </section>`;
   }
@@ -1237,48 +1565,61 @@ input,select,button{max-width:100%}
       const st=d.status==='absent'?'غياب':d.status==='short'?'نقص ساعات':d.status==='off'?'إجازة':d.status==='overtime'?'إضافي':'حضور';
       return `<tr>
         <td>${esc(d.date)}</td><td>${esc(d.weekday)}</td><td>${esc(d.clockIn||'-')}</td><td>${esc(d.clockOut||'-')}</td>
-        <td>${hours(d.actual)}</td><td>${hours(d.required)}</td><td>${hours(d.overtime)}</td><td>${hours(weightedOvertimeMinutes(d.overtime))}</td><td>${hours(d.shortage)}</td><td>${st}</td>
+        <td>${hours(d.actual)}</td><td>${hours(d.required)}</td><td>${hours(d.overtime)}</td><td>${hours(weightedOvertimeMinutes(e,d.overtime))}</td><td>${hours(d.shortage)}</td><td>${st}</td>
       </tr>`;
     }).join('');
     const ap=approval(e);
     const yes=ap==='approved'?'☑':'☐', no=ap==='rejected'?'☑':'☐', pend=ap==='pending'?'☑':'☐';
-    return `<section class="print-employee">
-      <div class="print-head">
-        <h1>تقرير ساعات الموظف</h1>
-        <div class="pname">${esc(e.name)}${e.id?' - رقم '+esc(e.id):''}</div>
-        <div class="print-period">${reportPeriod.from?`الفترة من ${reportPeriod.from} إلى ${reportPeriod.to}`:'الفترة غير محددة في الملف'}</div>
+    return `<section class="print-employee print-full">
+      <div class="print-report-header">
+        <div class="print-title">
+          <h1>تقرير ساعات الموظف</h1>
+          <div class="pname">${esc(e.name)}${e.id?' — رقم الموظف: '+esc(e.id):''}</div>
+          <div class="print-period">${reportPeriod.from?`الفترة من ${reportPeriod.from} إلى ${reportPeriod.to}`:'الفترة غير محددة في الملف'}</div>
+        </div>
         <div class="print-datetime">
           <span>تاريخ الطباعة: ${printDateTimeText().date}</span>
           <span>وقت الطباعة: ${printDateTimeText().time}</span>
         </div>
       </div>
-      <div class="print-meta">
-        <div class="print-box">الساعات اليومية<b>${dailyHours(e).toFixed(2)} ساعة</b></div>
-        <div class="print-box">أيام العمل الفعلية<b>${actualWorkDays(e)} يوم</b></div>
-        <div class="print-box">الجمعة<b>${fridayWork(e)?'يوم عمل':'إجازة'}</b></div>
-        <div class="print-box">الساعات الفعلية<b>${hours(c.actual)} ساعة</b></div>
-        <div class="print-box">الساعات المطلوبة<b>${hours(c.required)} ساعة</b></div>
-        <div class="print-box">الإضافي الفعلي<b>${hours(c.overtime)} ساعة</b></div>
-        <div class="print-box">معامل الإضافي<b>${overtimeMultiplier(e).toFixed(2)}</b></div>
-        <div class="print-box">الإضافي المستحق<b>${hours(c.weightedOvertime)} ساعة</b></div>
-        <div class="print-box">الساعات الناقصة<b>${hours(c.shortage)} ساعة</b></div>
-        <div class="print-box">أيام الحضور<b>${c.presentDays}</b></div>
-        <div class="print-box">أيام الغياب<b>${c.absentDays}</b></div>
+      <div class="print-section">
+        <div class="print-section-title">ملخص الدوام</div>
+        <div class="print-info-grid">
+          <div class="print-info-item"><span>الساعات اليومية</span><b>${dailyHours(e).toFixed(2)} ساعة</b></div>
+          <div class="print-info-item"><span>أيام العمل</span><b>${actualWorkDays(e)} يوم</b></div>
+          <div class="print-info-item"><span>الجمعة</span><b>${fridayWork(e)?'يوم عمل':'إجازة'}</b></div>
+          <div class="print-info-item"><span>معامل الإضافي</span><b>${overtimeMultiplier(e).toFixed(2)}</b></div>
+          <div class="print-info-item"><span>الفعلي</span><b>${hours(c.actual)} ساعة</b></div>
+          <div class="print-info-item"><span>المطلوب</span><b>${hours(c.required)} ساعة</b></div>
+          <div class="print-info-item"><span>الإضافي المستحق</span><b>${hours(c.weightedOvertime)} ساعة</b></div>
+          <div class="print-info-item"><span>النقص</span><b>${hours(c.shortage)} ساعة</b></div>
+        </div>
       </div>
+
+      <div class="print-section">
+        <div class="print-section-title">تفاصيل الأيام</div>
+        <div class="print-table-wrap">
       <table class="print-table">
         <thead><tr><th>التاريخ</th><th>اليوم</th><th>الدخول</th><th>الخروج</th><th>الفعلي</th><th>المطلوب</th><th>الإضافي الفعلي</th><th>الإضافي المستحق</th><th>النقص</th><th>الحالة</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
+        </div>
+      </div>
       <div class="signature-grid">
         <div class="signature-box">توقيع الموظف</div>
         <div class="signature-box">توقيع المدير المباشر</div>
         <div class="signature-box">التاريخ</div>
       </div>
       <div class="approval-box">
-        <b>الاعتماد النهائي:</b>
-        &nbsp;&nbsp; ${yes} معتمد
-        &nbsp;&nbsp; ${no} غير معتمد
-        <div style="margin-top:12px">اسم المعتمد: ____________________ &nbsp;&nbsp;&nbsp; التوقيع: ____________________</div>
+        <b>الاعتماد النهائي</b>
+        <div class="approval-options">
+          <span>${yes} معتمد</span>
+          <span>${no} غير معتمد</span>
+        </div>
+        <div class="approval-line">
+          <span>اسم المعتمد: ______________________________</span>
+          <span>التوقيع: ______________________________</span>
+        </div>
       </div>
     </section>`;
   }
