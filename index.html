@@ -1111,6 +1111,72 @@ html[dir="ltr"] .app-toast{text-align:left}
   @media(max-width:700px){
     #exportReviewExcelBtn{width:100%;margin-top:4px}
   }
+
+@media print {
+  /* Print only the generated report, never the application navigation/header. */
+  .sidebar,
+  nav,
+  .tabs,
+  .tabbar,
+  .top-tabs,
+  .mobile-tabs,
+  .app-nav,
+  .app-header,
+  header,
+  #languageToggle,
+  .no-print {
+    display: none !important;
+  }
+
+  body.printing-report .wrap > :not(#printArea),
+  body.printing-report .main > :not(#printArea),
+  body.printing-report main > :not(#printArea) {
+    display: none !important;
+  }
+
+  #printArea {
+    display: block !important;
+    margin: 0 auto !important;
+  }
+}
+
+@media print {
+  html, body {
+    margin:0 !important;
+    padding:0 !important;
+    background:#fff !important;
+  }
+
+  body.printing-report * {
+    visibility:hidden !important;
+  }
+
+  body.printing-report #printArea,
+  body.printing-report #printArea * {
+    visibility:visible !important;
+  }
+
+  body.printing-report #printArea {
+    display:block !important;
+    position:absolute !important;
+    top:0 !important;
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:#fff !important;
+  }
+
+  body.printing-report .tabs,
+  body.printing-report .hero,
+  body.printing-report .sidebar,
+  body.printing-report nav,
+  body.printing-report header,
+  body.printing-report #languageToggle {
+    display:none !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -1847,7 +1913,7 @@ html[dir="ltr"] .app-toast{text-align:left}
 
   const $=s=>document.querySelector(s);
   const $$=s=>[...document.querySelectorAll(s)];
-  let currentLang=localStorage.getItem('appLanguage')==='en'?'en':'ar';
+  let currentLang='ar';
 
   const AR_EN={
     'تحليل ساعات الموظفين':'Employee Hours Analysis','⇧  رفع الملفات':'⇧  Upload Files','رفع الملفات':'Upload Files',
@@ -1941,6 +2007,276 @@ html[dir="ltr"] .app-toast{text-align:left}
     'لا توجد بيانات.':'No data.','إجمالي الرواتب':'Total Payroll'
     
   };
+  Object.assign(AR_EN,{
+    'نظام الحضور والرواتب':'Attendance & Payroll System',
+    'لوحة تحليلات الحضور والرواتب':'Attendance & Payroll Analytics Dashboard',
+    'التحليلات':'Analytics',
+    'الملاحظات':'Notes',
+    'مراجعة الملفات':'File Review',
+    'تقرير مراجعة مطابقة الملفات':'File Matching Review Report',
+    'ملخص المراجعة':'Review Summary',
+    'تاريخ التصدير':'Export Date',
+    'عدد سجلات المرتبات':'Payroll Records',
+    'عدد الموظفين في الحضور':'Employees in Attendance',
+    'عدد الموظفين أصحاب الأخطاء':'Employees with Errors',
+    'عدد الموظفين أصحاب التحذيرات':'Employees with Warnings',
+    'لا توجد بيانات':'No Data',
+    'لا توجد ملاحظات':'No Notes',
+    'ملف المرتبات مطلوب':'Payroll File Required',
+    'تظهر هنا اختلافات المطابقة وأي بيانات ناقصة أو متعارضة داخل ملف المرتبات لتتم مراجعتها قبل اعتماد الحسابات.':'Matching differences and any missing or conflicting payroll data are shown here for review before finalizing calculations.',
+    'طريقة الاستخدام':'Instructions',
+    'تم تحميل النموذج':'Template Downloaded',
+    'تم تحميل المرتبات':'Payroll Loaded',
+    'تجهيز PDF':'Preparing PDF',
+    'تجهيز الصورة':'Preparing Image',
+    'تم استخراج PDF':'PDF Exported',
+    'تم استخراج الصورة':'Image Exported',
+    'جاري تجهيز PDF للوحة التحليلات...':'Preparing Analytics Dashboard PDF...',
+    'جاري تجهيز صورة لوحة التحليلات...':'Preparing Analytics Dashboard image...',
+    'تم استخراج لوحة التحليلات PDF بنجاح.':'Analytics Dashboard PDF exported successfully.',
+    'تم استخراج لوحة التحليلات كصورة PNG.':'Analytics Dashboard PNG exported successfully.',
+    'تعذر تحميل أداة PDF.':'Could not load the PDF tool.',
+    'تعذر تحميل أداة استخراج لوحة التحليلات.':'Could not load the dashboard export tool.',
+    'لا توجد بيانات في لوحة التحليلات للتصدير.':'There is no Analytics Dashboard data to export.',
+    'تم استخراج بيانات لوحة التحليلات إلى Excel.':'Analytics Dashboard data exported to Excel.',
+    'جاري تجهيز ملف Excel...':'Preparing Excel file...',
+    'جاري تجهيز قارئ Excel...':'Loading Excel reader...',
+    'جاري قراءة ملف المرتبات...':'Reading payroll file...',
+    'تعذر تحميل أداة Excel.':'Could not load the Excel tool.',
+    'تعذر تحميل قارئ Excel.':'Could not load the Excel reader.',
+    'تعذر تحميل قارئ Excel لملف المرتبات.':'Could not load the Excel reader for the payroll file.',
+    'تعذر تحميل أداة Excel. تحقق من اتصال الإنترنت.':'Could not load the Excel tool. Check your internet connection.',
+    'تعذر تحميل قارئ Excel. تحقق من اتصال الإنترنت.':'Could not load the Excel reader. Check your internet connection.',
+    'تعذر تجهيز نموذج Excel. تحقق من اتصال الإنترنت.':'Could not prepare the Excel template. Check your internet connection.',
+    'تعذر تجهيز ملف Excel. تحقق من اتصال الإنترنت ثم أعد المحاولة.':'Could not prepare the Excel file. Check your internet connection and try again.',
+    'اختر ملف Excel أولًا.':'Select an Excel file first.',
+    'اختر ملف المرتبات Excel أولًا.':'Select the payroll Excel file first.',
+    'لا توجد بيانات لتصديرها. حمّل ملف الحضور أولًا.':'There is no data to export. Upload the attendance file first.',
+    'لا يوجد موظفون محددون للتصدير.':'No employees are selected for export.',
+    'لا توجد تحذيرات أو أخطاء لتصديرها.':'There are no warnings or errors to export.',
+    'لا توجد بيانات حضور للمراجعة أو التصدير.':'There is no attendance data to review or export.',
+    'ارفع ملف المرتبات أولًا حتى يتم إنشاء تقرير المطابقة.':'Upload the payroll file first to generate the matching report.',
+    'الراتب الأساسي يساوي صفر أو غير موجود.':'Basic salary is zero or missing.',
+    'موجود في ملف الحضور وغير موجود في ملف المرتبات.':'Present in the attendance file but missing from the payroll file.',
+    'موجود في ملف المرتبات وغير موجود في ملف الحضور للفترة الحالية.':'Present in the payroll file but missing from the attendance file for the current period.',
+    'كود الموظف مكرر أكثر من مرة داخل ملف المرتبات؛ تم استخدام آخر سجل.':'Employee ID is duplicated in the payroll file; the last record was used.',
+    'كود الموظف مطابق لكن الاسم مختلف بين ملف الحضور وملف المرتبات؛ راجع الاسم.':'Employee ID matches, but the employee name differs between the attendance and payroll files. Please review the name.',
+    'الموظف موجود في ملف الحضور بدون كود موظف؛ لا يمكن ربطه تلقائيًا بملف المرتبات.':'The employee exists in the attendance file without an Employee ID, so payroll cannot be matched automatically.',
+    'الموظف سعودي SA ونسبة التأمينات = 0%. هذا مسموح ولن يتم خصم تأمينات، لكن يُرجى مراجعة البيانات للتأكد.':'The employee is Saudi (SA) and the insurance rate is 0%. This is allowed and no insurance deduction will be applied, but please review the data.',
+    'الموظف سعودي SA لكن خانة نسبة التأمينات فارغة. هذا مسموح، وسيتم اعتبار التأمينات 0% ما لم يتم تعديلها من إعدادات الدوام والراتب.':'The employee is Saudi (SA), but the insurance rate is blank. This is allowed and will be treated as 0% unless changed in Work & Salary Settings.',
+    'لا يوجد موظفون سعوديون SA ضمن التحديد الحالي، لذلك التأمينات = 0.00.':'There are no Saudi (SA) employees in the current selection, so insurance deductions are 0.00.',
+    'إجمالي البدلات':'Total Allowances',
+    'التأمينات %':'Insurance %',
+    'كود الجنسية':'Nationality Code',
+    'إجمالي الخصومات الأخرى':'Total Other Deductions',
+    'لا توجد خصومات أخرى':'No Other Deductions',
+    'رقم الخصم':'Deduction No.',
+    'رقم الجزاء':'Penalty No.',
+    'أيام الحضور':'Present Days',
+    'أيام الغياب':'Absent Days',
+    'عدد البصمات':'Punch Count',
+    'نوع البصمة':'Punch Type',
+    'وقت البصمة':'Punch Time',
+    'حالة البصمة':'Punch Status',
+    'وقت الدخول':'Check-in Time',
+    'وقت الخروج':'Check-out Time',
+    'مدة العمل':'Work Duration',
+    'مدة الدوام':'Scheduled Duration',
+    'العمل المحتسب':'Credited Work',
+    'وقت العمل المحتسب':'Credited Work Time',
+    'الساعات المطلوبة':'Required Hours',
+    'الوقت المطلوب':'Required Time',
+    'الوقت الفعلي':'Actual Time',
+    'تقرير كامل':'Full Report',
+    'ملخص فقط':'Summary Only',
+    'تقرير حضور':'Attendance Report',
+    'نوع التقرير':'Report Type',
+    'فترة التقرير':'Report Period',
+    'تاريخ ووقت التصدير':'Export Date & Time',
+    'نسخة استعادة كاملة':'Full Restore Snapshot',
+    'تقرير تصدير سابق':'Previously Exported Report',
+    'ملف محفوظ':'Saved File',
+    'اختر ملف History':'Select History File',
+    'تم فتح الـ History':'History Opened',
+    'فشل فتح الـ History':'Failed to Open History',
+    'جاري فتح التقرير المحفوظ...':'Opening saved report...',
+    'تعذر فتح التقرير المحفوظ.':'Could not open the saved report.',
+    'اختر ملف Excel تم تصديره من النظام أولًا.':'Select an Excel file previously exported by the system.',
+    'هذا الملف ليس تقريرًا محفوظًا معروفًا من النظام.':'This file is not a recognized saved report from the system.',
+    'لا يمكن قراءة تفاصيل الموظفين من ملف التصدير.':'Employee details could not be read from the exported file.',
+    'ورقة تفاصيل الأيام فارغة.':'The Daily Details sheet is empty.',
+    'هذا الملف يحتوي على النتيجة النهائية والإعدادات والتفاصيل وقت التصدير.':'This file contains the final results, settings, and details as of the export time.',
+    'نسخة محفوظة من نظام تحليل ساعات الموظفين':'Saved copy from the Employee Hours Analysis system',
+    'نظام تحليل الحضور والرواتب للموظفين - يعمل مباشرة من المتصفح ويدعم ملفات Excel.':'Employee Attendance & Payroll Analysis System - runs directly in the browser and supports Excel files.',
+    'لا تغيّر أسماء الأعمدة في الصف الأول.':'Do not change the column names in the first row.',
+    'لكل يوم ضع بصمتين على الأقل للموظف: دخول وخروج.':'For each day, enter at least two punches per employee: check-in and check-out.',
+    'النظام يعتمد على أول وقت وآخر وقت في اليوم لحساب مدة العمل، ولا يعتمد على قيمة Punch State للحساب.':'The system uses the first and last punch of the day to calculate work duration; Punch State is not used in the calculation.',
+    'صيغة التاريخ المفضلة YYYY-MM-DD مثل 2026-08-01.':'Preferred date format: YYYY-MM-DD, for example 2026-08-01.',
+    'صيغة الوقت HH:MM مثل 08:00 و 16:30.':'Time format: HH:MM, for example 08:00 and 16:30.',
+    'يمكن حذف الصفوف التجريبية وبدء إدخال بيانات الموظفين الفعلية.':'You can delete the sample rows and enter the actual employee data.',
+    'الأعمدة Department / Job Title / Company اختيارية.':'Department / Job Title / Company columns are optional.',
+    'Employee ID يجب أن يكون نفس كود الموظف المستخدم في ملف المرتبات.':'Employee ID must match the Employee ID used in the payroll file.',
+    'تم تجهيز نموذج الحضور والانصراف. احذف البيانات التجريبية ثم أدخل بياناتك وارفع الملف.':'Attendance template created. Delete the sample rows, enter your data, then upload the file.',
+    'تم تجهيز نموذج ملف المرتبات.':'Payroll template created.',
+    'لم يتم العثور على كود الموظف والراتب الأساسي.':'Employee ID and Basic Salary columns were not found.',
+    'ملف المرتبات يجب أن يحتوي على كود الموظف والراتب الأساسي.':'The payroll file must contain Employee ID and Basic Salary.',
+    'تم ربط ملف المرتبات. إجمالي الراتب = الأساسي + البدلات، والتأمينات تُطبق على SA فقط وتحسب من الراتب الأساسي.':'Payroll file linked. Gross salary = Basic Salary + Allowances. Insurance applies only to SA employees and is calculated from Basic Salary.',
+    'غير محددة':'Unspecified',
+    'قيد الاعتماد':'Pending Approval',
+    'لا توجد إجازة أسبوعية':'No Weekly Day Off',
+    'يوم إجازة أسبوعية':'Weekly Day Off',
+    'مثال: سلفة / عهدة / خصم آخر':'Example: advance / custody / other deduction',
+    'مثال: 05xxxxxxxx أو 9665xxxxxxxx':'Example: 05xxxxxxxx or 9665xxxxxxxx'
+  });
+
+  Object.assign(AR_EN,{
+    '✆  إرسال ملخص الراتب':'✆  Send Salary Summary',
+    'إرسال ملخص الراتب':'Send Salary Summary',
+    'ملحوظة — أعمدة ملف المرتبات:':'Note — Payroll File Columns:',
+    'إجمالي الراتب = الراتب الأساسي + البدلات. السعودي يرمز له بـ SA فقط؛ أي قيمة أخرى أو خلية فارغة تعتبر غير سعودي. نسبة التأمينات تُطبق فقط على SA وتُحسب من الراتب الأساسي فقط. يمكن أن يكون الموظف السعودي بدون تأمينات بنسبة 0%، وسيظهر ذلك كتحذير للمراجعة فقط وليس كخطأ. الربط يتم باستخدام كود الموظف فقط.':'Gross salary = Basic Salary + Allowances. Saudi employees must use SA in the Nationality column; any other value or a blank cell is treated as non-Saudi. Insurance applies only to SA employees and is calculated from Basic Salary only. A Saudi employee may have a 0% insurance rate; this will appear as a review warning, not an error. Matching uses Employee ID only.',
+    'يدعم ملفات Total Time Card و Transaction. ويمكن أيضًا استخدام النموذج الجاهز؛ لكل موظف ضع سطر دخول وسطر خروج في نفس اليوم، وسيحسب النظام ساعات العمل من أول بصمة إلى آخر بصمة.':'Supports Total Time Card and Transaction files. You can also use the ready-made template; enter a check-in and check-out row for each employee on the same day, and the system will calculate work time from the first to the last punch.',
+    'التقارير الجديدة المصدّرة من هذه النسخة تحفظ بيانات الاستعادة كاملة. كما يحاول النظام فتح ملفات التصدير السابقة اعتمادًا على أوراق الملخص والتفاصيل والإعدادات.':'New exports from this version include full restore data. The system also attempts to open older exported files using the Summary, Details, and Settings sheets.',
+    'أعمدة ملف المرتبات':'Payroll File Columns',
+    'رقم الجوال (اختياري)':'Mobile Number (Optional)',
+    'بحث داخل لوحة التحليلات':'Search Analytics Dashboard',
+    'يعرض جميع الموظفين':'Showing all employees',
+    'الكل':'All',
+    'مراجعة مطابقة الملفات':'File Matching Review',
+    'الاسم في ملف الحضور':'Name in Attendance File',
+    'الاسم في ملف المرتبات':'Name in Payroll File',
+    'كود الحضور':'Attendance ID',
+    'كود المرتبات':'Payroll ID',
+    'الملاحظة':'Note',
+    'مطابق':'Matched',
+    'تحذير':'Warning',
+    'خطأ':'Error',
+    'موجود في ملف المرتبات وغير موجود في ملف الحضور للفترة الحالية.':'Present in the payroll file but missing from the attendance file for the current period.',
+    'الموظف سعودي SA ونسبة التأمينات = 0%. هذا مسموح ولن يتم خصم تأمينات، لكن يُرجى مراجعة البيانات للتأكد.':'The employee is Saudi (SA) and the insurance rate is 0%. This is allowed and no insurance deduction will be applied, but please review the data.',
+    'الموظف غير سعودي لكن توجد نسبة تأمينات':'The employee is non-Saudi but has an insurance rate',
+    'لن يتم تطبيق الخصم، ويجب مراجعة الجنسية أو نسبة التأمينات.':'The deduction will not be applied; review the nationality or insurance rate.',
+    'غير موجود':'Not Found',
+    'تم تغيير لغة البرنامج إلى العربية.':'Application language changed to Arabic.',
+    'تم تغيير اللغة':'Language Changed'
+  });
+
+  Object.assign(AR_EN,{
+    'اختر موظفًا لعرض ملخص الراتب.':'Select an employee to view the salary summary.',
+    'والرسالة جاهزة. الإرسال النهائي يتم يدويًا من واتساب.':'The message is ready. Final sending is done manually in WhatsApp.',
+    'اختر موظفًا من القائمة، ثم اختر موظفًا آخر لإضافته. التحديد مرتبط بجميع الصفحات.':'Choose an employee from the list, then choose another employee to add. The selection is synchronized across all pages.',
+    'كود:':'ID:',
+    'كود':'ID',
+    'تم تحليل ملف':'Analyzed file',
+    'تم تحميل':'Loaded',
+    'موظف من':'employee(s) from',
+    'نوع البيانات':'Data type',
+    'فترة التقرير من':'Report period from',
+    'إلى':'to',
+    'من أول Work Hours سيحسب النظام':'The system will calculate from the first Work Hours',
+    'النموذج الجاهز':'the ready-made template',
+    'لكل موظف ضع سطر دخول وسطر خروج في نفس اليوم':'For each employee, enter a check-in row and a check-out row on the same day',
+    'وسيحسب النظام ساعات العمل من أول بصمة إلى آخر بصمة.':'and the system will calculate work hours from the first punch to the last punch.',
+    'حضور':'Present',
+    'إجمالي':'Total',
+    'خصم التأمينات':'Insurance Deduction',
+    'يحسب من Basic Salary للموظف SA، ويطبق فقط على السعودي.':'Calculated from Basic Salary for SA employees and applied only to Saudi employees.',
+    'يحسب من':'Calculated from',
+    'للموظف':'for employee',
+    'ويطبق فقط على السعودي.':'and applied only to Saudi employees.',
+    'إجمالي خصم الدوام':'Total Attendance Deduction',
+    'بين Employee ويجمع جميع <All>. اختر موظفًا فيختفي من القائمة، ثم اختر غيره لإضافته.':'Employee selection is shared across all pages. Choose an employee to add it; selected employees are removed from the list until All is selected.',
+    'بين Employee ويجمع جميع All. اختر موظفًا فيختفي من القائمة، ثم اختر غيره لإضافته.':'Employee selection is shared across all pages. Choose an employee to add it; selected employees are removed from the list until All is selected.',
+    'طباعة الكل':'Print All',
+    'حفظ الحالة':'Save Status',
+    'يطبع "Print Selected Employees" بين القوائم. Employee يلغي التحديد ويعيد جميع "All". اختر موظفًا من القائمة فيتم تحديده ويختفي من القائمة، ثم اختر موظفًا آخر لإضافته. التحديد مرتبط بجميع الصفحات الحالية فقط.':'Print Selected Employees prints the employees currently selected across the app. Choose an employee to add it; selected employees are removed from the list. Choose All or Clear Selection to show everyone again.',
+    'يطبع':'Prints',
+    'بين القوائم':'across the lists',
+    'يلغي التحديد ويعيد جميع':'clears the selection and restores all employees',
+    'اختر موظفًا من القائمة فيتم تحديده ويختفي من القائمة، ثم اختر موظفًا آخر لإضافته.':'Choose an employee from the list to select it; it will disappear from the list, then choose another employee to add.',
+    'التحديد مرتبط بجميع الصفحات الحالية فقط.':'The selection is synchronized across all pages.',
+    'وقت الطباعة':'Print Time',
+    'تاريخ الطباعة':'Print Date',
+    'إجمالي أيام العمل':'Total Work Days',
+    'خصم التأمينات المحسوب':'Calculated Insurance Deduction',
+    'تفاصيل الخصومات الأخرى':'Other Deduction Details',
+    'توقيع الموظف':'Employee Signature',
+    'توقيع المدير المباشر':'Direct Manager Signature',
+    'الاعتماد النهائي':'Final Approval',
+    'اسم المعتمد':'Approver Name',
+    'عدم تطبيق الخصم ينطبق على الموظف المحدد.':'Not applying the deduction applies to the selected employee.',
+    'مصدر الراتب':'Salary Source',
+    'من ملف المرتبات':'From Payroll File',
+    'غير سعودي':'Non-Saudi',
+    'تم تحميل نسبة التأمينات من ملف المرتبات':'Insurance rate loaded from the payroll file',
+    'إضافة خصم آخر':'Add Other Deduction',
+    'حذف الخصم':'Delete Deduction',
+    'أضف أي خصومات أخرى مع اسم الخصم ومبلغه. وسيتم إضافتها إلى صافي الخصومات.':'Add any other deductions with the deduction name and amount. They will be included in total deductions.',
+    'إجمالي الجزاءات':'Total Penalties',
+    'إجمالي الجزاءات الحالية':'Current Total Penalties',
+    'حذف الجزاء':'Delete Penalty',
+    'إضافة جزاء':'Add Penalty',
+    'الراتب الأساسي + Allowances = إجمالي الراتب':'Basic Salary + Allowances = Gross Salary',
+    'الراتب الأساسي':'Basic Salary',
+    'إجمالي الراتب':'Gross Salary',
+    'إجمالي الخصومات':'Total Deductions'
+  });
+
+  Object.assign(AR_EN,{
+    'يطبق فقط على':'applies only to',
+    'يطبق فقط على السعودي':'applies only to Saudi employees',
+    'يحسب من Basic Salary':'Calculated from Basic Salary',
+    'Calculated from Basic Salary، ويطبق فقط على السعودي.':'Calculated from Basic Salary and applied only to Saudi employees.',
+    'Calculated from Basic Salary.، ويطبق فقط على السعودي.':'Calculated from Basic Salary and applied only to Saudi employees.',
+    'Calculated from Basic Salary، Employee SA يطبق فقط على':'Calculated from Basic Salary and applied only to SA employees.',
+    'Calculated from Basic Salary, Employee SA يطبق فقط على':'Calculated from Basic Salary and applied only to SA employees.',
+    'Employee بعد الجمع <All> المحدد يختفي من القائمة، ثم اختر غيره':'After selecting an employee, it disappears from the list. Choose another employee to add it.',
+    'بعد الجمع <All> المحدد يختفي من القائمة، ثم اختر غيره':'After selection, the employee disappears from the list. Choose another employee to add.',
+    'بعد الجمع All المحدد يختفي من القائمة، ثم اختر غيره':'After selection, the employee disappears from the list. Choose another employee to add.',
+    'اختر موظفًا فيختفي من القائمة، ثم اختر غيره':'Choose an employee; it will disappear from the list, then choose another employee to add.',
+    'التحديد مرتبط بجميع الصفحات':'The selection is synchronized across all pages.',
+    'Select Employee. راجع Summary: لم يتم Open WhatsApp':'Select an employee to review the salary summary. Open WhatsApp when the message is ready.',
+    'Select Employee. راجع Summary':'Select an employee to review the salary summary.',
+    'لم يتم Open WhatsApp':'Open WhatsApp has not been used yet.',
+    'اختر موظفًا':'Select an employee',
+    'اختر موظفا':'Select an employee',
+    'التحديد مرتبط بجميع الصفحات.':'The selection is synchronized across all pages.',
+    'الحالية فقط':'for the current selection only',
+    'القوائم':'lists',
+    'الموظفين المحددين':'selected employees',
+    'بعد الجميع <All> المحدد يختفي من القائمة. Employee':'After selection, the employee disappears from the list.',
+    'بعد الجميع All المحدد يختفي من القائمة. Employee':'After selection, the employee disappears from the list.',
+    'عرض الجميع':'Showing all employees',
+    'No Employees Selected — عرض الجميع':'No Employees Selected — Showing All',
+    'Excel من ملف Allowances + الأساسي = A':'A = Excel file: Basic Salary + Allowances',
+    'A — Excel من ملف الأساسي + Allowances':'A = Excel file: Basic Salary + Allowances',
+    'Excel النسبة من ملف — A':'A = Insurance rate from Excel file',
+    'A — النسبة من ملف Excel':'A = Insurance rate from Excel file',
+    'تطبق على غير السعودي No':'Not applicable to non-Saudi employees',
+    'تطبق على غير السعودي':'Not applicable to non-Saudi employees',
+    'Calculated from Basic Salary فقط':'Calculated from Basic Salary only',
+    'فقط':'only',
+    'سعودي (SA)':'Saudi (SA)',
+    'غير سعودي':'Non-Saudi',
+    'إضافة خصم +':'+ Add Deduction',
+    '+ إضافة خصم':'+ Add Deduction',
+    'ويمكن إضافة أكثر من خصم Deduction Name أضف':'Add one or more deductions. Enter a Deduction Name and amount for each deduction.',
+    'ويمكن إضافة أكثر من خصم':'You can add more than one deduction.',
+    'أضف Deduction Name':'Enter a Deduction Name',
+    'خصم':'Deduction',
+    'الأساسي':'Basic Salary',
+    'من ملف':'from file',
+    'النسبة':'rate',
+    'المحدد':'selected',
+    'يختفي من القائمة':'disappears from the list',
+    'ثم اختر غيره':'then choose another employee',
+    'الجميع':'all'
+  });
+
+  Object.assign(AR_EN,{
+    'غير سعودي':'Non-Saudi',
+    'سعودي':'Saudi',
+    'سعودي (SA)':'Saudi (SA)'
+  });
+
   const EN_AR=Object.fromEntries(Object.entries(AR_EN).map(([a,e])=>[e,a]));
 
   function trText(value){
@@ -1965,6 +2301,72 @@ html[dir="ltr"] .app-toast{text-align:left}
     s=s.replace(/^وقت الطباعة:\s*(.+)$/,(_,v)=>`Print time: ${v}`);
     s=s.replace(/^الساعات الفعلية$/, 'Actual Hours');
     s=s.replace(/^المطلوب للشهر$/, 'Monthly Required');
+    s=s.replace(/^مطابق:\s*(\d+)$/,(_,n)=>`Matched: ${n}`);
+    s=s.replace(/^تحذير:\s*(\d+)$/,(_,n)=>`Warnings: ${n}`);
+    s=s.replace(/^خطأ:\s*(\d+)$/,(_,n)=>`Errors: ${n}`);
+    s=s.replace(/^يعرض\s*(\d+)\s*موظف$/,(_,n)=>`Showing ${n} employee(s)`);
+    s=s.replace(/^يعرض\s*(\d+)\s*من الموظفين المحددين$/,(_,n)=>`Showing ${n} selected employee(s)`);
+    s=s.replace(/^المراجعة اكتشفت\s*(\d+)\s*موظف به خطأ و(\d+)\s*موظف به تحذير\. تم تجميع جميع ملاحظات كل موظف في صف واحد للمراجعة\.$/,(_,e,w)=>`Review found ${e} employee(s) with errors and ${w} employee(s) with warnings. All notes for each employee are grouped into one row.`);
+    s=s.replace(/^تم تحليل ملف الحضور \((\d+) موظف\)\. ارفع ملف المرتبات لإجراء المطابقة بين الملفين\.$/,(_,n)=>`Attendance file analyzed (${n} employee(s)). Upload the payroll file to compare both files.`);
+    s=s.replace(/^تمت المراجعة: (\d+) موظف مطابق بين ملف الحضور وملف المرتبات ولا توجد ملاحظات تحتاج مراجعة\.$/,(_,n)=>`Review complete: ${n} employee(s) matched between attendance and payroll with no notes requiring review.`);
+    s=s.replace(/^تم تصدير (\d+) خطأ و(\d+) تحذير إلى Excel\.$/,(_,e,w)=>`Exported ${e} error(s) and ${w} warning(s) to Excel.`);
+    s=s.replace(/^الموظف غير سعودي لكن توجد نسبة تأمينات ([\d.]+)%\. لن يتم تطبيق الخصم، ويجب مراجعة الجنسية أو نسبة التأمينات\.$/,(_,p)=>`The employee is non-Saudi but has an insurance rate of ${p}%. The deduction will not be applied; review the nationality or insurance rate.`);
+    s=s.replace(/^كود الموظف مكرر (\d+) مرات في بيانات الحضور\.$/,(_,n)=>`Employee ID is duplicated ${n} times in the attendance data.`);
+    s=s.replace(/^الاسم موجود في الملفين لكن كود الموظف مختلف: الحضور (.+) \/ المرتبات (.+)\. راجع الكود قبل اعتماد الراتب\.$/,(_,a,p)=>`The name exists in both files, but the Employee ID differs: Attendance ${a} / Payroll ${p}. Review the ID before finalizing payroll.`);
+    s=s.replace(/^الاسم موجود في الملفين لكن كود الموظف مختلف: الحضور (.+) \/ المرتبات (.+)\.$/,(_,a,p)=>`The name exists in both files, but the Employee ID differs: Attendance ${a} / Payroll ${p}.`);
+    s=s.replace(/^إجمالي خصم التأمينات:\s*(.+)$/,(_,v)=>`Total insurance deduction: ${v}`);
+    s=s.replace(/^الموظف المحدد:\s*(.+)$/,(_,v)=>`Selected employee: ${v}`);
+    s=s.replace(/^المحدد حاليًا:\s*(\d+) موظف$/,(_,n)=>`Currently selected: ${n} employee(s)`);
+    s=s.replace(/^الكل — جميع الموظفين$/, 'All — All Employees');
+    // Dynamic upload/status messages.
+    s=s.replace(/^تم تحميل ملف (.+?)\. نوع البيانات:\s*(.+?)\. تم تحميل (\d+) موظف من (.+?)\.$/,
+      (_,file,type,count,src)=>`Loaded ${file}. Data type: ${type}. ${count} employee(s) loaded from ${src}.`);
+    s=s.replace(/^تم تحميل (.+?) — مطابق:\s*(\d+) — بدون مرتب\/كود:\s*(\d+) — سعوديون SA:\s*(\d+)\.$/,
+      (_,file,matched,missing,saudi)=>`Loaded ${file} — Matched: ${matched} — Missing salary/ID: ${missing} — Saudi SA: ${saudi}.`);
+    s=s.replace(/^تم تحميل (\d+) سجل من (.+?) — مطابق:\s*(\d+) — بدون مرتب\/كود:\s*(\d+) — سعوديون SA:\s*(\d+)\.$/,
+      (_,rows,file,matched,missing,saudi)=>`Loaded ${rows} payroll record(s) from ${file} — Matched: ${matched} — Missing salary/ID: ${missing} — Saudi SA: ${saudi}.`);
+    s=s.replace(/^تم تحميل (\d+) سجل من (.+?) — سعوديون SA:\s*(\d+)\.$/,
+      (_,rows,file,saudi)=>`Loaded ${rows} payroll record(s) from ${file} — Saudi SA: ${saudi}.`);
+    s=s.replace(/^الفترة:\s*(.+?)\s+إلى\s+(.+)$/,(_,a,b)=>`Period: ${a} to ${b}`);
+    s=s.replace(/^Total Time Card — فترة التقرير من\s*(.+?)\s+إلى\s+(.+)$/,
+      (_,a,b)=>`Total Time Card — Report period from ${a} to ${b}`);
+
+    // Final phrase-level fallback: translates Arabic fragments inside mixed/dynamic text
+    // (for example numbered review notes and status lines).
+    const phraseEntries=Object.entries(AR_EN)
+      .filter(([ar,en])=>/[\u0600-\u06FF]/.test(ar) && ar.length>1)
+      .sort((a,b)=>b[0].length-a[0].length);
+    for(const [ar,en] of phraseEntries){
+      if(s.includes(ar)) s=s.split(ar).join(en);
+    }
+
+    // Clean common Arabic punctuation/labels left inside mixed English text.
+    s=s.replace(/\bكود\s*:?/g,'ID: ');
+    s=s.replace(/إجمالي\s+/g,'Total ');
+    s=s.replace(/تاريخ الطباعة/g,'Print Date');
+    s=s.replace(/وقت الطباعة/g,'Print Time');
+    // Last-pass sanitizer for mixed Arabic/English UI strings generated at runtime.
+    if(/[\u0600-\u06FF]/.test(s)){
+      const mixed=[
+        [/غير سعودي/g,'Non-Saudi'],
+        [/سعودي\s*\(SA\)/g,'Saudi (SA)'],
+        [/اختر موظف[ًاا]*/g,'Select an employee'],
+        [/إضافة خصم/g,'Add Deduction'],
+        [/خصم التأمينات/g,'Insurance Deduction'],
+        [/التحديد مرتبط بجميع الصفحات/g,'The selection is synchronized across all pages'],
+        [/عرض الجميع/g,'Showing All'],
+        [/يختفي من القائمة/g,'disappears from the list'],
+        [/ثم اختر غيره/g,'then choose another employee'],
+        [/فقط/g,'only'],
+        [/الأساسي/g,'Basic Salary'],
+        [/من ملف/g,'from file'],
+        [/النسبة/g,'rate'],
+        [/تطبق على غير السعودي/g,'Not applicable to non-Saudi employees'],
+        [/ويطبق فقط على السعودي/g,'and applied only to Saudi employees'],
+        [/إجمالي/g,'Total']
+      ];
+      for(const [rx,en] of mixed) s=s.replace(rx,en);
+    }
     return s;
   }
 
@@ -1994,6 +2396,18 @@ html[dir="ltr"] .app-toast{text-align:left}
       const nv=trText(v);
       if(nv!==v) el.setAttribute('aria-label',nv);
     });
+    root.querySelectorAll?.('[title]').forEach(el=>{
+      const v=el.getAttribute('title');
+      const nv=trText(v);
+      if(nv!==v) el.setAttribute('title',nv);
+    });
+    root.querySelectorAll?.('input[type="text"],input:not([type]),textarea').forEach(el=>{
+      const v=el.value;
+      if(v && /[\u0600-\u06FF]/.test(v)){
+        const nv=trText(v);
+        if(nv!==v) el.value=nv;
+      }
+    });
   }
 
   function applyLanguageToUI(){
@@ -2008,9 +2422,11 @@ html[dir="ltr"] .app-toast{text-align:left}
 
   function setLanguage(lang){
     currentLang=lang==='en'?'en':'ar';
-    localStorage.setItem('appLanguage',currentLang);
     // Re-render dynamic areas from their Arabic source templates then translate.
     try{ renderAll(); }catch(_){}
+    try{
+      if(salarySendSelectedKey) renderSalarySendPreview(true);
+    }catch(_){}
     applyLanguageToUI();
     showPopup(currentLang==='ar'?'تم تغيير لغة البرنامج إلى العربية.':'Application language changed to English.','success',currentLang==='ar'?'تم تغيير اللغة':'Language Changed');
   }
@@ -3492,6 +3908,7 @@ html[dir="ltr"] .app-toast{text-align:left}
     body.innerHTML=grouped
       .sort((a,b)=>(a.severity==='error'?0:1)-(b.severity==='error'?0:1))
       .map(reviewIssueRow).join('');
+    if(currentLang==='en') translateElement($('#uploads'));
   }
 
   function reviewIssueRow(x){
@@ -4367,7 +4784,23 @@ function renderAll(){
     const renderer=type==='full'?printEmployeeHtml:printEmployeeSummaryHtml;
     $('#printArea').innerHTML=list.map(renderer).join('');
     applyLanguageToUI();
-    setTimeout(()=>window.print(),100);
+
+    document.body.classList.add('printing-report');
+
+    const cleanupPrintMode=()=>{
+      document.body.classList.remove('printing-report');
+      window.removeEventListener('afterprint',cleanupPrintMode);
+    };
+    window.addEventListener('afterprint',cleanupPrintMode);
+
+    setTimeout(()=>{
+      try{
+        window.print();
+      }catch(err){
+        cleanupPrintMode();
+        throw err;
+      }
+    },120);
   }
 
   function showStartupError(message){
@@ -4472,7 +4905,40 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
 
   function salaryMessageFor(e){
     const c=calcEmployee(e);
-    const period=reportPeriod.from ? `${reportPeriod.from}${reportPeriod.to?' إلى '+reportPeriod.to:''}` : 'الفترة الحالية';
+
+    if(currentLang==='en'){
+      const period=reportPeriod.from
+        ? `${reportPeriod.from}${reportPeriod.to?' to '+reportPeriod.to:''}`
+        : 'the current period';
+
+      return [
+        `Hello ${e.name||''},`,
+        ``,
+        `Salary Summary for ${period}:`,
+        `Basic Salary: ${basicSalary(e).toFixed(2)}`,
+        `Allowances: ${allowancesSalary(e).toFixed(2)}`,
+        `Gross Salary: ${monthlySalary(e).toFixed(2)}`,
+        `Insurance Deduction: ${c.insuranceDeduction.toFixed(2)}${isSaudiEmployee(e)?` (${insurancePercent(e).toFixed(2)}%)`:''}`,
+        `Attendance Deduction: ${c.appliedDeduction.toFixed(2)}`,
+        `Other Deductions: ${c.otherDeductionsTotal.toFixed(2)}`,
+        `Penalties: ${c.penaltiesTotal.toFixed(2)}`,
+        `Net Salary: ${c.netSalary.toFixed(2)}`,
+        ``,
+        `Attendance Summary:`,
+        `Present Days: ${c.presentDays}`,
+        `Absent Days: ${c.absentDays}`,
+        `Work Hours: ${hours(c.actual)}`,
+        `Adjusted Overtime: ${hours(c.weightedOvertime)}`,
+        `Shortage Hours: ${hours(c.shortage)}`,
+        ``,
+        `This message is an informational salary summary.`
+      ].join('\n');
+    }
+
+    const period=reportPeriod.from
+      ? `${reportPeriod.from}${reportPeriod.to?' إلى '+reportPeriod.to:''}`
+      : 'الفترة الحالية';
+
     return [
       `مرحبًا ${e.name||''}،`,
       ``,
@@ -4480,7 +4946,7 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
       `الراتب الأساسي: ${basicSalary(e).toFixed(2)}`,
       `البدلات: ${allowancesSalary(e).toFixed(2)}`,
       `إجمالي الراتب: ${monthlySalary(e).toFixed(2)}`,
-      `التأمينات: ${c.insuranceDeduction.toFixed(2)}${isSaudiEmployee(e)?` (${insurancePercent(e).toFixed(2)}%)`:''}`,
+      `خصم التأمينات: ${c.insuranceDeduction.toFixed(2)}${isSaudiEmployee(e)?` (${insurancePercent(e).toFixed(2)}%)`:''}`,
       `خصم الدوام: ${c.appliedDeduction.toFixed(2)}`,
       `خصومات أخرى: ${c.otherDeductionsTotal.toFixed(2)}`,
       `الجزاءات: ${c.penaltiesTotal.toFixed(2)}`,
@@ -4506,7 +4972,7 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
     box.innerHTML=list.length?list.map(e=>{
       const phone=employeePhone(e);
       return `<button type="button" class="salary-emp-item ${salarySendSelectedKey===e.key?'active':''}" data-salary-send-key="${esc(e.key)}">
-        <span class="salary-emp-main"><b>${esc(e.name)}</b><span>${e.id?'كود: '+esc(e.id):'بدون كود'}</span></span>
+        <span class="salary-emp-main"><b>${esc(e.name)}</b><span>${e.id?(currentLang==='en'?'ID: ':'كود: ')+esc(e.id):(currentLang==='en'?'No ID':'بدون كود')}</span></span>
         <span class="salary-emp-states">
           <span class="phone-state ${phone?'phone-ok':'phone-missing'}">${phone?'رقم متوفر':'بدون رقم'}</span>
           <span class="send-state ${salarySendStatus(e)==='sent'?'sent':'not-sent'}">${salarySendStatus(e)==='sent'?'تم الإرسال':'لم يتم الإرسال'}</span>
@@ -4538,12 +5004,18 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
     const c=calcEmployee(e);
     const phone=employeePhone(e);
     $('#salarySendName').textContent=e.name||'';
-    $('#salarySendMeta').textContent=`${e.id?'كود الموظف: '+e.id+' — ':''}${phone?'الجوال: '+phone+' ('+phoneSource(e)+')':'لا يوجد رقم جوال'}`;
+    $('#salarySendMeta').textContent=currentLang==='en'
+      ? `${e.id?'Employee ID: '+e.id+' — ':''}${phone?'Mobile: '+phone+' ('+phoneSource(e)+')':'No mobile number'}`
+      : `${e.id?'كود الموظف: '+e.id+' — ':''}${phone?'الجوال: '+phone+' ('+phoneSource(e)+')':'لا يوجد رقم جوال'}`;
     const phoneEdit=$('#salarySendPhoneEdit');
     if(phoneEdit) phoneEdit.value=phone;
-    $('#salarySendSource').textContent=`مصدر الراتب: ${salarySource(e)}`;
+    $('#salarySendSource').textContent=currentLang==='en'
+      ? `Salary Source: ${salarySource(e)}`
+      : `مصدر الراتب: ${salarySource(e)}`;
     const sendStatus=salarySendStatus(e);
-    $('#salarySendStatusBadge').textContent=sendStatus==='sent'?'تم الإرسال':'لم يتم الإرسال';
+    $('#salarySendStatusBadge').textContent=currentLang==='en'
+      ? (sendStatus==='sent'?'Sent':'Not Sent')
+      : (sendStatus==='sent'?'تم الإرسال':'لم يتم الإرسال');
     $('#salarySendStatusBadge').className='salary-source-pill send-state '+(sendStatus==='sent'?'sent':'not-sent');
     $('#salarySendGrossBase').textContent=monthlySalary(e).toFixed(2);
     $('#salarySendDeduction').textContent=c.appliedDeduction.toFixed(2);
@@ -4551,9 +5023,13 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
     $('#salarySendNet').textContent=c.netSalary.toFixed(2);
     if(resetMessage) $('#salarySendMessage').value=salaryMessageFor(e);
     $('#salarySendWhatsApp').disabled=!phone;
-    $('#salarySendPhoneNote').textContent=phone
-      ? 'سيتم فتح واتساب على رقم الموظف والرسالة جاهزة للمراجعة والإرسال.'
-      : 'لا يوجد رقم جوال لهذا الموظف في ملف المرتبات. أضف رقم الجوال ثم أعد تحميل الملف.';
+    $('#salarySendPhoneNote').textContent=currentLang==='en'
+      ? (phone
+          ? 'WhatsApp will open using the employee mobile number with the message ready for review and sending.'
+          : 'No mobile number is available for this employee. Add a mobile number before opening WhatsApp.')
+      : (phone
+          ? 'سيتم فتح واتساب على رقم الموظف والرسالة جاهزة للمراجعة والإرسال.'
+          : 'لا يوجد رقم جوال لهذا الموظف في ملف المرتبات. أضف رقم الجوال ثم أعد تحميل الملف.');
     if(currentLang==='en') translateElement($('#salarysend'));
   }
 
@@ -5112,7 +5588,7 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
       });
     });
   });
-  languageObserver.observe(document.querySelector('.wrap')||document.body,{childList:true,subtree:true});
+  languageObserver.observe(document.querySelector('.wrap')||document.body,{childList:true,subtree:true,characterData:true});
 
   $('#dashboardEmployeeFilter')?.addEventListener('input',renderDashboard);
   $('#dashboardNationalityFilter')?.addEventListener('change',renderDashboard);
