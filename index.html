@@ -1383,9 +1383,57 @@ html[dir="ltr"] .app-toast{text-align:left}
   #printing .approval-select-redesign{align-items:flex-start;flex-direction:column}
   #printing .selection-count{width:100%;text-align:center}
 }
+
+body.auth-locked{overflow:hidden!important}
+body.auth-locked > .wrap,
+body.auth-locked > #appToast{visibility:hidden!important;pointer-events:none!important}
+.login-gate{
+  position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;
+  padding:20px;background:radial-gradient(circle at top right,rgba(18,139,125,.10),transparent 32%),#f3f7fb
+}
+.login-card{
+  width:min(430px,100%);background:#fff;border:1px solid #dbe4ec;border-radius:20px;
+  padding:24px;box-shadow:0 18px 55px rgba(16,24,40,.14)
+}
+.login-brand{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.login-icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:#e9f8f5;font-size:26px}
+.login-brand h1{margin:0 0 5px;font-size:22px}
+.login-brand p{margin:0;color:#667085;font-size:12px}
+.login-form label>span{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:#344054}
+.password-wrap{display:grid;grid-template-columns:1fr 46px;gap:7px}
+.password-wrap input{width:100%;min-height:46px;border:1px solid #cfd8e3;border-radius:11px;padding:0 13px;font-size:15px;outline:none}
+.password-wrap input:focus{border-color:#138b7d;box-shadow:0 0 0 3px rgba(19,139,125,.10)}
+.password-toggle{border:1px solid #d7e0e8;border-radius:11px;background:#f7f9fb;cursor:pointer}
+.login-submit{width:100%;min-height:46px;margin-top:12px;border-radius:11px;font-size:15px;font-weight:800}
+.login-error{min-height:20px;margin-top:7px;color:#b42318;font-size:12px;font-weight:700}
+.login-note{margin-top:14px;padding-top:12px;border-top:1px solid #edf1f5;color:#98a2b3;font-size:11px;text-align:center}
+body:not(.auth-locked) .login-gate{display:none!important}
 </style>
 </head>
-<body>
+<body class="auth-locked">
+<div id="loginGate" class="login-gate">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-icon">🔒</div>
+      <div>
+        <h1>نظام الحضور والرواتب</h1>
+        <p>يرجى إدخال كلمة المرور للدخول إلى النظام</p>
+      </div>
+    </div>
+    <form id="loginForm" class="login-form" autocomplete="off">
+      <label>
+        <span>كلمة المرور</span>
+        <div class="password-wrap">
+          <input id="loginPassword" type="password" placeholder="أدخل كلمة المرور" autocomplete="current-password">
+          <button type="button" id="togglePassword" class="password-toggle" aria-label="إظهار كلمة المرور">👁</button>
+        </div>
+      </label>
+      <div id="loginError" class="login-error"></div>
+      <button type="submit" class="primary login-submit">دخول</button>
+    </form>
+    <div class="login-note">يتم فتح الجلسة في هذا التبويب فقط.</div>
+  </div>
+</div>
 <div class="wrap">
   <section class="hero">
     <h1>تحليل ساعات الموظفين</h1>
@@ -1395,6 +1443,7 @@ html[dir="ltr"] .app-toast{text-align:left}
 
   <div class="tabs" data-menu-title="نظام الحضور والرواتب">
         <button type="button" id="languageToggle" class="tab lang-switch">English</button>
+        <button type="button" class="tab logout-btn" onclick="hrLogout()">تسجيل الخروج</button>
         <button class="tab active" data-tab="uploads">⇧&nbsp; رفع الملفات</button>
         <button class="tab" data-tab="dashboard">▤&nbsp; لوحة التحليلات</button>
         <button class="tab" data-tab="summary">▦&nbsp; الملخص</button>
@@ -1956,6 +2005,59 @@ html[dir="ltr"] .app-toast{text-align:left}
 </div>
 <script>
 (()=>{
+  const LOGIN_HASH='958a62aa80ea8323a29682749c5e7abd6a85942c5f98b426399419d82dde61d0';
+  const LOGIN_SESSION_KEY='hrAuthenticated';
+
+  async function sha256(text){
+    const data=new TextEncoder().encode(String(text||''));
+    const digest=await crypto.subtle.digest('SHA-256',data);
+    return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function unlockApp(){
+    sessionStorage.setItem(LOGIN_SESSION_KEY,'1');
+    document.body.classList.remove('auth-locked');
+  }
+
+  function lockApp(){
+    document.body.classList.add('auth-locked');
+    sessionStorage.removeItem(LOGIN_SESSION_KEY);
+    setTimeout(()=>document.getElementById('loginPassword')?.focus(),50);
+  }
+
+  window.hrLogout=lockApp;
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    if(sessionStorage.getItem(LOGIN_SESSION_KEY)==='1') unlockApp();
+    else lockApp();
+
+    const form=document.getElementById('loginForm');
+    const input=document.getElementById('loginPassword');
+    const error=document.getElementById('loginError');
+    const toggle=document.getElementById('togglePassword');
+
+    toggle?.addEventListener('click',()=>{
+      const showing=input.type==='text';
+      input.type=showing?'password':'text';
+      toggle.textContent=showing?'👁':'🙈';
+      toggle.setAttribute('aria-label',showing?'إظهار كلمة المرور':'إخفاء كلمة المرور');
+      input.focus();
+    });
+
+    form?.addEventListener('submit',async e=>{
+      e.preventDefault();
+      error.textContent='';
+      const hash=await sha256(input.value);
+      if(hash===LOGIN_HASH){
+        input.value='';
+        unlockApp();
+      }else{
+        error.textContent='كلمة المرور غير صحيحة.';
+        input.select();
+      }
+    });
+  });
+
   let toastTimer=null;
   function showPopup(message,type='info',title=''){
     const toast=document.getElementById('appToast');
@@ -2610,6 +2712,12 @@ html[dir="ltr"] .app-toast{text-align:left}
     'حدد الموظفين ثم غيّر حالة الاعتماد مرة واحدة.':'Select employees, then update approval status in one action.',
     'اعتماد الموظفين':'Employee Approval',
     'يمكن مراجعة وتحديث حالة كل موظف بشكل منفصل.':'Review and update each employee approval status individually.'
+  });
+
+  Object.assign(AR_EN,{
+    'تسجيل الخروج':'Logout',
+    'كلمة المرور':'Password',
+    'دخول':'Login'
   });
 
   const EN_AR=Object.fromEntries(Object.entries(AR_EN).map(([a,e])=>[e,a]));
@@ -4211,7 +4319,9 @@ html[dir="ltr"] .app-toast{text-align:left}
     const grouped=groupUploadReviewIssues(data.issues);
     const errors=grouped.filter(x=>x.severity==='error').length;
     const warns=grouped.filter(x=>x.severity==='warn').length;
-    const ok=data.ready?Math.max(0,data.matched-grouped.filter(x=>x.payrollCode&&x.payrollCode!=='—').length):0;
+    // Show the actual number of employees matched by Employee ID.
+    // Warnings/errors remain separate counters and must not reduce the matched count.
+    const ok=data.ready?Math.max(0,Number(data.matched)||0):0;
 
     $('#reviewOkCount').textContent=`مطابق: ${ok}`;
     $('#reviewWarnCount').textContent=`تحذير: ${warns}`;
