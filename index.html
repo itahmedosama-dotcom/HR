@@ -7,7 +7,10 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="format-detection" content="telephone=no">
-<title>تحليل ساعات الموظفين - Mobile Fix</title>
+<title>نظام تحليل الحضور والرواتب</title>
+<meta name="description" content="نظام تحليل الحضور والرواتب للموظفين - يعمل مباشرة من المتصفح ويدعم ملفات Excel.">
+<meta name="theme-color" content="#0f766e">
+<meta name="robots" content="noindex,nofollow">
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#152238;--muted:#667085;--line:#dfe5ec;
@@ -1113,6 +1116,22 @@ html[dir="ltr"] .app-toast{text-align:left}
         </div>
       </div>
 
+      <div class="file-step optional-step history-step">
+        <div class="file-step-number">3</div>
+        <div class="file-step-content">
+          <div class="file-step-title">
+            <div><h3>فتح تقرير محفوظ / History</h3> <span class="optional-badge">اختياري</span></div>
+            <small>ارفع ملف Excel الذي تم تصديره سابقًا من النظام لاستعادة التقرير ومراجعته مرة أخرى على المنصة.</small>
+          </div>
+          <div class="upload-row history-upload-row">
+            <input id="historyFileInput" type="file" accept=".xlsx,.xls">
+            <button id="loadHistoryBtn" class="secondary">فتح التقرير المحفوظ</button>
+          </div>
+          <div id="historyStatus" class="salary-file-status">لم يتم فتح تقرير محفوظ.</div>
+          <div class="file-note">التقارير الجديدة المصدّرة من هذه النسخة تحفظ بيانات الاستعادة كاملة. كما يحاول النظام فتح ملفات التصدير السابقة اعتمادًا على أوراق الملخص والتفاصيل والإعدادات.</div>
+        </div>
+      </div>
+
       <div class="files-page-actions">
         <button id="clearBtn" class="secondary">مسح كل البيانات</button>
         <button id="goSummaryBtn" class="primary" disabled>الانتقال إلى لوحة التحليلات</button>
@@ -1678,6 +1697,11 @@ html[dir="ltr"] .app-toast{text-align:left}
     'مسح كل البيانات':'Clear All Data','الانتقال إلى الملخص':'Go to Summary','الانتقال إلى لوحة التحليلات':'Go to Analytics Dashboard','ملف الحضور مطلوب':'Attendance File Required','يجب أولًا تحميل وتحليل ملف الحضور والانصراف.':'You must first upload and analyze the attendance file.',
     
     'تحليل ملف الحضور':'Analyze Attendance','تحميل ملف المرتبات':'Load Payroll File','لم يتم تحميل ملف المرتبات.':'No payroll file loaded.',
+    'فتح تقرير محفوظ / History':'Open Saved Report / History',
+    'فتح التقرير المحفوظ':'Open Saved Report',
+    'لم يتم فتح تقرير محفوظ.':'No saved report opened.',
+    'ارفع ملف Excel الذي تم تصديره سابقًا من النظام لاستعادة التقرير ومراجعته مرة أخرى على المنصة.':'Upload an Excel file previously exported by the system to restore and review it again in the app.',
+
     'الراتب الشهري':'Monthly Salary','إرسال ملخص الراتب':'Send Salary Summary',
     'حالة الإرسال':'Send Status',
     'رقم الجوال للإرسال':'Mobile Number for Sending','حفظ الرقم':'Save Number',
@@ -2373,6 +2397,303 @@ html[dir="ltr"] .app-toast{text-align:left}
       $('#salaryStatus').textContent='خطأ في قراءة ملف المرتبات.';
       renderAll();
       showPopup('خطأ في قراءة ملف المرتبات: '+(err.message||err),'error');
+    }
+  }
+
+
+  const HISTORY_SHEET='_APP_BACKUP';
+  const HISTORY_MAGIC='HR_ATTENDANCE_APP_BACKUP';
+  const APP_STORAGE_PREFIXES=['salarySendStatus:','manualPhone:','dailyHours:','fridayWork:','offDays:','actualWorkDays:','approval:','overtimeMultiplier:','dailySalary:','manualSalary:','applyDeduction:','noDeductionReason:','penalties:'];
+
+  function snapshotForExport(chosen){
+    const keys=new Set(chosen.map(e=>e.key));
+    const storage={};
+    try{
+      for(let i=0;i<localStorage.length;i++){
+        const k=localStorage.key(i);
+        if(!k || !APP_STORAGE_PREFIXES.some(p=>k.startsWith(p))) continue;
+        const empKey=k.slice(k.indexOf(':')+1);
+        if(keys.has(empKey)) storage[k]=localStorage.getItem(k);
+      }
+    }catch(_){}
+
+    const salaryEntries=[];
+    const phoneEntries=[];
+    chosen.forEach(e=>{
+      const id=normalizeEmployeeId(e.id);
+      if(!id) return;
+      if(salaryMap.has(id)) salaryEntries.push([id,salaryMap.get(id)]);
+      if(phoneMap.has(id)) phoneEntries.push([id,phoneMap.get(id)]);
+    });
+
+    return {
+      magic:HISTORY_MAGIC,
+      version:2,
+      exportedAt:new Date().toISOString(),
+      period:{...reportPeriod},
+      employees:chosen.map(e=>JSON.parse(JSON.stringify(e))),
+      salaryEntries,
+      phoneEntries,
+      salaryFileName:salaryFileName||'',
+      storage
+    };
+  }
+
+  function appendBackupSheet(wb,chosen){
+    const snapshot=snapshotForExport(chosen);
+    const json=JSON.stringify(snapshot);
+    const chunkSize=28000;
+    const rows=[[HISTORY_MAGIC],[String(snapshot.version)],['JSON_CHUNKS']];
+    for(let i=0;i<json.length;i+=chunkSize) rows.push([json.slice(i,i+chunkSize)]);
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb,ws,HISTORY_SHEET);
+    try{
+      wb.Workbook=wb.Workbook||{};
+      wb.Workbook.Sheets=wb.Workbook.Sheets||wb.SheetNames.map(()=>({}));
+      const idx=wb.SheetNames.indexOf(HISTORY_SHEET);
+      if(idx>=0){
+        while(wb.Workbook.Sheets.length<wb.SheetNames.length) wb.Workbook.Sheets.push({});
+        wb.Workbook.Sheets[idx]=wb.Workbook.Sheets[idx]||{};
+        wb.Workbook.Sheets[idx].Hidden=1;
+      }
+    }catch(_){}
+  }
+
+  function readBackupSnapshot(wb){
+    const ws=wb.Sheets[HISTORY_SHEET];
+    if(!ws) return null;
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
+    if(String(rows?.[0]?.[0]||'')!==HISTORY_MAGIC) return null;
+    const json=rows.slice(3).map(r=>String(r?.[0]||'')).join('');
+    if(!json) return null;
+    const data=JSON.parse(json);
+    if(data?.magic!==HISTORY_MAGIC || !Array.isArray(data.employees)) return null;
+    return data;
+  }
+
+  function restoreSnapshot(data,fileName=''){
+    clearAppSavedData();
+    employees=(data.employees||[]).map(e=>{
+      const days=Array.isArray(e.days)?e.days:[];
+      const clean={...e,days};
+      clean.key=String(clean.key||clean.id||clean.name||'موظف');
+      clean.actual=days.reduce((s,d)=>s+(Number(d.actual)||0),0);
+      return clean;
+    });
+    reportPeriod=data.period||{from:'',to:'',raw:''};
+    salaryMap=new Map((data.salaryEntries||[]).map(([k,v])=>[normalizeEmployeeId(k),Number(v)||0]));
+    phoneMap=new Map((data.phoneEntries||[]).map(([k,v])=>[normalizeEmployeeId(k),String(v??'')]));
+    salaryFileName=data.salaryFileName||'';
+
+    try{
+      Object.entries(data.storage||{}).forEach(([k,v])=>{
+        if(APP_STORAGE_PREFIXES.some(p=>k.startsWith(p))) localStorage.setItem(k,String(v??''));
+      });
+    }catch(_){}
+
+    summarySelection.clear();
+    try{approvalSelection.clear();}catch(_){}
+    $('#periodText').textContent=reportPeriod.from
+      ? `الفترة: ${reportPeriod.from} إلى ${reportPeriod.to}`
+      : '';
+    $('#status').textContent=`تم فتح تقرير محفوظ يحتوي على ${employees.length} موظف.`;
+    $('#historyStatus').textContent=`تم استعادة التقرير من ${fileName||'ملف محفوظ'} — ${employees.length} موظف${reportPeriod.from?` — ${reportPeriod.from} إلى ${reportPeriod.to}`:''}.`;
+    renderAll();
+    updateFilesPageState();
+    openTab('dashboard');
+    showPopup(`تم استعادة التقرير المحفوظ بنجاح. عدد الموظفين: ${employees.length}.`,'success','تم فتح الـ History');
+  }
+
+  function headerLookup(row){
+    const map=new Map();
+    (row||[]).forEach((v,i)=>map.set(normHeader(v),i));
+    return (...aliases)=>{
+      for(const a of aliases){
+        const i=map.get(normHeader(a));
+        if(i!==undefined) return i;
+      }
+      return -1;
+    };
+  }
+
+  function parseOffDayNames(v){
+    const s=String(v||'').toLowerCase();
+    const names=[
+      [0,['الأحد','الاحد','sunday']],
+      [1,['الاثنين','الإثنين','monday']],
+      [2,['الثلاثاء','tuesday']],
+      [3,['الأربعاء','الاربعاء','wednesday']],
+      [4,['الخميس','thursday']],
+      [5,['الجمعة','friday']],
+      [6,['السبت','saturday']]
+    ];
+    return names.filter(([,arr])=>arr.some(n=>s.includes(n.toLowerCase()))).map(([n])=>n);
+  }
+
+  function fallbackSnapshotFromExport(wb){
+    const dailyName=wb.SheetNames.find(n=>['تفاصيل الأيام','daily details'].includes(normHeader(n)));
+    if(!dailyName) throw new Error('هذا الملف ليس تقريرًا محفوظًا معروفًا من النظام.');
+
+    const dailyRows=XLSX.utils.sheet_to_json(wb.Sheets[dailyName],{header:1,defval:'',raw:true});
+    if(dailyRows.length<2) throw new Error('ورقة تفاصيل الأيام فارغة.');
+    const get=headerLookup(dailyRows[0]);
+    const idx={
+      id:get('كود الموظف','employee id'),
+      name:get('اسم الموظف','employee name'),
+      date:get('التاريخ','date'),
+      weekday:get('اليوم','weekday'),
+      clockIn:get('دخول','clock in'),
+      clockOut:get('خروج','clock out'),
+      actual:get('الساعات الفعلية','actual hours'),
+      punches:get('عدد البصمات','punch count')
+    };
+    if(idx.id<0 || idx.name<0 || idx.date<0 || idx.actual<0) throw new Error('لا يمكن قراءة تفاصيل الموظفين من ملف التصدير.');
+
+    const emap=new Map();
+    for(const row of dailyRows.slice(1)){
+      const id=normalizeEmployeeId(cell(row,idx.id));
+      const name=String(cell(row,idx.name)||'').trim();
+      const date=dateText(cell(row,idx.date));
+      if(!name || !date) continue;
+      const key=id||name;
+      if(!emap.has(key)) emap.set(key,{id,name,key,sourceType:'history-export',days:[]});
+      const actualHours=Number(cell(row,idx.actual))||0;
+      const ci=idx.clockIn>=0?String(cell(row,idx.clockIn)||''):'';
+      const co=idx.clockOut>=0?String(cell(row,idx.clockOut)||''):'';
+      const pc=idx.punches>=0?Number(cell(row,idx.punches))||0:((ci?1:0)+(co?1:0));
+      emap.get(key).days.push({
+        date,
+        weekday:idx.weekday>=0?String(cell(row,idx.weekday)||weekdayForDate(date)):weekdayForDate(date),
+        clockIn:ci,clockOut:co,
+        actual:actualHours*60,
+        hasPunch:actualHours>0 || pc>0 || !!ci || !!co,
+        punchCount:pc,
+        sourceType:'history-export',
+        sourceDuty:0,sourceAbsent:0,sourceTotalWT:0
+      });
+    }
+    const emps=[...emap.values()];
+    emps.forEach(e=>{
+      e.days.sort((a,b)=>a.date.localeCompare(b.date));
+      e.actual=e.days.reduce((s,d)=>s+(Number(d.actual)||0),0);
+    });
+
+    const storage={};
+    const salaryEntries=[];
+    const phoneEntries=[];
+
+    const settingsName=wb.SheetNames.find(n=>['الإعدادات','settings'].includes(normHeader(n)));
+    if(settingsName){
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[settingsName],{header:1,defval:'',raw:true});
+      const header=rows[0]||[];
+      const gh=headerLookup(header);
+      const oldMisaligned=header.length<=10 && (rows[1]||[]).length>=12;
+
+      for(const row of rows.slice(1)){
+        const id=normalizeEmployeeId(row[0]);
+        const name=String(row[1]||'').trim();
+        const key=id||name;
+        if(!key) continue;
+
+        let phone='',sendStatus='',hoursV,daysV,offV,otV,salaryV,sourceV,deductV,reasonV;
+        if(oldMisaligned){
+          [,,phone,sendStatus,hoursV,daysV,offV,otV,salaryV,sourceV,deductV,reasonV]=row;
+        }else{
+          const g=(...a)=>{const i=gh(...a);return i>=0?row[i]:'';};
+          phone=g('رقم الجوال','mobile number');
+          sendStatus=g('حالة إرسال ملخص الراتب','salary summary send status');
+          hoursV=g('الساعات اليومية','daily hours');
+          daysV=g('أيام العمل الفعلية','actual workdays');
+          offV=g('أيام الإجازة الأسبوعية','weekly off days');
+          otV=g('معامل الإضافي','overtime multiplier');
+          salaryV=g('الراتب الشهري','monthly salary');
+          sourceV=g('مصدر الراتب','salary source');
+          deductV=g('تطبيق خصم الدوام','apply attendance deduction');
+          reasonV=g('سبب عدم تطبيق الخصم','no deduction reason');
+        }
+
+        if(phone) phoneEntries.push([id,String(phone)]);
+        storage['dailyHours:'+key]=String(Number(hoursV)||8);
+        storage['actualWorkDays:'+key]=String(Number(daysV)||30);
+        storage['offDays:'+key]=JSON.stringify(parseOffDayNames(offV));
+        storage['overtimeMultiplier:'+key]=String(Number(otV)||1.5);
+        const salary=Number(salaryV)||0;
+        if(String(sourceV).trim().toUpperCase()==='M') storage['manualSalary:'+key]=String(salary);
+        else if(id) salaryEntries.push([id,salary]);
+        storage['applyDeduction:'+key]=String(!['لا','no','false'].includes(String(deductV).trim().toLowerCase()));
+        storage['noDeductionReason:'+key]=String(reasonV||'');
+        if(String(sendStatus).includes('تم الإرسال') || String(sendStatus).toLowerCase().includes('sent')){
+          storage['salarySendStatus:'+key]='sent';
+        }
+      }
+    }
+
+    const penaltyName=wb.SheetNames.find(n=>['الجزاءات','penalties'].includes(normHeader(n)));
+    if(penaltyName){
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[penaltyName],{header:1,defval:'',raw:true});
+      const grouped=new Map();
+      for(const row of rows.slice(1)){
+        const id=normalizeEmployeeId(row[0]);
+        const name=String(row[1]||'').trim();
+        const key=id||name;
+        const reason=String(row[3]||'').trim();
+        const amount=Number(row[4])||0;
+        if(!key || (!amount && (!reason || reason.includes('لا توجد')))) continue;
+        if(!grouped.has(key)) grouped.set(key,[]);
+        grouped.get(key).push({id:'history_'+grouped.get(key).length,reason,amount});
+      }
+      grouped.forEach((arr,key)=>storage['penalties:'+key]=JSON.stringify(arr));
+    }
+
+    let period={from:'',to:'',raw:'History Export'};
+    const metaName=wb.SheetNames.find(n=>['معلومات التقرير','report info'].includes(normHeader(n)));
+    if(metaName){
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[metaName],{header:1,defval:'',raw:false});
+      for(const r of rows){
+        const k=normHeader(r[0]);
+        if(['فترة من','period from'].includes(k)) period.from=dateText(r[1]);
+        if(['فترة إلى','فترة الى','period to'].includes(k)) period.to=dateText(r[1]);
+      }
+    }
+    if(!period.from && emps.length){
+      const dates=emps.flatMap(e=>e.days.map(d=>d.date)).filter(Boolean).sort();
+      period.from=dates[0]||'';period.to=dates[dates.length-1]||'';
+    }
+
+    return {
+      magic:HISTORY_MAGIC,version:1,period,employees:emps,
+      salaryEntries,phoneEntries,salaryFileName:'History Export',storage
+    };
+  }
+
+  async function loadHistoryFile(){
+    const input=$('#historyFileInput');
+    const file=input?.files?.[0];
+    if(!file){
+      showPopup('اختر ملف Excel تم تصديره من النظام أولًا.','error','اختر ملف History');
+      return;
+    }
+    $('#historyStatus').textContent='جاري فتح التقرير المحفوظ...';
+    const ready=await ensureXLSX();
+    if(!ready){
+      $('#historyStatus').textContent='تعذر تحميل قارئ Excel.';
+      showPopup('تعذر تحميل قارئ Excel. تحقق من اتصال الإنترنت.','error');
+      return;
+    }
+    try{
+      const wb=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:true});
+      let data=readBackupSnapshot(wb);
+      let mode='نسخة استعادة كاملة';
+      if(!data){
+        data=fallbackSnapshotFromExport(wb);
+        mode='تقرير تصدير سابق';
+      }
+      restoreSnapshot(data,file.name);
+      $('#historyStatus').textContent+=` — النوع: ${mode}.`;
+    }catch(err){
+      console.error(err);
+      $('#historyStatus').textContent='تعذر فتح التقرير المحفوظ.';
+      showPopup('تعذر استعادة التقرير: '+(err?.message||err),'error','فشل فتح الـ History');
     }
   }
 
@@ -3362,6 +3683,10 @@ html[dir="ltr"] .app-toast{text-align:left}
 
       const fi=$('#fileInput');
       if(fi) fi.value='';
+      const hfi=$('#historyFileInput');
+      if(hfi) hfi.value='';
+      const hs=$('#historyStatus');
+      if(hs) hs.textContent='لم يتم فتح تقرير محفوظ.';
 
       const period=$('#periodText');
       if(period) period.textContent='';
@@ -3393,7 +3718,7 @@ $$('.tab').forEach(b=>b.addEventListener('click',()=>{
     openTab(b.dataset.tab);
   }));
   $('#loadBtn').addEventListener('click',loadFile);
-$('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear();approvalSelection.clear();reportPeriod={from:'',to:'',raw:''};salaryMap=new Map();phoneMap=new Map();salaryFileName='';$('#fileInput').value='';if($('#salaryFileInput')) $('#salaryFileInput').value='';if($('#salaryStatus')) $('#salaryStatus').textContent='لم يتم تحميل ملف المرتبات.';$('#periodText').textContent='';$('#status').textContent='تم مسح بيانات الملف.';renderAll();openTab('uploads');});
+$('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear();approvalSelection.clear();reportPeriod={from:'',to:'',raw:''};salaryMap=new Map();phoneMap=new Map();salaryFileName='';clearAppSavedData();$('#fileInput').value='';if($('#salaryFileInput')) $('#salaryFileInput').value='';if($('#historyFileInput')) $('#historyFileInput').value='';if($('#salaryStatus')) $('#salaryStatus').textContent='لم يتم تحميل ملف المرتبات.';if($('#historyStatus')) $('#historyStatus').textContent='لم يتم فتح تقرير محفوظ.';$('#periodText').textContent='';$('#status').textContent='تم مسح بيانات الملف.';renderAll();openTab('uploads');});
   $('#loadSalaryBtn')?.addEventListener('click',loadSalaryFile);
   $('#goSummaryBtn')?.addEventListener('click',()=>{if(employees.length) openTab('dashboard');});
   $('#saveSettingsBtn').addEventListener('click',saveSettings);
@@ -3780,7 +4105,8 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
         chosen.forEach(e=>{
           const c=calcEmployee(e);
           summaryRows.push([
-            e.id||'', e.name||'', dailyHours(e), actualWorkDays(e),
+            e.id||'', e.name||'', employeePhone(e), salarySendStatus(e)==='sent'?'تم الإرسال':'لم يتم الإرسال',
+            dailyHours(e), actualWorkDays(e),
             dayNames(offDays(e)), overtimeMultiplier(e),
             Number(hours(c.actual)), Number(hours(c.required)),
             Number(hours(c.overtime)), Number(hours(c.weightedOvertime)),
@@ -3837,7 +4163,7 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
 
         // ----- Settings sheet -----
         const settingsRows=[[
-          'كود الموظف','اسم الموظف','الساعات اليومية','أيام العمل الفعلية',
+          'كود الموظف','اسم الموظف','رقم الجوال','حالة إرسال ملخص الراتب','الساعات اليومية','أيام العمل الفعلية',
           'أيام الإجازة الأسبوعية','معامل الإضافي','الراتب الشهري','مصدر الراتب',
           'تطبيق خصم الدوام','سبب عدم تطبيق الخصم'
         ]];
@@ -3892,6 +4218,9 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
         wsMeta['!cols']=[{wch:24},{wch:60}];
         XLSX.utils.book_append_sheet(wb,wsMeta,sheetName('معلومات التقرير','Report Info'));
 
+        // Hidden machine-readable snapshot so the exported file can be reopened later in this app.
+        appendBackupSheet(wb,chosen);
+
         const period=(reportPeriod.from&&reportPeriod.to)
           ? reportPeriod.from.replaceAll('-','')+'_'+reportPeriod.to.replaceAll('-','')
           : now.toISOString().slice(0,10).replaceAll('-','');
@@ -3907,6 +4236,8 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
       }
     });
   }
+
+  $('#loadHistoryBtn')?.addEventListener('click',loadHistoryFile);
 
   $('#summaryEmployeeFilter').addEventListener('input',applySummaryFilter);
   $('#summarySelectFiltered').addEventListener('click',()=>{
