@@ -1063,7 +1063,7 @@ html[dir="ltr"] .app-toast{text-align:left}
   .upload-review-state.warning{background:#fffaeb;color:#b54708;border:1px solid #fedf89}
   .upload-review-state.danger{background:#fef3f2;color:#b42318;border:1px solid #fecdca}
   .upload-review-table{margin-top:10px;max-height:340px;overflow:auto}
-  .upload-review-table table{min-width:780px}
+  .upload-review-table table{min-width:980px}
   .review-status{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}
   .review-status.error{background:#fef3f2;color:#b42318}
   .review-status.warn{background:#fffaeb;color:#b54708}
@@ -1072,6 +1072,44 @@ html[dir="ltr"] .app-toast{text-align:left}
     .upload-review{padding:11px}
     .upload-review-head{display:block}
     .review-counters{margin-top:9px}
+  }
+
+  .upload-file-only{display:block!important}
+  .upload-file-only input[type="file"]{width:100%!important}
+  .upload-buttons-pair{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:9px;
+  }
+  .upload-buttons-pair button{
+    width:100%;
+    min-height:42px;
+    margin:0!important;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+  @media(max-width:620px){
+    .upload-buttons-pair{grid-template-columns:1fr}
+  }
+
+  .review-notes{
+    min-width:360px;
+    line-height:1.9;
+    white-space:normal;
+  }
+  .review-notes br+*{margin-top:3px}
+
+  #exportReviewExcelBtn{
+    min-height:30px;
+    padding:5px 12px;
+    font-size:11px;
+    white-space:nowrap;
+  }
+  @media(max-width:700px){
+    #exportReviewExcelBtn{width:100%;margin-top:4px}
   }
 </style>
 </head>
@@ -1115,13 +1153,19 @@ html[dir="ltr"] .app-toast{text-align:left}
             <div><h3>رفع ملف الحضور والانصراف</h3> <span class="required-badge">إجباري</span></div>
             <small>يجب تحميله وتحليله قبل احتساب النتائج.</small>
           </div>
-          <div class="upload-row">
+          <div class="upload-row upload-file-only">
             <input id="fileInput" type="file" accept=".xlsx,.xls">
+          </div>
+          <div class="upload-buttons-pair">
             <button id="loadBtn" class="primary">تحليل ملف الحضور</button>
+            <button type="button" class="secondary" id="downloadAttendanceTemplateBtn">تحميل نموذج Excel للحضور والانصراف</button>
           </div>
           <div id="status" class="status">لم يتم تحميل ملف بعد.</div>
           <div id="periodText" class="period"></div>
-          <div class="file-note">يدعم ملفات <b>Total Time Card</b> و <b>Transaction</b>. يتم تجميع بصمات الموظف يوميًا وحساب ساعات العمل حسب نوع التقرير.</div>
+          <div class="file-note">
+            يدعم ملفات <b>Total Time Card</b> و <b>Transaction</b>. ويمكن أيضًا استخدام النموذج الجاهز؛
+            لكل موظف ضع سطر دخول وسطر خروج في نفس اليوم، وسيحسب النظام ساعات العمل من أول بصمة إلى آخر بصمة.
+          </div>
         </div>
       </div>
 
@@ -1132,9 +1176,12 @@ html[dir="ltr"] .app-toast{text-align:left}
             <div><h3>رفع ملف المرتبات</h3> <span class="optional-badge">اختياري</span></div>
             <small>يمكن تخطي هذه الخطوة، وسيكون مرتب الموظف 0.00 إذا لم يوجد ملف أو كود مطابق.</small>
           </div>
-          <div class="upload-row salary-upload-row">
+          <div class="upload-row salary-upload-row upload-file-only">
             <input id="salaryFileInput" type="file" accept=".xlsx,.xls">
-            <button id="loadSalaryBtn" class="secondary">تحميل ملف المرتبات</button>
+          </div>
+          <div class="upload-buttons-pair">
+            <button id="loadSalaryBtn" class="primary">تحميل ملف المرتبات</button>
+            <button type="button" class="secondary" id="downloadPayrollTemplateBtn">تحميل نموذج Excel للمرتبات</button>
           </div>
           <div id="salaryStatus" class="salary-file-status">لم يتم تحميل ملف المرتبات.</div>
           <div class="salary-required-columns">
@@ -1147,7 +1194,7 @@ html[dir="ltr"] .app-toast{text-align:left}
             <span>التأمينات %</span>
             <span>رقم الجوال <em style="font-style:normal;font-weight:400">(اختياري)</em></span>
             <small>إجمالي الراتب = الراتب الأساسي + البدلات. السعودي يرمز له بـ SA فقط؛ أي قيمة أخرى أو خلية فارغة تعتبر غير سعودي. نسبة التأمينات تُطبق فقط على SA وتُحسب من الراتب الأساسي فقط. يمكن أن يكون الموظف السعودي بدون تأمينات بنسبة 0%، وسيظهر ذلك كتحذير للمراجعة فقط وليس كخطأ. الربط يتم باستخدام كود الموظف فقط.</small>
-            <button type="button" class="secondary" id="downloadPayrollTemplateBtn" style="margin-top:8px">تحميل نموذج Excel للمرتبات</button>
+            
           </div>
         </div>
       </div>
@@ -1172,12 +1219,13 @@ html[dir="ltr"] .app-toast{text-align:left}
         <div class="upload-review-head">
           <div>
             <h3>مراجعة مطابقة الملفات</h3>
-            <p>تظهر هنا أي اختلافات بين ملف الحضور وملف المرتبات لتتم مراجعتها قبل اعتماد الحسابات.</p>
+            <p>تظهر هنا اختلافات المطابقة وأي بيانات ناقصة أو متعارضة داخل ملف المرتبات لتتم مراجعتها قبل اعتماد الحسابات.</p>
           </div>
           <div class="review-counters">
             <span class="review-chip ok" id="reviewOkCount">مطابق: 0</span>
             <span class="review-chip warn" id="reviewWarnCount">تحذير: 0</span>
             <span class="review-chip error" id="reviewErrorCount">خطأ: 0</span>
+            <button type="button" class="secondary" id="exportReviewExcelBtn">تصدير التحذيرات والأخطاء Excel</button>
           </div>
         </div>
         <div id="uploadReviewState" class="upload-review-state">ارفع ملف الحضور وملف المرتبات لبدء المراجعة.</div>
@@ -1185,7 +1233,10 @@ html[dir="ltr"] .app-toast{text-align:left}
           <table>
             <thead>
               <tr>
-                <th>الحالة</th><th>كود الموظف</th><th>اسم الحضور</th><th>اسم المرتبات</th><th>الملاحظة</th>
+                <th>الحالة</th>
+                <th>كود الحضور</th><th>الاسم في ملف الحضور</th>
+                <th>كود المرتبات</th><th>الاسم في ملف المرتبات</th>
+                <th>الملاحظة</th>
               </tr>
             </thead>
             <tbody id="uploadReviewBody"></tbody>
@@ -1802,12 +1853,12 @@ html[dir="ltr"] .app-toast{text-align:left}
     'تحليل ساعات الموظفين':'Employee Hours Analysis','⇧  رفع الملفات':'⇧  Upload Files','رفع الملفات':'Upload Files',
     'ابدأ بتحميل ملف الحضور والانصراف. ملف المرتبات اختياري ويمكن إضافته قبل أو بعد تحليل الحضور.':'Start by uploading the attendance file. The payroll file is optional and can be added before or after attendance analysis.',
     'رفع ملف الحضور والانصراف':'Upload Attendance File','إجباري':'Required','يجب تحميله وتحليله قبل احتساب النتائج.':'It must be uploaded and analyzed before results can be calculated.',
-    'رفع ملف المرتبات':'Upload Payroll File','مراجعة مطابقة الملفات':'File Matching Review','تظهر هنا أي اختلافات بين ملف الحضور وملف المرتبات لتتم مراجعتها قبل اعتماد الحسابات.':'Any differences between attendance and payroll files are shown here for review before final calculations.','الحالة':'Status','اسم الحضور':'Attendance Name','اسم المرتبات':'Payroll Name','الملاحظة':'Note','تحذير':'Warning','خطأ':'Error','اختياري':'Optional','يمكن تخطي هذه الخطوة، وسيكون مرتب الموظف 0.00 إذا لم يوجد ملف أو كود مطابق.':'You may skip this step. Employee salary will be 0.00 when no payroll file or matching ID exists.',
+    'رفع ملف المرتبات':'Upload Payroll File','مراجعة مطابقة الملفات':'File Matching Review','تظهر هنا أي اختلافات بين ملف الحضور وملف المرتبات لتتم مراجعتها قبل اعتماد الحسابات.':'Any differences between attendance and payroll files are shown here for review before final calculations.','الحالة':'Status','كود الحضور':'Attendance ID','الاسم في ملف الحضور':'Name in Attendance File','كود المرتبات':'Payroll ID','الاسم في ملف المرتبات':'Name in Payroll File','الملاحظة':'Note','غير موجود':'Not Found','تحذير':'Warning','خطأ':'Error','تصدير التحذيرات والأخطاء Excel':'Export Warnings & Errors to Excel','خانة الجنسية فارغة':'Nationality is blank','اختياري':'Optional','يمكن تخطي هذه الخطوة، وسيكون مرتب الموظف 0.00 إذا لم يوجد ملف أو كود مطابق.':'You may skip this step. Employee salary will be 0.00 when no payroll file or matching ID exists.',
     'ملحوظة — الأعمدة المطلوبة في ملف المرتبات:':'Note — required payroll file columns:','كود الموظف':'Employee ID','اسم الموظف':'Employee Name',
     'الربط يتم باستخدام كود الموظف فقط. عمود الاسم للمراجعة، وأي موظف بدون كود أو مرتب مطابق يحتسب مرتبه 0.00.':'Matching uses Employee ID only. The name column is for review; any employee without a matching ID or salary is calculated as 0.00.',
     'مسح كل البيانات':'Clear All Data','الانتقال إلى الملخص':'Go to Summary','الانتقال إلى لوحة التحليلات':'Go to Analytics Dashboard','ملف الحضور مطلوب':'Attendance File Required','يجب أولًا تحميل وتحليل ملف الحضور والانصراف.':'You must first upload and analyze the attendance file.',
     
-    'تحليل ملف الحضور':'Analyze Attendance','تحميل ملف المرتبات':'Load Payroll File','لم يتم تحميل ملف المرتبات.':'No payroll file loaded.',
+    'تحليل ملف الحضور':'Analyze Attendance','تحميل نموذج Excel للحضور والانصراف':'Download Attendance Excel Template','تحميل ملف المرتبات':'Load Payroll File','لم يتم تحميل ملف المرتبات.':'No payroll file loaded.',
     'فتح تقرير محفوظ / History':'Open Saved Report / History',
     'فتح التقرير المحفوظ':'Open Saved Report',
     'لم يتم فتح تقرير محفوظ.':'No saved report opened.',
@@ -2516,17 +2567,23 @@ html[dir="ltr"] .app-toast{text-align:left}
           if(map.basic<0 && map.legacySalary>=0) basic=salaryNumber(cell(row,map.legacySalary));
 
           const total=Math.max(0,basic+allowances);
-          const nationality=map.nationality>=0?String(cell(row,map.nationality)??'').trim():'';
+          const nationalityCell=map.nationality>=0?cell(row,map.nationality):null;
+          const nationality=String(nationalityCell??'').trim();
+          const nationalityProvided=map.nationality>=0 && nationality!=='';
           const isSaudi=nationality.toUpperCase()==='SA';
-          let rawIns=map.insurance>=0?salaryNumber(cell(row,map.insurance)):0;
+
+          const insuranceCell=map.insurance>=0?cell(row,map.insurance):null;
+          const insuranceProvided=map.insurance>=0 && insuranceCell!==null && insuranceCell!==undefined && String(insuranceCell).trim()!=='';
+          let rawIns=map.insurance>=0?salaryNumber(insuranceCell):0;
           if(rawIns>0 && rawIns<=1) rawIns*=100;
           rawIns=Math.max(0,Math.min(100,rawIns));
           const ins=isSaudi?rawIns:0;
 
           nextMap.set(id,total);
           nextPayrollMap.set(id,{
-            name:payrollName,basic,allowances,total,nationality,isSaudi,
-            insurancePercent:ins,rawInsurancePercent:rawIns
+            name:payrollName,basic,allowances,total,
+            nationality,isSaudi,nationalityProvided,
+            insurancePercent:ins,rawInsurancePercent:rawIns,insuranceProvided
           });
           const phone=map.phone>=0?String(cell(row,map.phone)??'').trim():'';
           if(phone) nextPhoneMap.set(id,phone);
@@ -3079,81 +3136,170 @@ html[dir="ltr"] .app-toast{text-align:left}
 
     if(!employees.length) return {issues,matched,ready:false};
 
-    // Attendance rows without employee code cannot be matched safely to payroll.
+    const attendanceById=new Map();
+    const attendanceByName=new Map();
     employees.forEach(e=>{
       const id=normalizeEmployeeId(e.id);
-      if(!id){
+      const n=normalizeReviewName(e.name);
+      if(id && !attendanceById.has(id)) attendanceById.set(id,e);
+      if(n){
+        if(!attendanceByName.has(n)) attendanceByName.set(n,[]);
+        attendanceByName.get(n).push(e);
+      }
+    });
+
+    const payrollByName=new Map();
+    payrollMap.forEach((p,id)=>{
+      const n=normalizeReviewName(p.name);
+      if(n){
+        if(!payrollByName.has(n)) payrollByName.set(n,[]);
+        payrollByName.get(n).push({id,p});
+      }
+    });
+
+    // Attendance side review.
+    employees.forEach(e=>{
+      const attendanceId=normalizeEmployeeId(e.id);
+      const attendanceName=e.name||'';
+      const attendanceNorm=normalizeReviewName(attendanceName);
+
+      if(!attendanceId){
         issues.push({
-          severity:'error',code:'—',attendanceName:e.name||'',payrollName:'',
-          note:'موظف في ملف الحضور بدون كود موظف؛ لن يمكن ربط راتبه تلقائيًا.'
+          severity:'error',
+          attendanceCode:'—',attendanceName,
+          payrollCode:'—',payrollName:'',
+          note:'الموظف موجود في ملف الحضور بدون كود موظف؛ لا يمكن ربطه تلقائيًا بملف المرتبات.'
         });
         return;
       }
 
-      const p=payrollMap.get(id);
-      if(!salaryFileName){
-        return;
-      }
+      if(!salaryFileName) return;
+
+      const p=payrollMap.get(attendanceId);
       if(!p){
-        issues.push({
-          severity:'error',code:id,attendanceName:e.name||'',payrollName:'',
-          note:'موجود في ملف الحضور وغير موجود في ملف المرتبات.'
-        });
+        const sameName=(payrollByName.get(attendanceNorm)||[])[0];
+        if(sameName){
+          issues.push({
+            severity:'error',
+            attendanceCode:attendanceId,attendanceName,
+            payrollCode:sameName.id,payrollName:sameName.p.name||'',
+            note:`الاسم موجود في الملفين لكن كود الموظف مختلف: الحضور ${attendanceId} / المرتبات ${sameName.id}. راجع الكود قبل اعتماد الراتب.`
+          });
+        }else{
+          issues.push({
+            severity:'error',
+            attendanceCode:attendanceId,attendanceName,
+            payrollCode:'—',payrollName:'',
+            note:'موجود في ملف الحضور وغير موجود في ملف المرتبات.'
+          });
+        }
         return;
       }
 
       matched++;
+      const payrollName=p.name||'';
+      const pName=normalizeReviewName(payrollName);
 
-      const aName=normalizeReviewName(e.name);
-      const pName=normalizeReviewName(p.name);
-      if(aName && pName && aName!==pName){
+      if(attendanceNorm && pName && attendanceNorm!==pName){
         issues.push({
-          severity:'warn',code:id,attendanceName:e.name||'',payrollName:p.name||'',
-          note:'الكود مطابق لكن اسم الموظف مختلف بين الملفين؛ راجع الاسم.'
+          severity:'warn',
+          attendanceCode:attendanceId,attendanceName,
+          payrollCode:attendanceId,payrollName,
+          note:'كود الموظف مطابق لكن الاسم مختلف بين ملف الحضور وملف المرتبات؛ راجع الاسم.'
         });
       }
 
       if(!(Number(p.basic)>0)){
         issues.push({
-          severity:'error',code:id,attendanceName:e.name||'',payrollName:p.name||'',
+          severity:'error',
+          attendanceCode:attendanceId,attendanceName,
+          payrollCode:attendanceId,payrollName,
           note:'الراتب الأساسي يساوي صفر أو غير موجود.'
         });
       }
 
-      if(p.isSaudi && !(Number(p.insurancePercent)>0)){
-        issues.push({
-          severity:'warn',code:id,attendanceName:e.name||'',payrollName:p.name||'',
-          note:'الموظف سعودي SA ونسبة التأمينات صفر أو غير موجودة. هذا مسموح ولن يتم خصم تأمينات، لكن يُرجى المراجعة للتأكد.'
-        });
-      }
 
-      if(!p.isSaudi && Number(p.rawInsurancePercent)>0){
-        issues.push({
-          severity:'warn',code:id,attendanceName:e.name||'',payrollName:p.name||'',
-          note:`تم إدخال نسبة تأمينات ${Number(p.rawInsurancePercent).toFixed(2)}% لموظف غير سعودي؛ لن يتم تطبيقها.`
-        });
-      }
+      
 
-      if(payrollDuplicateIds.has(id)){
+      if(payrollDuplicateIds.has(attendanceId)){
         issues.push({
-          severity:'error',code:id,attendanceName:e.name||'',payrollName:p.name||'',
+          severity:'error',
+          attendanceCode:attendanceId,attendanceName,
+          payrollCode:attendanceId,payrollName,
           note:'كود الموظف مكرر أكثر من مرة داخل ملف المرتبات؛ تم استخدام آخر سجل.'
         });
       }
     });
 
     if(salaryFileName){
-      const attendanceIds=new Set(employees.map(e=>normalizeEmployeeId(e.id)).filter(Boolean));
-      payrollMap.forEach((p,id)=>{
-        if(!attendanceIds.has(id)){
+      // Payroll side review: only add rows that were not already represented as a code mismatch.
+      const representedPayrollCodes=new Set(
+        issues.map(x=>normalizeEmployeeId(x.payrollCode)).filter(Boolean)
+      );
+
+      payrollMap.forEach((p,payrollId)=>{
+        const payrollName=p.name||'';
+        const attendanceMatch=attendanceById.get(payrollId);
+
+        // Data-quality checks from the payroll file itself must always be reviewed,
+        // even when the employee is not present in the attendance file.
+        if(p.isSaudi){
+          if(!p.insuranceProvided){
+            issues.push({
+              severity:'warn',
+              attendanceCode:attendanceMatch?payrollId:'—',
+              attendanceName:attendanceMatch?.name||'',
+              payrollCode:payrollId,
+              payrollName,
+              note:'الموظف سعودي SA لكن خانة نسبة التأمينات فارغة. هذا مسموح، وسيتم اعتبار التأمينات 0% ما لم يتم تعديلها من إعدادات الدوام والراتب.'
+            });
+          }else if(!(Number(p.rawInsurancePercent)>0)){
+            issues.push({
+              severity:'warn',
+              attendanceCode:attendanceMatch?payrollId:'—',
+              attendanceName:attendanceMatch?.name||'',
+              payrollCode:payrollId,
+              payrollName,
+              note:'الموظف سعودي SA ونسبة التأمينات = 0%. هذا مسموح ولن يتم خصم تأمينات، لكن يُرجى مراجعة البيانات للتأكد.'
+            });
+          }
+        }else if(Number(p.rawInsurancePercent)>0){
           issues.push({
-            severity:'warn',code:id,attendanceName:'',payrollName:p.name||'',
+            severity:'warn',
+            attendanceCode:attendanceMatch?payrollId:'—',
+            attendanceName:attendanceMatch?.name||'',
+            payrollCode:payrollId,
+            payrollName,
+            note:`الموظف غير سعودي لكن توجد نسبة تأمينات ${Number(p.rawInsurancePercent).toFixed(2)}%. لن يتم تطبيق الخصم، ويجب مراجعة الجنسية أو نسبة التأمينات.`
+          });
+        }
+
+        // If employee exists in attendance, the cross-file presence check is already handled above.
+        if(attendanceMatch) return;
+        if(representedPayrollCodes.has(payrollId)) return;
+
+        const n=normalizeReviewName(payrollName);
+        const sameName=(attendanceByName.get(n)||[])[0];
+
+        if(sameName){
+          issues.push({
+            severity:'error',
+            attendanceCode:normalizeEmployeeId(sameName.id)||'—',
+            attendanceName:sameName.name||'',
+            payrollCode:payrollId,
+            payrollName,
+            note:`الاسم موجود في الملفين لكن كود الموظف مختلف: الحضور ${normalizeEmployeeId(sameName.id)||'—'} / المرتبات ${payrollId}.`
+          });
+        }else{
+          issues.push({
+            severity:'warn',
+            attendanceCode:'—',attendanceName:'',
+            payrollCode:payrollId,payrollName,
             note:'موجود في ملف المرتبات وغير موجود في ملف الحضور للفترة الحالية.'
           });
         }
       });
 
-      // Duplicate employee IDs in attendance file.
       const countMap=new Map();
       employees.forEach(e=>{
         const id=normalizeEmployeeId(e.id);
@@ -3162,8 +3308,11 @@ html[dir="ltr"] .app-toast{text-align:left}
       countMap.forEach((count,id)=>{
         if(count>1){
           const e=employees.find(x=>normalizeEmployeeId(x.id)===id);
+          const p=payrollMap.get(id);
           issues.push({
-            severity:'error',code:id,attendanceName:e?.name||'',payrollName:payrollMap.get(id)?.name||'',
+            severity:'error',
+            attendanceCode:id,attendanceName:e?.name||'',
+            payrollCode:p?id:'—',payrollName:p?.name||'',
             note:`كود الموظف مكرر ${count} مرات في بيانات الحضور.`
           });
         }
@@ -3173,6 +3322,134 @@ html[dir="ltr"] .app-toast{text-align:left}
     return {issues,matched,ready:!!salaryFileName};
   }
 
+  function groupUploadReviewIssues(issues){
+    const groups=new Map();
+
+    issues.forEach((x,idx)=>{
+      const attendanceCode=normalizeEmployeeId(x.attendanceCode);
+      const payrollCode=normalizeEmployeeId(x.payrollCode);
+
+      // Prefer payroll code, then attendance code, then names.
+      // This groups all notes for the same employee into one review row.
+      const key=
+        payrollCode ? 'P:'+payrollCode :
+        attendanceCode ? 'A:'+attendanceCode :
+        'N:'+(normalizeReviewName(x.payrollName)||normalizeReviewName(x.attendanceName)||String(idx));
+
+      if(!groups.has(key)){
+        groups.set(key,{
+          severity:x.severity||'warn',
+          attendanceCode:x.attendanceCode||'—',
+          attendanceName:x.attendanceName||'',
+          payrollCode:x.payrollCode||'—',
+          payrollName:x.payrollName||'',
+          notes:[]
+        });
+      }
+
+      const g=groups.get(key);
+
+      // Error takes precedence over warning for the employee row.
+      if(x.severity==='error') g.severity='error';
+
+      if((!g.attendanceCode || g.attendanceCode==='—') && x.attendanceCode && x.attendanceCode!=='—'){
+        g.attendanceCode=x.attendanceCode;
+      }
+      if(!g.attendanceName && x.attendanceName) g.attendanceName=x.attendanceName;
+      if((!g.payrollCode || g.payrollCode==='—') && x.payrollCode && x.payrollCode!=='—'){
+        g.payrollCode=x.payrollCode;
+      }
+      if(!g.payrollName && x.payrollName) g.payrollName=x.payrollName;
+
+      const note=String(x.note||'').trim();
+      if(note && !g.notes.includes(note)) g.notes.push(note);
+    });
+
+    return [...groups.values()];
+  }
+
+  async function exportUploadReviewExcel(){
+    const data=uploadReviewIssues();
+    const grouped=groupUploadReviewIssues(data.issues);
+
+    if(!employees.length){
+      showPopup('لا توجد بيانات حضور للمراجعة أو التصدير.','error','لا توجد بيانات');
+      return;
+    }
+
+    if(!salaryFileName){
+      showPopup('ارفع ملف المرتبات أولًا حتى يتم إنشاء تقرير المطابقة.','error','ملف المرتبات مطلوب');
+      return;
+    }
+
+    if(!grouped.length){
+      showPopup('لا توجد تحذيرات أو أخطاء لتصديرها.','info','لا توجد ملاحظات');
+      return;
+    }
+
+    const ok=await ensureXLSX();
+    if(!ok || typeof XLSX==='undefined'){
+      showPopup('تعذر تحميل أداة Excel. تحقق من اتصال الإنترنت.','error');
+      return;
+    }
+
+    const rows=[[
+      'الحالة','كود الحضور','الاسم في ملف الحضور',
+      'كود المرتبات','الاسم في ملف المرتبات','الملاحظات'
+    ]];
+
+    grouped
+      .sort((a,b)=>(a.severity==='error'?0:1)-(b.severity==='error'?0:1))
+      .forEach(x=>{
+        const notes=(x.notes||[]).map((n,i)=>`${i+1}. ${n}`).join('\n');
+        rows.push([
+          x.severity==='error'?'خطأ':'تحذير',
+          x.attendanceCode||'—',
+          x.attendanceName||'غير موجود',
+          x.payrollCode||'—',
+          x.payrollName||'غير موجود',
+          notes
+        ]);
+      });
+
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet(exportRows(rows));
+    ws['!cols']=[
+      {wch:12},{wch:16},{wch:28},{wch:16},{wch:28},{wch:90}
+    ];
+
+    // Wrap long notes and keep header readable.
+    const range=XLSX.utils.decode_range(ws['!ref']);
+    for(let r=0;r<=range.e.r;r++){
+      const cellAddr=XLSX.utils.encode_cell({r,c:5});
+      if(ws[cellAddr]){
+        ws[cellAddr].s={alignment:{wrapText:true,vertical:'top'}};
+      }
+    }
+
+    XLSX.utils.book_append_sheet(wb,ws,sheetName('مراجعة الملفات','File Review'));
+
+    const errors=grouped.filter(x=>x.severity==='error').length;
+    const warns=grouped.filter(x=>x.severity==='warn').length;
+    const meta=[
+      ['تقرير مراجعة مطابقة الملفات'],
+      ['تاريخ التصدير',new Date().toLocaleString('ar-SA')],
+      ['عدد الموظفين في الحضور',employees.length],
+      ['عدد سجلات المرتبات',payrollMap.size],
+      ['عدد الموظفين أصحاب الأخطاء',errors],
+      ['عدد الموظفين أصحاب التحذيرات',warns]
+    ];
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.aoa_to_sheet(exportRows(meta)),
+      sheetName('ملخص المراجعة','Review Summary')
+    );
+
+    const filename=`HR_File_Review_${reportPeriod.from||'Report'}_${reportPeriod.to||''}.xlsx`.replace(/[\\/:*?"<>|]/g,'-');
+    XLSX.writeFile(wb,filename,{compression:true});
+    showPopup(`تم تصدير ${errors} خطأ و${warns} تحذير إلى Excel.`,'success','تم تصدير المراجعة');
+  }
+
   function renderUploadReview(){
     const state=$('#uploadReviewState');
     const wrap=$('#uploadReviewTableWrap');
@@ -3180,9 +3457,10 @@ html[dir="ltr"] .app-toast{text-align:left}
     if(!state||!wrap||!body) return;
 
     const data=uploadReviewIssues();
-    const errors=data.issues.filter(x=>x.severity==='error').length;
-    const warns=data.issues.filter(x=>x.severity==='warn').length;
-    const ok=data.ready?data.matched:0;
+    const grouped=groupUploadReviewIssues(data.issues);
+    const errors=grouped.filter(x=>x.severity==='error').length;
+    const warns=grouped.filter(x=>x.severity==='warn').length;
+    const ok=data.ready?Math.max(0,data.matched-grouped.filter(x=>x.payrollCode&&x.payrollCode!=='—').length):0;
 
     $('#reviewOkCount').textContent=`مطابق: ${ok}`;
     $('#reviewWarnCount').textContent=`تحذير: ${warns}`;
@@ -3196,12 +3474,12 @@ html[dir="ltr"] .app-toast{text-align:left}
     }
     if(!salaryFileName){
       state.textContent=`تم تحليل ملف الحضور (${employees.length} موظف). ارفع ملف المرتبات لإجراء المطابقة بين الملفين.`;
-      wrap.style.display=data.issues.length?'block':'none';
-      body.innerHTML=data.issues.map(reviewIssueRow).join('');
+      wrap.style.display=grouped.length?'block':'none';
+      body.innerHTML=grouped.map(reviewIssueRow).join('');
       return;
     }
 
-    if(!data.issues.length){
+    if(!grouped.length){
       state.classList.add('success');
       state.textContent=`تمت المراجعة: ${data.matched} موظف مطابق بين ملف الحضور وملف المرتبات ولا توجد ملاحظات تحتاج مراجعة.`;
       wrap.style.display='none';
@@ -3209,21 +3487,23 @@ html[dir="ltr"] .app-toast{text-align:left}
     }
 
     state.classList.add(errors?'danger':'warning');
-    state.textContent=`المراجعة اكتشفت ${errors} خطأ و${warns} تحذير. راجع التفاصيل أدناه قبل اعتماد الرواتب.`;
+    state.textContent=`المراجعة اكتشفت ${errors} موظف به خطأ و${warns} موظف به تحذير. تم تجميع جميع ملاحظات كل موظف في صف واحد للمراجعة.`;
     wrap.style.display='block';
-    body.innerHTML=data.issues
+    body.innerHTML=grouped
       .sort((a,b)=>(a.severity==='error'?0:1)-(b.severity==='error'?0:1))
       .map(reviewIssueRow).join('');
   }
 
   function reviewIssueRow(x){
     const label=x.severity==='error'?'خطأ':'تحذير';
+    const notes=(x.notes||[]).map((note,i)=>`${i+1}. ${esc(note)}`).join('<br>');
     return `<tr>
       <td><span class="review-status ${x.severity}">${label}</span></td>
-      <td>${esc(x.code||'—')}</td>
-      <td>${esc(x.attendanceName||'—')}</td>
-      <td>${esc(x.payrollName||'—')}</td>
-      <td>${esc(x.note||'')}</td>
+      <td>${esc(x.attendanceCode||'—')}</td>
+      <td>${esc(x.attendanceName||'غير موجود')}</td>
+      <td>${esc(x.payrollCode||'—')}</td>
+      <td>${esc(x.payrollName||'غير موجود')}</td>
+      <td class="review-notes">${notes}</td>
     </tr>`;
   }
 
@@ -4717,6 +4997,49 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
     });
   }
 
+  async function downloadAttendanceTemplate(){
+    const ok=await ensureXLSX();
+    if(!ok || typeof XLSX==='undefined'){
+      showPopup('تعذر تجهيز نموذج Excel. تحقق من اتصال الإنترنت.','error');
+      return;
+    }
+
+    const rows=[
+      ['Employee ID','First Name','Last Name','Date','Time','Punch State','Department','Job Title','Company'],
+      ['1001','AHMAD OSAMA','','2026-08-01','08:00','Check In','IT','IT Manager','Company'],
+      ['1001','AHMAD OSAMA','','2026-08-01','16:30','Check Out','IT','IT Manager','Company'],
+      ['1002','Randa A','','2026-08-01','09:00','Check In','Administration','','Company'],
+      ['1002','Randa A','','2026-08-01','17:00','Check Out','Administration','','Company']
+    ];
+
+    const notes=[
+      ['طريقة الاستخدام'],
+      ['1','لا تغيّر أسماء الأعمدة في الصف الأول.'],
+      ['2','Employee ID يجب أن يكون نفس كود الموظف المستخدم في ملف المرتبات.'],
+      ['3','لكل يوم ضع بصمتين على الأقل للموظف: دخول وخروج.'],
+      ['4','النظام يعتمد على أول وقت وآخر وقت في اليوم لحساب مدة العمل، ولا يعتمد على قيمة Punch State للحساب.'],
+      ['5','صيغة التاريخ المفضلة YYYY-MM-DD مثل 2026-08-01.'],
+      ['6','صيغة الوقت HH:MM مثل 08:00 و 16:30.'],
+      ['7','يمكن حذف الصفوف التجريبية وبدء إدخال بيانات الموظفين الفعلية.'],
+      ['8','الأعمدة Department / Job Title / Company اختيارية.']
+    ];
+
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[
+      {wch:14},{wch:24},{wch:18},{wch:14},{wch:12},{wch:14},
+      {wch:20},{wch:22},{wch:18}
+    ];
+    XLSX.utils.book_append_sheet(wb,ws,'Attendance');
+
+    const wsNotes=XLSX.utils.aoa_to_sheet(notes);
+    wsNotes['!cols']=[{wch:6},{wch:85}];
+    XLSX.utils.book_append_sheet(wb,wsNotes,'Instructions');
+
+    XLSX.writeFile(wb,'Attendance_Template.xlsx',{compression:true});
+    showPopup('تم تجهيز نموذج الحضور والانصراف. احذف البيانات التجريبية ثم أدخل بياناتك وارفع الملف.','success','تم تحميل النموذج');
+  }
+
   async function downloadPayrollTemplate(){
     const ok=await ensureXLSX();
     if(!ok || typeof XLSX==='undefined'){
@@ -4736,6 +5059,8 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
     showPopup('تم تجهيز نموذج ملف المرتبات.','success','تم تحميل النموذج');
   }
 
+  $('#downloadAttendanceTemplateBtn')?.addEventListener('click',downloadAttendanceTemplate);
+  $('#exportReviewExcelBtn')?.addEventListener('click',exportUploadReviewExcel);
   $('#loadHistoryBtn')?.addEventListener('click',loadHistoryFile);
   $('#downloadPayrollTemplateBtn')?.addEventListener('click',downloadPayrollTemplate);
 
