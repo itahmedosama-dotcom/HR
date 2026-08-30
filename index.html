@@ -1177,6 +1177,212 @@ html[dir="ltr"] .app-toast{text-align:left}
     display:none !important;
   }
 }
+
+#printing .toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+#printing .toolbar select{
+  min-width:210px;
+  flex:1 1 220px;
+}
+#printing .toolbar button{
+  flex:0 0 auto;
+}
+@media(max-width:700px){
+  #printing .toolbar button,
+  #printing .toolbar select{
+    width:100%;
+    flex:1 1 100%;
+  }
+}
+
+#printing #exportPrintExcelBtn,
+#printing #exportSalarySummaryExcelBtn{
+  min-width:165px;
+}
+
+/* ===== Print & Approval redesign ===== */
+#printing .print-approval-card{
+  padding:18px;
+  border-radius:18px;
+}
+#printing .print-page-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  margin-bottom:14px;
+}
+#printing .print-page-head h2{
+  margin:0 0 5px;
+  font-size:24px;
+}
+#printing .print-page-head p{
+  margin:0;
+  color:#667085;
+  font-size:12px;
+}
+#printing .print-page-badge{
+  background:#ecfdf8;
+  color:#087f72;
+  border:1px solid #b7eadf;
+  border-radius:999px;
+  padding:7px 11px;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+#printing .print-section{
+  border:1px solid #dbe4ec;
+  background:#fbfdff;
+  border-radius:14px;
+  padding:14px;
+  margin-top:12px;
+}
+#printing .print-section-title{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  margin-bottom:12px;
+}
+#printing .print-section-title b{
+  font-size:15px;
+}
+#printing .print-section-title span{
+  color:#667085;
+  font-size:11px;
+}
+#printing .print-control-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+#printing .print-control-grid label,
+#printing .approval-bulk-redesign label{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+#printing .print-control-grid label>span,
+#printing .approval-bulk-redesign label>span{
+  font-size:11px;
+  color:#475467;
+  font-weight:700;
+}
+#printing .print-control-grid select,
+#printing .approval-bulk-redesign select{
+  width:100%;
+  min-height:42px;
+  border-radius:10px;
+  border:1px solid #ccd7e2;
+  background:#fff;
+  padding:0 12px;
+}
+#printing .print-button-groups{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+#printing .print-btn-group{
+  border:1px solid #e3eaf1;
+  border-radius:12px;
+  padding:11px;
+  background:#fff;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+#printing .print-btn-group .group-title{
+  grid-column:1/-1;
+  font-size:11px;
+  color:#667085;
+  font-weight:800;
+}
+#printing .action-btn{
+  min-height:42px;
+  border-radius:10px;
+  font-weight:800;
+  justify-content:center;
+}
+#printing .excel-detail-btn{
+  background:#eef4f8;
+  border-color:#d6e1e9;
+}
+#printing .excel-summary-btn{
+  background:#eefbf5;
+  border-color:#bfe7d4;
+  color:#08745f;
+}
+#printing .approval-bulk-redesign{
+  display:grid;
+  grid-template-columns:minmax(260px,1fr) auto;
+  align-items:end;
+  gap:10px;
+  padding:0;
+  border:0;
+  background:transparent;
+}
+#printing .approval-select-redesign{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+  padding:10px 0 0;
+  border-top:1px dashed #d7e1e8;
+}
+#printing .selection-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+#printing .compact-btn{
+  min-height:34px;
+  padding:6px 13px;
+  border-radius:9px;
+}
+#printing .selection-count{
+  font-size:11px;
+  color:#475467;
+  background:#f2f5f8;
+  border-radius:999px;
+  padding:6px 10px;
+}
+#printing .print-note{
+  margin-top:10px!important;
+  border-radius:10px;
+  background:#eefbf9;
+  border:1px solid #b8ebe2;
+  color:#17675e;
+  font-size:11px;
+  line-height:1.8;
+}
+#printing .employee-approval-section{
+  padding-bottom:8px;
+}
+#printing .approval-list-redesign{
+  gap:10px;
+}
+#printing .approval-list-redesign .settings-card,
+#printing .approval-list-redesign > div{
+  border-radius:12px;
+}
+@media(max-width:850px){
+  #printing .print-button-groups{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  #printing .print-page-head{display:block}
+  #printing .print-page-badge{display:inline-flex;margin-top:9px}
+  #printing .print-control-grid{grid-template-columns:1fr}
+  #printing .print-btn-group{grid-template-columns:1fr}
+  #printing .approval-bulk-redesign{grid-template-columns:1fr}
+  #printing .approval-select-redesign{align-items:flex-start;flex-direction:column}
+  #printing .selection-count{width:100%;text-align:center}
+}
 </style>
 </head>
 <body>
@@ -1651,39 +1857,88 @@ html[dir="ltr"] .app-toast{text-align:left}
   </section>
 
   <section id="printing" class="panel">
-    <div class="card">
-      <h2>الطباعة والاعتماد</h2>
-      <div class="toolbar">
-        <select id="printType">
-          <option value="summary">ملخص فقط بدون تفاصيل الأيام</option>
-          <option value="full">تقرير كامل مع تفاصيل الأيام</option>
-        </select>
-        <select id="printEmployee"><option value="">الكل</option></select>
-        <button id="printOneBtn" class="secondary">طباعة الموظفين المحددين</button>
-        <button id="printAllBtn" class="primary">طباعة الكل</button>
-      </div>
-      <div class="approval-bulk">
+    <div class="card print-approval-card">
+      <div class="print-page-head">
         <div>
-          <b>تحديث حالة الاعتماد</b>
-          <span>حدد موظفًا واحدًا أو أكثر، أو اختر الكل، ثم طبق الحالة المطلوبة.</span>
+          <h2>الطباعة والاعتماد</h2>
+          <p>اختر الموظفين ونوع التقرير، ثم اطبع أو صدّر البيانات إلى Excel.</p>
         </div>
-        <select id="bulkApprovalStatus">
-          <option value="unspecified">غير محددة</option>
-          <option value="pending">قيد الاعتماد</option>
-          <option value="approved">معتمد</option>
-          <option value="rejected">غير معتمد</option>
-        </select>
-        <button type="button" id="applyBulkApprovalBtn" class="primary">تطبيق على المحدد</button>
+        <span class="print-page-badge">إدارة التقارير والاعتماد</span>
       </div>
-      <div class="approval-select-toolbar">
-        <button type="button" class="secondary" id="approvalSelectAll">تحديد الكل</button>
-        <button type="button" class="secondary" id="approvalClearSelection">إلغاء التحديد</button>
-        <span id="approvalSelectedCount">لم يتم تحديد موظفين</span>
+
+      <div class="print-section print-actions-section">
+        <div class="print-section-title">
+          <b>الطباعة والتصدير</b>
+          <span>يمكن التطبيق على الموظفين المحددين أو على جميع الموظفين.</span>
+        </div>
+
+        <div class="print-control-grid">
+          <label>
+            <span>نوع التقرير</span>
+            <select id="printType">
+              <option value="summary">ملخص فقط بدون تفاصيل الأيام</option>
+              <option value="full">تقرير كامل مع تفاصيل الأيام</option>
+            </select>
+          </label>
+          <label>
+            <span>اختيار الموظف</span>
+            <select id="printEmployee"><option value="">الكل</option></select>
+          </label>
+        </div>
+
+        <div class="print-button-groups">
+          <div class="print-btn-group">
+            <span class="group-title">الطباعة</span>
+            <button id="printOneBtn" class="secondary action-btn">طباعة الموظفين المحددين</button>
+            <button id="printAllBtn" class="primary action-btn">طباعة الكل</button>
+          </div>
+          <div class="print-btn-group export-group">
+            <span class="group-title">تصدير Excel</span>
+            <button id="exportPrintExcelBtn" class="secondary action-btn excel-detail-btn">تصدير تفاصيل الراتب</button>
+            <button id="exportSalarySummaryExcelBtn" class="secondary action-btn excel-summary-btn">تصدير ملخص الراتب</button>
+          </div>
+        </div>
       </div>
-      <div class="note" style="margin-top:12px">
-        اختر موظفًا من القائمة فيتم تحديده ويختفي من القائمة، ثم اختر موظفًا آخر لإضافته. التحديد مرتبط بجميع الصفحات. اختيار "الكل" يلغي التحديد ويعيد جميع الموظفين إلى القوائم. زر "طباعة الموظفين المحددين" يطبع الاختيارات الحالية فقط.
+
+      <div class="print-section approval-section">
+        <div class="print-section-title">
+          <b>الاعتماد الجماعي</b>
+          <span>حدد الموظفين ثم غيّر حالة الاعتماد مرة واحدة.</span>
+        </div>
+
+        <div class="approval-bulk approval-bulk-redesign">
+          <label>
+            <span>حالة الاعتماد</span>
+            <select id="bulkApprovalStatus">
+              <option value="unspecified">غير محددة</option>
+              <option value="pending">قيد الاعتماد</option>
+              <option value="approved">معتمد</option>
+              <option value="rejected">غير معتمد</option>
+            </select>
+          </label>
+          <button type="button" id="applyBulkApprovalBtn" class="primary action-btn">تطبيق على المحدد</button>
+        </div>
+
+        <div class="approval-select-toolbar approval-select-redesign">
+          <div class="selection-actions">
+            <button type="button" class="secondary compact-btn" id="approvalSelectAll">تحديد الكل</button>
+            <button type="button" class="secondary compact-btn" id="approvalClearSelection">إلغاء التحديد</button>
+          </div>
+          <span id="approvalSelectedCount" class="selection-count">لم يتم تحديد موظفين</span>
+        </div>
+
+        <div class="note print-note">
+          اختر موظفًا من القائمة فيتم تحديده ويختفي من القائمة، ثم اختر موظفًا آخر لإضافته. التحديد مرتبط بجميع الصفحات. اختيار "الكل" يلغي التحديد ويعيد جميع الموظفين إلى القوائم. زر "طباعة الموظفين المحددين" يطبع الاختيارات الحالية فقط.
+        </div>
       </div>
-      <div id="approvalList" class="settings-grid"></div>
+
+      <div class="print-section employee-approval-section">
+        <div class="print-section-title">
+          <b>اعتماد الموظفين</b>
+          <span>يمكن مراجعة وتحديث حالة كل موظف بشكل منفصل.</span>
+        </div>
+        <div id="approvalList" class="settings-grid approval-list-redesign"></div>
+      </div>
     </div>
   </section>
 
@@ -1747,6 +2002,51 @@ html[dir="ltr"] .app-toast{text-align:left}
     if('scrollRestoration' in history) history.scrollRestoration='manual';
     window.scrollTo(0,0);
   }catch(_){}
+
+  let xlsxStyleLoadingPromise=null;
+  function ensureStyledXLSX(){
+    if(window.__HR_XLSX_STYLE_READY && window.XLSX) return Promise.resolve(true);
+    if(xlsxStyleLoadingPromise) return xlsxStyleLoadingPromise;
+
+    const sources=[
+      'https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js',
+      'https://unpkg.com/xlsx-js-style@1.2.0/dist/xlsx.bundle.js'
+    ];
+
+    xlsxStyleLoadingPromise=new Promise(resolve=>{
+      let i=0;
+      const tryNext=()=>{
+        if(i>=sources.length){
+          xlsxStyleLoadingPromise=null;
+          resolve(false);
+          return;
+        }
+        const s=document.createElement('script');
+        s.src=sources[i++];
+        s.async=true;
+        const timer=setTimeout(()=>{
+          s.onload=s.onerror=null;
+          try{s.remove();}catch(_){}
+          tryNext();
+        },8000);
+        s.onload=()=>{
+          clearTimeout(timer);
+          if(window.XLSX){
+            window.__HR_XLSX_STYLE_READY=true;
+            resolve(true);
+          }else tryNext();
+        };
+        s.onerror=()=>{
+          clearTimeout(timer);
+          try{s.remove();}catch(_){}
+          tryNext();
+        };
+        document.head.appendChild(s);
+      };
+      tryNext();
+    });
+    return xlsxStyleLoadingPromise;
+  }
 
   let xlsxLoadingPromise=null;
   function ensureXLSX(){
@@ -2275,6 +2575,41 @@ html[dir="ltr"] .app-toast{text-align:left}
     'غير سعودي':'Non-Saudi',
     'سعودي':'Saudi',
     'سعودي (SA)':'Saudi (SA)'
+  });
+
+  Object.assign(AR_EN,{
+    'تصدير Excel لكل الموظفين':'Export All Employees to Excel',
+    'الإجمالي':'Total',
+    'حالة الاعتماد':'Approval Status',
+    'تم التصدير':'Export Complete'
+  });
+
+  Object.assign(AR_EN,{
+    'تصدير Excel المحدد / الكل':'Export Selected / All to Excel',
+    'الطباعة والاعتماد - ملخص بيانات الموظفين':'Print & Approval - Employee Payroll Summary',
+    'فترة التقرير':'Report Period'
+  });
+
+  Object.assign(AR_EN,{
+    'تصدير تفاصيل الراتب':'Export Salary Details',
+    'تصدير ملخص الراتب':'Export Salary Summary',
+    'ملخص الراتب':'Salary Summary',
+    'تفاصيل الراتب':'Salary Details'
+  });
+
+  Object.assign(AR_EN,{
+    'اختر الموظفين ونوع التقرير، ثم اطبع أو صدّر البيانات إلى Excel.':'Choose employees and report type, then print or export to Excel.',
+    'إدارة التقارير والاعتماد':'Reports & Approval',
+    'الطباعة والتصدير':'Print & Export',
+    'يمكن التطبيق على الموظفين المحددين أو على جميع الموظفين.':'You can apply actions to selected employees or all employees.',
+    'نوع التقرير':'Report Type',
+    'اختيار الموظف':'Select Employee',
+    'الطباعة':'Printing',
+    'تصدير Excel':'Excel Export',
+    'الاعتماد الجماعي':'Bulk Approval',
+    'حدد الموظفين ثم غيّر حالة الاعتماد مرة واحدة.':'Select employees, then update approval status in one action.',
+    'اعتماد الموظفين':'Employee Approval',
+    'يمكن مراجعة وتحديث حالة كل موظف بشكل منفصل.':'Review and update each employee approval status individually.'
   });
 
   const EN_AR=Object.fromEntries(Object.entries(AR_EN).map(([a,e])=>[e,a]));
@@ -4778,6 +5113,477 @@ function renderAll(){
     </section>`;
   }
 
+  async function exportPrintApprovalExcel(){
+    if(!employees.length){
+      showPopup('لا توجد بيانات لتصديرها. حمّل ملف الحضور أولًا.','error');
+      return;
+    }
+
+    const chosen=summarySelection.size
+      ? employees.filter(e=>summarySelection.has(e.key))
+      : employees.slice();
+
+    if(!chosen.length){
+      showPopup('لا يوجد موظفون محددون للتصدير.','error');
+      return;
+    }
+
+    // Use xlsx-js-style so the downloaded workbook keeps colors, borders and fonts.
+    let ok=await ensureStyledXLSX();
+    if(!ok || typeof XLSX==='undefined'){
+      ok=await ensureXLSX();
+    }
+    if(!ok || typeof XLSX==='undefined'){
+      showPopup('تعذر تجهيز ملف Excel. تحقق من اتصال الإنترنت ثم أعد المحاولة.','error','فشل التصدير');
+      return;
+    }
+
+    try{
+      const generatedAt=new Date().toLocaleString(currentLang==='en'?'en-GB':'ar-SA');
+      const headers=[
+        'كود الموظف','اسم الموظف','الجنسية',
+        'الساعات اليومية','أيام العمل الفعلية','أيام الإجازة الأسبوعية','معامل الإضافي',
+        'أيام الحضور','أيام الغياب',
+        'الساعات الفعلية','الساعات المطلوبة','الإضافي الفعلي','الإضافي المستحق','الساعات الناقصة',
+        'الراتب الأساسي','البدلات','إجمالي الراتب',
+        'التأمينات %','خصم التأمينات',
+        'خصم الدوام المحسوب','خصم الدوام المطبق',
+        'إجمالي الخصومات الأخرى','إجمالي الجزاءات',
+        'الصافي قبل الجزاءات','صافي الراتب النهائي',
+        'تطبيق خصم الدوام','سبب عدم تطبيق الخصم','حالة الاعتماد'
+      ];
+
+      // Same layout as the requested example:
+      // Row 1 report period, Row 2 export date/selection, Row 3 blank, Row 4 headers.
+      const rows=[
+        [
+          currentLang==='en'?'Report Period':'فترة التقرير',
+          reportPeriod.from||'',
+          reportPeriod.to||''
+        ],
+        [
+          currentLang==='en'?'Export Date & Time':'تاريخ ووقت التصدير',
+          generatedAt,
+          summarySelection.size
+            ? (currentLang==='en'?`Selected Employees: ${chosen.length}`:`الموظفون المحددون: ${chosen.length}`)
+            : (currentLang==='en'?`All Employees: ${chosen.length}`:`كل الموظفين: ${chosen.length}`)
+        ],
+        [],
+        headers
+      ];
+
+      const totals={
+        present:0,absent:0,actual:0,required:0,overtime:0,weightedOvertime:0,shortage:0,
+        basic:0,allowances:0,gross:0,insurance:0,calculatedDeduction:0,appliedDeduction:0,
+        otherDeductions:0,penalties:0,netBeforePenalties:0,net:0
+      };
+
+      chosen.forEach(e=>{
+        const c=calcEmployee(e);
+        totals.present+=Number(c.presentDays)||0;
+        totals.absent+=Number(c.absentDays)||0;
+        totals.actual+=Number(hours(c.actual))||0;
+        totals.required+=Number(hours(c.required))||0;
+        totals.overtime+=Number(hours(c.overtime))||0;
+        totals.weightedOvertime+=Number(hours(c.weightedOvertime))||0;
+        totals.shortage+=Number(hours(c.shortage))||0;
+        totals.basic+=basicSalary(e);
+        totals.allowances+=allowancesSalary(e);
+        totals.gross+=Number(c.grossSalary)||0;
+        totals.insurance+=Number(c.insuranceDeduction)||0;
+        totals.calculatedDeduction+=Number(c.calculatedDeduction)||0;
+        totals.appliedDeduction+=Number(c.appliedDeduction)||0;
+        totals.otherDeductions+=Number(c.otherDeductionsTotal)||0;
+        totals.penalties+=Number(c.penaltiesTotal)||0;
+        totals.netBeforePenalties+=Number(c.netBeforePenalties)||0;
+        totals.net+=Number(c.netSalary)||0;
+
+        rows.push([
+          e.id||'',e.name||'',nationalityText(e),
+          dailyHours(e),actualWorkDays(e),dayNames(offDays(e)),overtimeMultiplier(e),
+          c.presentDays,c.absentDays,
+          Number(hours(c.actual)),Number(hours(c.required)),Number(hours(c.overtime)),
+          Number(hours(c.weightedOvertime)),Number(hours(c.shortage)),
+          basicSalary(e),allowancesSalary(e),c.grossSalary,
+          insurancePercent(e),c.insuranceDeduction,
+          c.calculatedDeduction,c.appliedDeduction,
+          c.otherDeductionsTotal,c.penaltiesTotal,
+          c.netBeforePenalties,c.netSalary,
+          applyDeduction(e)?'نعم':'لا',
+          applyDeduction(e)?'':noDeductionReason(e),
+          approvalText(approval(e))
+        ]);
+      });
+
+      rows.push([
+        '',
+        currentLang==='en'
+          ? `TOTAL (${chosen.length} Employees)`
+          : `الإجمالي (${chosen.length} موظف)`,
+        '',
+        '','','','',
+        totals.present,totals.absent,
+        Number(totals.actual.toFixed(2)),Number(totals.required.toFixed(2)),
+        Number(totals.overtime.toFixed(2)),Number(totals.weightedOvertime.toFixed(2)),
+        Number(totals.shortage.toFixed(2)),
+        Number(totals.basic.toFixed(2)),Number(totals.allowances.toFixed(2)),
+        Number(totals.gross.toFixed(2)),
+        '',
+        Number(totals.insurance.toFixed(2)),
+        Number(totals.calculatedDeduction.toFixed(2)),Number(totals.appliedDeduction.toFixed(2)),
+        Number(totals.otherDeductions.toFixed(2)),Number(totals.penalties.toFixed(2)),
+        Number(totals.netBeforePenalties.toFixed(2)),Number(totals.net.toFixed(2)),
+        '','',''
+      ]);
+
+      const wb=XLSX.utils.book_new();
+      const ws=XLSX.utils.aoa_to_sheet(exportRows(rows));
+      const lastRow=rows.length;
+      const lastCol=headers.length-1;
+
+      const thinBorder={
+        top:{style:'thin',color:{rgb:'808080'}},
+        bottom:{style:'thin',color:{rgb:'808080'}},
+        left:{style:'thin',color:{rgb:'808080'}},
+        right:{style:'thin',color:{rgb:'808080'}}
+      };
+
+      const center={horizontal:'center',vertical:'center',wrapText:true};
+      const headerStyle={
+        font:{bold:true,color:{rgb:'000000'},sz:11},
+        fill:{fgColor:{rgb:'D9E1F2'}},
+        alignment:center,
+        border:thinBorder
+      };
+      const metaLabelStyle={
+        font:{bold:true,color:{rgb:'000000'}},
+        fill:{fgColor:{rgb:'FFFFFF'}},
+        alignment:center,
+        border:thinBorder
+      };
+      const metaValueStyle={
+        font:{bold:false,color:{rgb:'000000'}},
+        fill:{fgColor:{rgb:'FFF200'}},
+        alignment:center,
+        border:thinBorder
+      };
+      const bodyStyle={
+        alignment:center,
+        border:thinBorder
+      };
+      const totalStyle={
+        font:{bold:true,color:{rgb:'000000'}},
+        fill:{fgColor:{rgb:'92D050'}},
+        alignment:center,
+        border:thinBorder
+      };
+
+      // Metadata rows A1:C2
+      ['A1','A2'].forEach(a=>{ if(ws[a]) ws[a].s=metaLabelStyle; });
+      ['B1','C1','B2','C2'].forEach(a=>{ if(ws[a]) ws[a].s=metaValueStyle; });
+
+      // Header row = row 4.
+      for(let c=0;c<=lastCol;c++){
+        const a=XLSX.utils.encode_cell({r:3,c});
+        if(ws[a]) ws[a].s=headerStyle;
+      }
+
+      // Employee data rows.
+      for(let r=4;r<lastRow-1;r++){
+        for(let c=0;c<=lastCol;c++){
+          const a=XLSX.utils.encode_cell({r,c});
+          if(ws[a]) ws[a].s=bodyStyle;
+        }
+      }
+
+      // Totals row in green.
+      const totalsRowIndex=lastRow-1;
+      for(let c=0;c<=lastCol;c++){
+        const a=XLSX.utils.encode_cell({r:totalsRowIndex,c});
+        if(ws[a]) ws[a].s=totalStyle;
+      }
+
+      // Number formats.
+      const twoDecimalCols=[3,6,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
+      const integerCols=[4,7,8];
+      for(let r=4;r<lastRow;r++){
+        twoDecimalCols.forEach(c=>{
+          const a=XLSX.utils.encode_cell({r,c});
+          if(ws[a] && typeof ws[a].v==='number') ws[a].z='0.00';
+        });
+        integerCols.forEach(c=>{
+          const a=XLSX.utils.encode_cell({r,c});
+          if(ws[a] && typeof ws[a].v==='number') ws[a].z='0';
+        });
+      }
+
+      // Column widths similar to the screenshot while keeping all fields visible.
+      ws['!cols']=[
+        {wch:14},{wch:24},{wch:16},{wch:14},{wch:18},{wch:22},{wch:14},
+        {wch:12},{wch:12},{wch:15},{wch:16},{wch:15},{wch:17},{wch:15},
+        {wch:16},{wch:14},{wch:16},{wch:14},{wch:16},{wch:20},{wch:18},
+        {wch:21},{wch:16},{wch:20},{wch:20},{wch:18},{wch:34},{wch:18}
+      ];
+
+      ws['!rows']=[
+        {hpt:20},{hpt:20},{hpt:8},{hpt:26}
+      ];
+
+      // Freeze header, filter only the actual data table, RTL in Arabic.
+      ws['!freeze']={xSplit:0,ySplit:4};
+      ws['!autofilter']={ref:`A4:AB${lastRow}`};
+      ws['!views']=[{RTL:currentLang!=='en'}];
+
+      XLSX.utils.book_append_sheet(
+        wb,ws,sheetName('تفاصيل الراتب','Salary Details')
+      );
+
+      const period=(reportPeriod.from||'Report')+(reportPeriod.to?'_'+reportPeriod.to:'');
+      const scope=summarySelection.size?'Selected':'All';
+      const filename=`HR_Salary_Details_${scope}_${period}.xlsx`.replace(/[\\/:*?"<>|]/g,'-');
+      XLSX.writeFile(wb,filename,{compression:true,cellStyles:true});
+
+      showPopup(
+        summarySelection.size
+          ? `تم تصدير ${chosen.length} موظف محدد بنفس التنسيق، وآخر صف يحتوي على الإجماليات.`
+          : `تم تصدير كل الموظفين (${chosen.length}) بنفس التنسيق، وآخر صف يحتوي على الإجماليات.`,
+        'success','تم التصدير'
+      );
+    }catch(err){
+      console.error(err);
+      showPopup('حدث خطأ أثناء إنشاء ملف Excel: '+(err?.message||err),'error','فشل التصدير');
+    }
+  }
+
+  async function exportSalarySummaryExcel(){
+    if(!employees.length){
+      showPopup('لا توجد بيانات لتصديرها. حمّل ملف الحضور أولًا.','error');
+      return;
+    }
+
+    const chosen=summarySelection.size
+      ? employees.filter(e=>summarySelection.has(e.key))
+      : employees.slice();
+
+    if(!chosen.length){
+      showPopup('لا يوجد موظفون محددون للتصدير.','error');
+      return;
+    }
+
+    let ok=await ensureStyledXLSX();
+    if(!ok || typeof XLSX==='undefined'){
+      ok=await ensureXLSX();
+    }
+    if(!ok || typeof XLSX==='undefined'){
+      showPopup('تعذر تجهيز ملف Excel. تحقق من اتصال الإنترنت ثم أعد المحاولة.','error','فشل التصدير');
+      return;
+    }
+
+    try{
+      const generatedAt=new Date().toLocaleString(currentLang==='en'?'en-GB':'ar-SA');
+
+      // Salary Summary exactly follows the compact financial layout requested.
+      const headers=[
+        'كود الموظف','اسم الموظف','الجنسية',
+        'الراتب الأساسي','البدلات','إجمالي الراتب',
+        'التأمينات %','خصم التأمينات',
+        'خصم الدوام المحسوب','خصم الدوام المطبق',
+        'إجمالي الخصومات الأخرى','إجمالي الجزاءات',
+        'الصافي قبل الجزاءات','صافي الراتب النهائي'
+      ];
+
+      const rows=[
+        [
+          currentLang==='en'?'Report Period':'فترة التقرير',
+          reportPeriod.from||'',
+          reportPeriod.to||''
+        ],
+        [
+          currentLang==='en'?'Export Date & Time':'تاريخ ووقت التصدير',
+          generatedAt,
+          summarySelection.size
+            ? (currentLang==='en'?`Selected Employees: ${chosen.length}`:`الموظفون المحددون: ${chosen.length}`)
+            : (currentLang==='en'?`All Employees: ${chosen.length}`:`كل الموظفين: ${chosen.length}`)
+        ],
+        [],
+        headers
+      ];
+
+      const totals={
+        basic:0,allowances:0,gross:0,insurance:0,
+        calculatedDeduction:0,appliedDeduction:0,
+        otherDeductions:0,penalties:0,netBeforePenalties:0,net:0
+      };
+
+      chosen.forEach(e=>{
+        const c=calcEmployee(e);
+
+        totals.basic+=basicSalary(e);
+        totals.allowances+=allowancesSalary(e);
+        totals.gross+=Number(c.grossSalary)||0;
+        totals.insurance+=Number(c.insuranceDeduction)||0;
+        totals.calculatedDeduction+=Number(c.calculatedDeduction)||0;
+        totals.appliedDeduction+=Number(c.appliedDeduction)||0;
+        totals.otherDeductions+=Number(c.otherDeductionsTotal)||0;
+        totals.penalties+=Number(c.penaltiesTotal)||0;
+        totals.netBeforePenalties+=Number(c.netBeforePenalties)||0;
+        totals.net+=Number(c.netSalary)||0;
+
+        rows.push([
+          e.id||'',
+          e.name||'',
+          nationalityText(e),
+          basicSalary(e),
+          allowancesSalary(e),
+          c.grossSalary,
+          insurancePercent(e),
+          c.insuranceDeduction,
+          c.calculatedDeduction,
+          c.appliedDeduction,
+          c.otherDeductionsTotal,
+          c.penaltiesTotal,
+          c.netBeforePenalties,
+          c.netSalary
+        ]);
+      });
+
+      // Final totals row.
+      rows.push([
+        '',
+        currentLang==='en'
+          ? `TOTAL (${chosen.length} Employees)`
+          : `الإجمالي (${chosen.length} موظف)`,
+        '',
+        Number(totals.basic.toFixed(2)),
+        Number(totals.allowances.toFixed(2)),
+        Number(totals.gross.toFixed(2)),
+        '',
+        Number(totals.insurance.toFixed(2)),
+        Number(totals.calculatedDeduction.toFixed(2)),
+        Number(totals.appliedDeduction.toFixed(2)),
+        Number(totals.otherDeductions.toFixed(2)),
+        Number(totals.penalties.toFixed(2)),
+        Number(totals.netBeforePenalties.toFixed(2)),
+        Number(totals.net.toFixed(2))
+      ]);
+
+      const wb=XLSX.utils.book_new();
+      const ws=XLSX.utils.aoa_to_sheet(exportRows(rows));
+      const lastRow=rows.length;
+      const lastCol=headers.length-1;
+
+      const thinBorder={
+        top:{style:'thin',color:{rgb:'808080'}},
+        bottom:{style:'thin',color:{rgb:'808080'}},
+        left:{style:'thin',color:{rgb:'808080'}},
+        right:{style:'thin',color:{rgb:'808080'}}
+      };
+
+      const center={horizontal:'center',vertical:'center',wrapText:true};
+      const headerStyle={
+        font:{bold:true,color:{rgb:'000000'},sz:11},
+        fill:{fgColor:{rgb:'D9E1F2'}},
+        alignment:center,
+        border:thinBorder
+      };
+      const metaLabelStyle={
+        font:{bold:true,color:{rgb:'000000'}},
+        fill:{fgColor:{rgb:'FFFFFF'}},
+        alignment:center,
+        border:thinBorder
+      };
+      const metaValueStyle={
+        font:{bold:false,color:{rgb:'000000'}},
+        fill:{fgColor:{rgb:'FFF200'}},
+        alignment:center,
+        border:thinBorder
+      };
+      const bodyStyle={
+        alignment:center,
+        border:thinBorder
+      };
+      const totalStyle={
+        font:{bold:true,color:{rgb:'000000'}},
+        fill:{fgColor:{rgb:'92D050'}},
+        alignment:center,
+        border:thinBorder
+      };
+
+      // Meta rows styling
+      ['A1','A2'].forEach(a=>{ if(ws[a]) ws[a].s=metaLabelStyle; });
+      ['B1','C1','B2','C2'].forEach(a=>{ if(ws[a]) ws[a].s=metaValueStyle; });
+
+      // Headers row 4
+      for(let c=0;c<=lastCol;c++){
+        const a=XLSX.utils.encode_cell({r:3,c});
+        if(ws[a]) ws[a].s=headerStyle;
+      }
+
+      // Employee rows
+      for(let r=4;r<lastRow-1;r++){
+        for(let c=0;c<=lastCol;c++){
+          const a=XLSX.utils.encode_cell({r,c});
+          if(ws[a]) ws[a].s=bodyStyle;
+        }
+      }
+
+      // Total row
+      const totalRowIndex=lastRow-1;
+      for(let c=0;c<=lastCol;c++){
+        const a=XLSX.utils.encode_cell({r:totalRowIndex,c});
+        if(ws[a]) ws[a].s=totalStyle;
+      }
+
+      // Number format
+      const decimalCols=[3,4,5,6,7,8,9,10,11,12,13];
+      for(let r=4;r<lastRow;r++){
+        decimalCols.forEach(c=>{
+          const a=XLSX.utils.encode_cell({r,c});
+          if(ws[a] && typeof ws[a].v==='number') ws[a].z='0.00';
+        });
+      }
+
+      // Widths aligned with compact salary summary screenshot
+      ws['!cols']=[
+        {wch:14},{wch:24},{wch:16},
+        {wch:16},{wch:14},{wch:16},
+        {wch:14},{wch:16},
+        {wch:20},{wch:18},
+        {wch:21},{wch:16},
+        {wch:20},{wch:20}
+      ];
+
+      ws['!rows']=[
+        {hpt:20},{hpt:20},{hpt:8},{hpt:26}
+      ];
+
+      ws['!freeze']={xSplit:0,ySplit:4};
+      ws['!autofilter']={ref:`A4:N${lastRow}`};
+      ws['!views']=[{RTL:currentLang!=='en'}];
+
+      XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        sheetName('ملخص الراتب','Salary Summary')
+      );
+
+      const period=(reportPeriod.from||'Report')+(reportPeriod.to?'_'+reportPeriod.to:'');
+      const scope=summarySelection.size?'Selected':'All';
+      const filename=`HR_Salary_Summary_${scope}_${period}.xlsx`.replace(/[\\/:*?"<>|]/g,'-');
+      XLSX.writeFile(wb,filename,{compression:true,cellStyles:true});
+
+      showPopup(
+        summarySelection.size
+          ? `تم تصدير ملخص الراتب لـ ${chosen.length} موظف محدد.`
+          : `تم تصدير ملخص الراتب لكل الموظفين (${chosen.length}).`,
+        'success','تم التصدير'
+      );
+    }catch(err){
+      console.error(err);
+      showPopup('حدث خطأ أثناء إنشاء ملف Excel: '+(err?.message||err),'error','فشل التصدير');
+    }
+  }
+
   function doPrint(list){
     if(!list.length){$('#status').textContent='لا توجد بيانات للطباعة.';return;}
     const type=$('#printType')?$('#printType').value:'summary';
@@ -4860,6 +5666,8 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
   $('#goSummaryBtn')?.addEventListener('click',()=>{if(employees.length) openTab('dashboard');});
   $('#saveSettingsBtn').addEventListener('click',saveSettings);
   $('#applyBulkApprovalBtn')?.addEventListener('click',applyBulkApproval);
+  $('#exportPrintExcelBtn')?.addEventListener('click',exportPrintApprovalExcel);
+  $('#exportSalarySummaryExcelBtn')?.addEventListener('click',exportSalarySummaryExcel);
   employeeScopeSelectIds.forEach(id=>{
     $('#'+id)?.addEventListener('change',function(){ handleEmployeeScopeSelect(this); });
   });
