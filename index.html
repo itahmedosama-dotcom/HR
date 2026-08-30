@@ -1106,12 +1106,16 @@ html[dir="ltr"] .app-toast{text-align:left}
           </div>
           <div id="salaryStatus" class="salary-file-status">لم يتم تحميل ملف المرتبات.</div>
           <div class="salary-required-columns">
-            <b>ملحوظة — الأعمدة المطلوبة في ملف المرتبات:</b>
+            <b>ملحوظة — أعمدة ملف المرتبات:</b>
             <span>كود الموظف</span>
             <span>اسم الموظف</span>
-            <span>المرتب الشهري</span>
+            <span>الراتب الأساسي</span>
+            <span>البدلات</span>
+            <span>الجنسية</span>
+            <span>التأمينات %</span>
             <span>رقم الجوال <em style="font-style:normal;font-weight:400">(اختياري)</em></span>
-            <small>الربط يتم باستخدام كود الموظف فقط. رقم الجوال اختياري ويُستخدم فقط في صفحة إرسال ملخص الراتب عبر واتساب. أي موظف بدون كود أو مرتب مطابق يحتسب مرتبه 0.00.</small>
+            <small>إجمالي الراتب = الراتب الأساسي + البدلات. السعودي يرمز له بـ SA فقط؛ أي قيمة أخرى أو خلية فارغة تعتبر غير سعودي. نسبة التأمينات تُطبق فقط على SA وتُحسب من الراتب الأساسي فقط. الربط يتم باستخدام كود الموظف فقط.</small>
+            <button type="button" class="secondary" id="downloadPayrollTemplateBtn" style="margin-top:8px">تحميل نموذج Excel للمرتبات</button>
           </div>
         </div>
       </div>
@@ -1177,7 +1181,7 @@ html[dir="ltr"] .app-toast{text-align:left}
           <thead><tr>
             <th>اختيار</th><th>الموظف</th><th>الرقم</th><th>الساعات اليومية</th><th>أيام العمل</th><th>أيام الإجازة</th>
             <th>الحضور</th><th>الغياب</th><th>الفعلي</th><th>المطلوب</th><th>الإضافي الفعلي</th><th>الإضافي المستحق</th><th>النقص</th>
-            <th>الراتب الشهري</th><th>خصم الدوام</th><th>الجزاءات</th><th>الصافي</th>
+            <th>إجمالي الراتب</th><th>التأمينات</th><th>خصم الدوام</th><th>خصومات أخرى</th><th>الجزاءات</th><th>الصافي</th>
           </tr></thead>
           <tbody id="summaryBody"></tbody>
         </table></div>
@@ -1537,7 +1541,7 @@ html[dir="ltr"] .app-toast{text-align:left}
   // Only this application's keys are removed; unrelated browser data is untouched.
   function clearAppSavedData(){
     try{
-      const prefixes=['salarySendStatus:','manualPhone:','dailyHours:','fridayWork:','offDays:','actualWorkDays:','approval:','overtimeMultiplier:','dailySalary:','manualSalary:','applyDeduction:','noDeductionReason:','penalties:'];
+      const prefixes=['salarySendStatus:','manualPhone:','dailyHours:','fridayWork:','offDays:','actualWorkDays:','approval:','overtimeMultiplier:','dailySalary:','manualSalary:','manualInsurancePercent:','applyDeduction:','noDeductionReason:','penalties:','otherDeductions:'];
       const remove=[];
       for(let i=0;i<localStorage.length;i++){
         const k=localStorage.key(i);
@@ -1598,6 +1602,7 @@ html[dir="ltr"] .app-toast{text-align:left}
   let reportPeriod={from:'',to:'',raw:''};
   let salaryMap=new Map();
   let phoneMap=new Map();
+  let payrollMap=new Map();
   let salaryFileName='';
 
   function normalizeEmployeeId(v){
@@ -1605,6 +1610,37 @@ html[dir="ltr"] .app-toast{text-align:left}
     let s=String(v).trim();
     if(/^\d+\.0+$/.test(s)) s=s.replace(/\.0+$/,'');
     return s;
+  }
+
+  function payrollData(e){
+    const id=normalizeEmployeeId(e?.id);
+    const p=id?payrollMap.get(id):null;
+    return p||{basic:0,allowances:0,total:0,nationality:'',isSaudi:false,insurancePercent:0};
+  }
+  function basicSalary(e){return Math.max(0,Number(payrollData(e).basic)||0);}
+  function allowancesSalary(e){return Math.max(0,Number(payrollData(e).allowances)||0);}
+  function isSaudiEmployee(e){return !!payrollData(e).isSaudi;}
+  function nationalityText(e){return isSaudiEmployee(e)?'سعودي (SA)':'غير سعودي';}
+  function excelInsurancePercent(e){
+    return isSaudiEmployee(e)?Math.max(0,Number(payrollData(e).insurancePercent)||0):0;
+  }
+  function manualInsurancePercent(e){
+    const raw=localStorage.getItem('manualInsurancePercent:'+e.key);
+    if(raw===null || raw==='') return null;
+    const n=Number(raw);
+    return Number.isFinite(n)?Math.max(0,Math.min(100,n)):null;
+  }
+  function insurancePercentSource(e){
+    if(!isSaudiEmployee(e)) return '—';
+    return manualInsurancePercent(e)!==null?'M':'A';
+  }
+  function insurancePercent(e){
+    if(!isSaudiEmployee(e)) return 0;
+    const manual=manualInsurancePercent(e);
+    return manual!==null?manual:excelInsurancePercent(e);
+  }
+  function insuranceDeduction(e){
+    return isSaudiEmployee(e)?Math.max(0,basicSalary(e)*(insurancePercent(e)/100)):0;
   }
 
   function excelMonthlySalary(e){
@@ -1702,7 +1738,7 @@ html[dir="ltr"] .app-toast{text-align:left}
     'لم يتم فتح تقرير محفوظ.':'No saved report opened.',
     'ارفع ملف Excel الذي تم تصديره سابقًا من النظام لاستعادة التقرير ومراجعته مرة أخرى على المنصة.':'Upload an Excel file previously exported by the system to restore and review it again in the app.',
 
-    'الراتب الشهري':'Monthly Salary','إرسال ملخص الراتب':'Send Salary Summary',
+    'الراتب الشهري':'Monthly Salary','إرسال ملخص الراتب':'Send Salary Summary','الراتب الأساسي':'Basic Salary','البدلات':'Allowances','إجمالي الراتب':'Gross Salary','الجنسية':'Nationality','نسبة التأمينات':'Insurance %','خصم التأمينات':'Insurance Deduction','مصدر نسبة التأمينات':'Insurance % Source','خصومات أخرى':'Other Deductions','اسم الخصم':'Deduction Name','مبلغ الخصم':'Deduction Amount','تحميل نموذج Excel للمرتبات':'Download Payroll Excel Template',
     'حالة الإرسال':'Send Status',
     'رقم الجوال للإرسال':'Mobile Number for Sending','حفظ الرقم':'Save Number',
     'يمكن كتابة أو تصحيح الرقم هنا. الرقم المحفوظ يدويًا تكون له الأولوية على الرقم الموجود في ملف المرتبات.':'You can enter or correct the number here. A manually saved number takes priority over the payroll file number.',
@@ -1913,6 +1949,31 @@ html[dir="ltr"] .app-toast{text-align:left}
     return raw===null?true:raw==='true';
   }
   function noDeductionReason(e){return localStorage.getItem('noDeductionReason:'+e.key)||'';}
+  function otherDeductions(e){
+    const raw=localStorage.getItem('otherDeductions:'+e.key);
+    if(raw===null||raw==='') return [];
+    try{
+      const arr=JSON.parse(raw);
+      if(!Array.isArray(arr)) return [];
+      return arr.map((p,i)=>({
+        id:String(p.id||('d'+i)),
+        name:String(p.name||p.reason||'').trim(),
+        amount:Math.max(0,Number(p.amount)||0)
+      })).filter(p=>p.name||p.amount>0);
+    }catch(_){return [];}
+  }
+  function totalOtherDeductions(e){return otherDeductions(e).reduce((s,p)=>s+(Number(p.amount)||0),0);}
+  function otherDeductionRowsHtml(e){
+    const rows=otherDeductions(e);
+    const list=rows.length?rows:[{name:'',amount:0}];
+    return list.map(p=>`
+      <div class="penalty-row" data-other-deduction-row="${esc(e.key)}">
+        <label><span>اسم الخصم</span><input type="text" data-other-deduction-name="${esc(e.key)}" value="${esc(p.name)}" placeholder="مثال: سلفة / عهدة / خصم آخر"></label>
+        <label><span>مبلغ الخصم</span><input type="number" min="0" step="0.01" data-other-deduction-amount="${esc(e.key)}" value="${Number(p.amount||0).toFixed(2)}"></label>
+        <button type="button" class="secondary penalty-remove" data-remove-other-deduction="${esc(e.key)}">حذف الخصم</button>
+      </div>`).join('');
+  }
+
   function penalties(e){
     const raw=localStorage.getItem('penalties:'+e.key);
     if(raw===null||raw==='') return [];
@@ -2315,16 +2376,24 @@ html[dir="ltr"] .app-toast{text-align:left}
   const salaryHeaderAliases={
     id:['employee id','employee code','emp id','emp code','code','id','كود الموظف','رقم الموظف','كود','الرقم'],
     name:['employee name','name','full name','اسم الموظف','الموظف','الاسم'],
-    salary:['monthly salary','salary','basic salary','monthly wage','المرتب الشهري','الراتب الشهري','المرتب','الراتب'],
+    basic:['basic salary','base salary','الراتب الأساسي','الراتب الاساسي','المرتب الأساسي','المرتب الاساسي','اساسي','أساسي'],
+    allowances:['allowances','allowance','total allowances','بدلات','البدلات','إجمالي البدلات','اجمالي البدلات'],
+    legacySalary:['monthly salary','salary','monthly wage','المرتب الشهري','الراتب الشهري','المرتب','الراتب'],
+    nationality:['nationality','nationality code','الجنسية','كود الجنسية'],
+    insurance:['insurance %','insurance percent','insurance percentage','gosi %','gosi percent','التأمينات %','التامينات %','نسبة التأمينات','نسبة التامينات','التأمينات','التامينات'],
     phone:['mobile','mobile number','phone','phone number','employee mobile','رقم الجوال','الجوال','رقم الموبايل','الموبايل','رقم الهاتف','الهاتف']
   };
 
   function detectSalaryHeader(row){
     const id=findHeaderIndex(row,salaryHeaderAliases.id);
     const name=findHeaderIndex(row,salaryHeaderAliases.name);
-    const salary=findHeaderIndex(row,salaryHeaderAliases.salary);
+    const basic=findHeaderIndex(row,salaryHeaderAliases.basic);
+    const allowances=findHeaderIndex(row,salaryHeaderAliases.allowances);
+    const legacySalary=findHeaderIndex(row,salaryHeaderAliases.legacySalary);
+    const nationality=findHeaderIndex(row,salaryHeaderAliases.nationality);
+    const insurance=findHeaderIndex(row,salaryHeaderAliases.insurance);
     const phone=findHeaderIndex(row,salaryHeaderAliases.phone);
-    return id>=0 && salary>=0 ? {id,name,salary,phone} : null;
+    return id>=0 && (basic>=0 || legacySalary>=0) ? {id,name,basic,allowances,legacySalary,nationality,insurance,phone} : null;
   }
 
   function salaryNumber(v){
@@ -2337,7 +2406,7 @@ html[dir="ltr"] .app-toast{text-align:left}
 
   async function loadSalaryFile(){
     const file=$('#salaryFileInput')?.files?.[0];
-    if(!file){ showPopup('اختر ملف المرتبات Excel أولًا.','error'); return; }
+    if(!file){showPopup('اختر ملف المرتبات Excel أولًا.','error');return;}
     $('#salaryStatus').textContent='جاري قراءة ملف المرتبات...';
     const ready=await ensureXLSX();
     if(!ready){
@@ -2346,54 +2415,66 @@ html[dir="ltr"] .app-toast{text-align:left}
       return;
     }
     try{
-      const buf=await file.arrayBuffer();
-      const wb=XLSX.read(buf,{type:'array',cellDates:true});
-      const nextMap=new Map();
-      const nextPhoneMap=new Map();
-      let validRows=0, headerFound=false;
+      const wb=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:true});
+      const nextMap=new Map(), nextPhoneMap=new Map(), nextPayrollMap=new Map();
+      let validRows=0, headerFound=false, saudiCount=0;
 
       for(const sn of wb.SheetNames){
         const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:null,raw:true});
         let headerIndex=-1, map=null;
         for(let i=0;i<Math.min(rows.length,30);i++){
           map=detectSalaryHeader(rows[i]||[]);
-          if(map){ headerIndex=i; headerFound=true; break; }
+          if(map){headerIndex=i;headerFound=true;break;}
         }
         if(!map) continue;
+
         for(let i=headerIndex+1;i<rows.length;i++){
           const row=rows[i]||[];
           const id=normalizeEmployeeId(cell(row,map.id));
           if(!id) continue;
-          nextMap.set(id,salaryNumber(cell(row,map.salary)));
-          const phone=map.phone>=0 ? String(cell(row,map.phone)??'').trim() : '';
+
+          let basic=map.basic>=0?salaryNumber(cell(row,map.basic)):0;
+          const allowances=map.allowances>=0?salaryNumber(cell(row,map.allowances)):0;
+          if(map.basic<0 && map.legacySalary>=0) basic=salaryNumber(cell(row,map.legacySalary));
+
+          const total=Math.max(0,basic+allowances);
+          const nationality=map.nationality>=0?String(cell(row,map.nationality)??'').trim():'';
+          const isSaudi=nationality.toUpperCase()==='SA';
+          let ins=map.insurance>=0?salaryNumber(cell(row,map.insurance)):0;
+          if(ins>0 && ins<=1) ins*=100;
+          ins=Math.max(0,Math.min(100,ins));
+          if(!isSaudi) ins=0;
+
+          nextMap.set(id,total);
+          nextPayrollMap.set(id,{basic,allowances,total,nationality,isSaudi,insurancePercent:ins});
+          const phone=map.phone>=0?String(cell(row,map.phone)??'').trim():'';
           if(phone) nextPhoneMap.set(id,phone);
+          if(isSaudi) saudiCount++;
           validRows++;
         }
       }
 
       if(!headerFound){
-        salaryMap=new Map();
-        phoneMap=new Map();
-        salaryFileName='';
-        $('#salaryStatus').textContent='لم يتم العثور على أعمدة كود الموظف والمرتب الشهري.';
+        salaryMap=new Map();phoneMap=new Map();payrollMap=new Map();salaryFileName='';
+        $('#salaryStatus').textContent='لم يتم العثور على كود الموظف والراتب الأساسي.';
         renderAll();
-        showPopup('ملف المرتبات يجب أن يحتوي على كود الموظف والمرتب الشهري.','error','صيغة ملف غير مدعومة');
+        showPopup('ملف المرتبات يجب أن يحتوي على كود الموظف والراتب الأساسي.','error','صيغة ملف غير مدعومة');
         return;
       }
 
       salaryMap=nextMap;
       phoneMap=nextPhoneMap;
+      payrollMap=nextPayrollMap;
       salaryFileName=file.name;
+
       const matched=employees.filter(e=>salaryMatched(e)).length;
       const missing=employees.length-matched;
-      $('#salaryStatus').textContent=`تم تحميل ${validRows} سجل مرتب من ${file.name}${employees.length?` — مطابق: ${matched} — بدون مرتب/كود: ${missing}`:''}.`;
+      $('#salaryStatus').textContent=`تم تحميل ${validRows} سجل من ${file.name}${employees.length?` — مطابق: ${matched} — بدون مرتب/كود: ${missing}`:''} — سعوديون SA: ${saudiCount}.`;
       renderAll();
-      showPopup(`تم ربط ملف المرتبات. الموظفون المطابقون بالكود: ${matched}${employees.length?` من ${employees.length}`:''}. أي موظف بدون كود أو مرتب سيظهر مرتبه 0.00.`,'success','تم تحميل المرتبات');
+      showPopup('تم ربط ملف المرتبات. إجمالي الراتب = الأساسي + البدلات، والتأمينات تُطبق على SA فقط وتحسب من الراتب الأساسي.','success','تم تحميل المرتبات');
     }catch(err){
       console.error(err);
-      salaryMap=new Map();
-      phoneMap=new Map();
-      salaryFileName='';
+      salaryMap=new Map();phoneMap=new Map();payrollMap=new Map();salaryFileName='';
       $('#salaryStatus').textContent='خطأ في قراءة ملف المرتبات.';
       renderAll();
       showPopup('خطأ في قراءة ملف المرتبات: '+(err.message||err),'error');
@@ -2403,7 +2484,7 @@ html[dir="ltr"] .app-toast{text-align:left}
 
   const HISTORY_SHEET='_APP_BACKUP';
   const HISTORY_MAGIC='HR_ATTENDANCE_APP_BACKUP';
-  const APP_STORAGE_PREFIXES=['salarySendStatus:','manualPhone:','dailyHours:','fridayWork:','offDays:','actualWorkDays:','approval:','overtimeMultiplier:','dailySalary:','manualSalary:','applyDeduction:','noDeductionReason:','penalties:'];
+  const APP_STORAGE_PREFIXES=['salarySendStatus:','manualPhone:','dailyHours:','fridayWork:','offDays:','actualWorkDays:','approval:','overtimeMultiplier:','dailySalary:','manualSalary:','manualInsurancePercent:','applyDeduction:','noDeductionReason:','penalties:','otherDeductions:'];
 
   function snapshotForExport(chosen){
     const keys=new Set(chosen.map(e=>e.key));
@@ -2419,21 +2500,24 @@ html[dir="ltr"] .app-toast{text-align:left}
 
     const salaryEntries=[];
     const phoneEntries=[];
+    const payrollEntries=[];
     chosen.forEach(e=>{
       const id=normalizeEmployeeId(e.id);
       if(!id) return;
       if(salaryMap.has(id)) salaryEntries.push([id,salaryMap.get(id)]);
       if(phoneMap.has(id)) phoneEntries.push([id,phoneMap.get(id)]);
+      if(payrollMap.has(id)) payrollEntries.push([id,payrollMap.get(id)]);
     });
 
     return {
       magic:HISTORY_MAGIC,
-      version:2,
+      version:4,
       exportedAt:new Date().toISOString(),
       period:{...reportPeriod},
       employees:chosen.map(e=>JSON.parse(JSON.stringify(e))),
       salaryEntries,
       phoneEntries,
+      payrollEntries,
       salaryFileName:salaryFileName||'',
       storage
     };
@@ -2483,6 +2567,7 @@ html[dir="ltr"] .app-toast{text-align:left}
     reportPeriod=data.period||{from:'',to:'',raw:''};
     salaryMap=new Map((data.salaryEntries||[]).map(([k,v])=>[normalizeEmployeeId(k),Number(v)||0]));
     phoneMap=new Map((data.phoneEntries||[]).map(([k,v])=>[normalizeEmployeeId(k),String(v??'')]));
+    payrollMap=new Map((data.payrollEntries||[]).map(([k,v])=>[normalizeEmployeeId(k),v||{}]));
     salaryFileName=data.salaryFileName||'';
 
     try{
@@ -2595,7 +2680,7 @@ html[dir="ltr"] .app-toast{text-align:left}
         const key=id||name;
         if(!key) continue;
 
-        let phone='',sendStatus='',hoursV,daysV,offV,otV,salaryV,sourceV,deductV,reasonV;
+        let phone='',sendStatus='',hoursV,daysV,offV,otV,salaryV,sourceV,deductV,reasonV,insuranceV,nationalityV;
         if(oldMisaligned){
           [,,phone,sendStatus,hoursV,daysV,offV,otV,salaryV,sourceV,deductV,reasonV]=row;
         }else{
@@ -2608,6 +2693,8 @@ html[dir="ltr"] .app-toast{text-align:left}
           otV=g('معامل الإضافي','overtime multiplier');
           salaryV=g('الراتب الشهري','monthly salary');
           sourceV=g('مصدر الراتب','salary source');
+          insuranceV=g('التأمينات %','insurance %');
+          nationalityV=g('الجنسية','nationality');
           deductV=g('تطبيق خصم الدوام','apply attendance deduction');
           reasonV=g('سبب عدم تطبيق الخصم','no deduction reason');
         }
@@ -2622,6 +2709,10 @@ html[dir="ltr"] .app-toast{text-align:left}
         else if(id) salaryEntries.push([id,salary]);
         storage['applyDeduction:'+key]=String(!['لا','no','false'].includes(String(deductV).trim().toLowerCase()));
         storage['noDeductionReason:'+key]=String(reasonV||'');
+        if(String(nationalityV||'').includes('SA') && insuranceV!=='' && insuranceV!==null && insuranceV!==undefined){
+          const iv=Number(insuranceV);
+          if(Number.isFinite(iv)) storage['manualInsurancePercent:'+key]=String(Math.max(0,Math.min(100,iv)));
+        }
         if(String(sendStatus).includes('تم الإرسال') || String(sendStatus).toLowerCase().includes('sent')){
           storage['salarySendStatus:'+key]='sent';
         }
@@ -2863,12 +2954,18 @@ html[dir="ltr"] .app-toast{text-align:left}
       })(),
       netBeforePenalties:(()=>{
         const gross=monthlySalary(e);
-        if(!applyDeduction(e)) return gross;
-        const h=dailyHours(e);
-        if(h<=0) return gross;
-        const shortMin=days.reduce((s,d)=>s+(d.scheduled?d.shortage:0),0);
-        return Math.max(0,gross-(shortMin/60)*(dailySalary(e)/h));
+        let base=gross;
+        if(applyDeduction(e)){
+          const h=dailyHours(e);
+          if(h>0){
+            const shortMin=days.reduce((s,d)=>s+(d.scheduled?d.shortage:0),0);
+            base=Math.max(0,gross-(shortMin/60)*(dailySalary(e)/h));
+          }
+        }
+        return Math.max(0,base-insuranceDeduction(e)-totalOtherDeductions(e));
       })(),
+      insuranceDeduction:insuranceDeduction(e),
+      otherDeductionsTotal:totalOtherDeductions(e),
       penaltiesTotal:totalPenalties(e),
       netSalary:(()=>{
         const gross=monthlySalary(e);
@@ -2880,7 +2977,7 @@ html[dir="ltr"] .app-toast{text-align:left}
             base=Math.max(0,gross-(shortMin/60)*(dailySalary(e)/h));
           }
         }
-        return Math.max(0,base-totalPenalties(e));
+        return Math.max(0,base-insuranceDeduction(e)-totalOtherDeductions(e)-totalPenalties(e));
       })()
     };
   }
@@ -2900,11 +2997,13 @@ html[dir="ltr"] .app-toast{text-align:left}
         <td class="good">${hours(c.weightedOvertime)} ساعة</td>
         <td class="${c.shortage>0?'bad':''}">${hours(c.shortage)} ساعة</td>
         <td>${monthlySalary(e).toFixed(2)} <small title="${salarySource(e)==="M"?"يدوي":"Excel"}">(${salarySource(e)})</small></td>
+        <td class="${c.insuranceDeduction>0?'bad':''}">${c.insuranceDeduction.toFixed(2)}</td>
         <td class="${c.appliedDeduction>0?'bad':''}">${c.appliedDeduction.toFixed(2)}</td>
+        <td class="${c.otherDeductionsTotal>0?'bad':''}">${c.otherDeductionsTotal.toFixed(2)}</td>
         <td class="${c.penaltiesTotal>0?'bad':''}">${c.penaltiesTotal.toFixed(2)}</td>
         <td class="good">${c.netSalary.toFixed(2)}</td>
       </tr>`;
-    }).join(''):'<tr><td colspan="17">ارفع ملف Excel لعرض النتائج.</td></tr>';
+    }).join(''):'<tr><td colspan="20">ارفع ملف Excel لعرض النتائج.</td></tr>';
 
     bindSummarySelection();
     updateSummaryKPIs();
@@ -2943,9 +3042,20 @@ html[dir="ltr"] .app-toast{text-align:left}
           </div>
         </div>
         <div class="payroll-grid">
-          <label><span>الراتب الشهري</span>
+          <label><span>الراتب الأساسي</span><input type="number" readonly value="${basicSalary(e).toFixed(2)}"></label>
+          <label><span>البدلات</span><input type="number" readonly value="${allowancesSalary(e).toFixed(2)}"></label>
+          <label><span>إجمالي الراتب</span>
             <input type="number" min="0" step="0.01" data-salary="${esc(e.key)}" value="${monthlySalary(e).toFixed(2)}">
-            <div class="salary-source-note">${salarySource(e)==='M'?'M — مرتب مدخل يدويًا من إعدادات الدوام':salarySource(e)==='A'?'A — مرتب مرتبط من ملف Excel':'لا يوجد مرتب مطابق — القيمة 0.00'}</div>
+            <div class="salary-source-note">${salarySource(e)==='M'?'M — إجمالي راتب معدل يدويًا':salarySource(e)==='A'?'A — الأساسي + البدلات من ملف Excel':'لا يوجد مرتب مطابق — القيمة 0.00'}</div>
+          </label>
+          <label><span>الجنسية</span><input type="text" readonly value="${esc(nationalityText(e))}"></label>
+          <label><span>نسبة التأمينات</span>
+            <input type="number" min="0" max="100" step="0.01" data-insurance-percent="${esc(e.key)}" value="${insurancePercent(e).toFixed(2)}" ${isSaudiEmployee(e)?'':'disabled'}>
+            <div class="salary-source-note">${isSaudiEmployee(e)?(insurancePercentSource(e)==='M'?'M — نسبة معدلة يدويًا':'A — النسبة من ملف Excel'):'لا تطبق على غير السعودي'}</div>
+          </label>
+          <label><span>خصم التأمينات</span>
+            <input type="text" readonly value="${insuranceDeduction(e).toFixed(2)}">
+            <div class="salary-source-note">${isSaudiEmployee(e)?'يحسب من الراتب الأساسي فقط':'0.00 — غير سعودي'}</div>
           </label>
           <label><span>تطبيق الخصم</span>
             <select data-deduct="${esc(e.key)}">
@@ -2962,7 +3072,17 @@ html[dir="ltr"] .app-toast{text-align:left}
         <div class="setting-stat"><span>الإضافي المستحق × ${overtimeMultiplier(e).toFixed(2)}</span><b class="good">${hours(calcEmployee(e).weightedOvertime)} ساعة</b></div>
         <div class="setting-stat"><span>الخصم المحسوب</span><b class="bad">${calcEmployee(e).calculatedDeduction.toFixed(2)}</b></div>
         <div class="setting-stat"><span>الخصم المطبق</span><b>${calcEmployee(e).appliedDeduction.toFixed(2)}</b></div>
+        <div class="setting-stat"><span>خصم التأمينات</span><b>${calcEmployee(e).insuranceDeduction.toFixed(2)}</b></div>
+        <div class="setting-stat"><span>خصومات أخرى</span><b>${calcEmployee(e).otherDeductionsTotal.toFixed(2)}</b></div>
         <div class="setting-stat"><span>صافي الراتب</span><b class="good">${calcEmployee(e).netSalary.toFixed(2)}</b></div>
+        <div class="setting-wide">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+            <div><b>خصومات أخرى</b><div style="font-size:12px;color:#667085">أضف اسم الخصم وقيمته، ويمكن إضافة أكثر من خصم.</div></div>
+            <button type="button" class="secondary" data-add-other-deduction="${esc(e.key)}">+ إضافة خصم</button>
+          </div>
+          <div class="penalty-list" data-other-deduction-list="${esc(e.key)}">${otherDeductionRowsHtml(e)}</div>
+          <div class="penalty-total">إجمالي الخصومات الأخرى: <b>${totalOtherDeductions(e).toFixed(2)}</b></div>
+        </div>
         <div class="setting-wide">
           <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
             <div><b>الجزاءات الإدارية</b><div style="font-size:12px;color:#667085">سبب الجزاء والمبلغ المخصوم من الراتب.</div></div>
@@ -2974,6 +3094,23 @@ html[dir="ltr"] .app-toast{text-align:left}
       </div>`).join(''):'<div>ارفع الملف أولًا.</div>';
     const hc=$('#settingsHeaderCount'); if(hc) hc.textContent=employees.length?`عدد الموظفين: ${employees.length}`:'';
     bindSelectionEvents();
+    $$('[data-add-other-deduction]').forEach(btn=>btn.addEventListener('click',()=>{
+      const key=btn.dataset.addOtherDeduction;
+      const list=$(`[data-other-deduction-list="${CSS.escape(key)}"]`);
+      if(!list) return;
+      const row=document.createElement('div');
+      row.className='penalty-row';
+      row.dataset.otherDeductionRow=key;
+      row.innerHTML=`<label><span>اسم الخصم</span><input type="text" data-other-deduction-name="${esc(key)}" placeholder="مثال: سلفة / عهدة / خصم آخر"></label>
+      <label><span>مبلغ الخصم</span><input type="number" min="0" step="0.01" data-other-deduction-amount="${esc(key)}" value="0.00"></label>
+      <button type="button" class="secondary penalty-remove" data-remove-other-deduction="${esc(key)}">حذف الخصم</button>`;
+      list.appendChild(row);
+      row.querySelector('[data-remove-other-deduction]')?.addEventListener('click',()=>row.remove());
+    }));
+    $$('[data-remove-other-deduction]').forEach(btn=>btn.addEventListener('click',()=>{
+      btn.closest('[data-other-deduction-row]')?.remove();
+    }));
+
     $$('[data-add-penalty]').forEach(btn=>btn.addEventListener('click',()=>{
       const key=btn.dataset.addPenalty;
       const list=$(`[data-penalty-list="${CSS.escape(key)}"]`);
@@ -3241,6 +3378,23 @@ html[dir="ltr"] .app-toast{text-align:left}
       if(!Number.isFinite(v) || v<0) v=0;
       localStorage.setItem('manualSalary:'+key,String(v));
     });
+    $$('#settingsList [data-insurance-percent]').forEach(inp=>{
+      const key=inp.dataset.insurancePercent;
+      const e=employees.find(x=>x.key===key);
+      if(!e || !isSaudiEmployee(e)){
+        localStorage.removeItem('manualInsurancePercent:'+key);
+        return;
+      }
+      let v=Number(inp.value);
+      if(!Number.isFinite(v)) v=excelInsurancePercent(e);
+      v=Math.max(0,Math.min(100,v));
+      if(Math.abs(v-excelInsurancePercent(e))<0.000001){
+        localStorage.removeItem('manualInsurancePercent:'+key);
+      }else{
+        localStorage.setItem('manualInsurancePercent:'+key,String(v));
+      }
+    });
+
     $$('#settingsList [data-hours]').forEach(inp=>{
       let v=Number(inp.value); if(!Number.isFinite(v)) v=8; v=Math.max(0,Math.min(24,v));
       localStorage.setItem('dailyHours:'+inp.dataset.hours,String(v));
@@ -3285,6 +3439,19 @@ html[dir="ltr"] .app-toast{text-align:left}
       showPopup(validationError,'error','بيانات مطلوبة');
       return;
     }
+
+    employees.forEach(e=>{
+      const rows=$$(`[data-other-deduction-row="${CSS.escape(e.key)}"]`);
+      const list=[];
+      rows.forEach((row,i)=>{
+        const name=String(row.querySelector('[data-other-deduction-name]')?.value||'').trim();
+        let amount=Number(row.querySelector('[data-other-deduction-amount]')?.value||0);
+        if(!Number.isFinite(amount)) amount=0;
+        amount=Math.max(0,amount);
+        if(name || amount>0) list.push({id:'d'+Date.now()+'_'+i,name,amount});
+      });
+      localStorage.setItem('otherDeductions:'+e.key,JSON.stringify(list));
+    });
 
     employees.forEach(e=>{
       const rows=$$(`[data-penalty-row="${CSS.escape(e.key)}"]`);
@@ -3543,15 +3710,21 @@ html[dir="ltr"] .app-toast{text-align:left}
       <div class="print-section">
         <div class="print-section-title">الراتب والخصومات والجزاءات <small style="font-weight:400;font-size:9px">A = ملف Excel &nbsp; | &nbsp; M = إدخال يدوي</small></div>
         <div class="print-result-grid">
-          <div class="print-result-item"><span>الراتب الشهري</span><b>${monthlySalary(e).toFixed(2)} <small style="font-size:10px">(${salarySource(e)})</small></b></div>
-          <div class="print-result-item"><span>إجمالي الراتب</span><b>${c.grossSalary.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>الراتب الأساسي</span><b>${basicSalary(e).toFixed(2)}</b></div>
+          <div class="print-result-item"><span>البدلات</span><b>${allowancesSalary(e).toFixed(2)}</b></div>
+          <div class="print-result-item"><span>إجمالي الراتب</span><b>${c.grossSalary.toFixed(2)} <small style="font-size:10px">(${salarySource(e)})</small></b></div>
+          <div class="print-result-item"><span>الجنسية</span><b>${esc(nationalityText(e))}</b></div>
+          <div class="print-result-item"><span>نسبة التأمينات</span><b>${insurancePercent(e).toFixed(2)}% <small style="font-size:10px">(${insurancePercentSource(e)})</small></b></div>
+          <div class="print-result-item"><span>خصم التأمينات من الأساسي</span><b>${c.insuranceDeduction.toFixed(2)}</b></div>
           <div class="print-result-item"><span>خصم الدوام المحسوب</span><b>${c.calculatedDeduction.toFixed(2)}</b></div>
           <div class="print-result-item"><span>خصم الدوام المطبق</span><b>${c.appliedDeduction.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>خصومات أخرى</span><b>${c.otherDeductionsTotal.toFixed(2)}</b></div>
           <div class="print-result-item"><span>إجمالي الجزاءات</span><b>${c.penaltiesTotal.toFixed(2)}</b></div>
           <div class="print-result-item"><span>الصافي قبل الجزاءات</span><b>${c.netBeforePenalties.toFixed(2)}</b></div>
           <div class="print-result-item"><span>صافي الراتب النهائي</span><b>${c.netSalary.toFixed(2)}</b></div>
           <div class="print-result-item"><span>تطبيق خصم الدوام</span><b>${applyDeduction(e)?'نعم':'لا'}</b></div>
           <div class="print-result-item" style="grid-column:span 2"><span>سبب عدم تطبيق خصم الدوام</span><b>${applyDeduction(e)?'—':esc(noDeductionReason(e)||'غير مذكور')}</b></div>
+          <div class="print-result-item" style="grid-column:span 2"><span>تفاصيل الخصومات الأخرى</span><b>${otherDeductions(e).length?otherDeductions(e).map((p,i)=>`${i+1}) ${esc(p.name||'بدون اسم')} — ${Number(p.amount||0).toFixed(2)}`).join('<br>'):'لا توجد خصومات أخرى'}</b></div>
           <div class="print-result-item" style="grid-column:span 2"><span>تفاصيل الجزاءات الإدارية</span><b>${penalties(e).length?penalties(e).map((p,i)=>`${i+1}) ${esc(p.reason||'بدون سبب')} — ${Number(p.amount||0).toFixed(2)}`).join('<br>'):'لا توجد جزاءات'}</b></div>
         </div>
       </div>
@@ -3625,15 +3798,21 @@ html[dir="ltr"] .app-toast{text-align:left}
       <div class="print-section">
         <div class="print-section-title">الراتب والخصومات والجزاءات <small style="font-weight:400;font-size:9px">A = ملف Excel &nbsp; | &nbsp; M = إدخال يدوي</small></div>
         <div class="print-result-grid">
-          <div class="print-result-item"><span>الراتب الشهري</span><b>${monthlySalary(e).toFixed(2)} <small style="font-size:10px">(${salarySource(e)})</small></b></div>
-          <div class="print-result-item"><span>إجمالي الراتب</span><b>${c.grossSalary.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>الراتب الأساسي</span><b>${basicSalary(e).toFixed(2)}</b></div>
+          <div class="print-result-item"><span>البدلات</span><b>${allowancesSalary(e).toFixed(2)}</b></div>
+          <div class="print-result-item"><span>إجمالي الراتب</span><b>${c.grossSalary.toFixed(2)} <small style="font-size:10px">(${salarySource(e)})</small></b></div>
+          <div class="print-result-item"><span>الجنسية</span><b>${esc(nationalityText(e))}</b></div>
+          <div class="print-result-item"><span>نسبة التأمينات</span><b>${insurancePercent(e).toFixed(2)}% <small style="font-size:10px">(${insurancePercentSource(e)})</small></b></div>
+          <div class="print-result-item"><span>خصم التأمينات من الأساسي</span><b>${c.insuranceDeduction.toFixed(2)}</b></div>
           <div class="print-result-item"><span>خصم الدوام المحسوب</span><b>${c.calculatedDeduction.toFixed(2)}</b></div>
           <div class="print-result-item"><span>خصم الدوام المطبق</span><b>${c.appliedDeduction.toFixed(2)}</b></div>
+          <div class="print-result-item"><span>خصومات أخرى</span><b>${c.otherDeductionsTotal.toFixed(2)}</b></div>
           <div class="print-result-item"><span>إجمالي الجزاءات</span><b>${c.penaltiesTotal.toFixed(2)}</b></div>
           <div class="print-result-item"><span>الصافي قبل الجزاءات</span><b>${c.netBeforePenalties.toFixed(2)}</b></div>
           <div class="print-result-item"><span>صافي الراتب النهائي</span><b>${c.netSalary.toFixed(2)}</b></div>
           <div class="print-result-item"><span>تطبيق خصم الدوام</span><b>${applyDeduction(e)?'نعم':'لا'}</b></div>
           <div class="print-result-item" style="grid-column:span 2"><span>سبب عدم تطبيق خصم الدوام</span><b>${applyDeduction(e)?'—':esc(noDeductionReason(e)||'غير مذكور')}</b></div>
+          <div class="print-result-item" style="grid-column:span 2"><span>تفاصيل الخصومات الأخرى</span><b>${otherDeductions(e).length?otherDeductions(e).map((p,i)=>`${i+1}) ${esc(p.name||'بدون اسم')} — ${Number(p.amount||0).toFixed(2)}`).join('<br>'):'لا توجد خصومات أخرى'}</b></div>
           <div class="print-result-item" style="grid-column:span 2"><span>تفاصيل الجزاءات الإدارية</span><b>${penalties(e).length?penalties(e).map((p,i)=>`${i+1}) ${esc(p.reason||'بدون سبب')} — ${Number(p.amount||0).toFixed(2)}`).join('<br>'):'لا توجد جزاءات'}</b></div>
         </div>
       </div>
@@ -3718,7 +3897,7 @@ $$('.tab').forEach(b=>b.addEventListener('click',()=>{
     openTab(b.dataset.tab);
   }));
   $('#loadBtn').addEventListener('click',loadFile);
-$('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear();approvalSelection.clear();reportPeriod={from:'',to:'',raw:''};salaryMap=new Map();phoneMap=new Map();salaryFileName='';clearAppSavedData();$('#fileInput').value='';if($('#salaryFileInput')) $('#salaryFileInput').value='';if($('#historyFileInput')) $('#historyFileInput').value='';if($('#salaryStatus')) $('#salaryStatus').textContent='لم يتم تحميل ملف المرتبات.';if($('#historyStatus')) $('#historyStatus').textContent='لم يتم فتح تقرير محفوظ.';$('#periodText').textContent='';$('#status').textContent='تم مسح بيانات الملف.';renderAll();openTab('uploads');});
+$('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear();approvalSelection.clear();reportPeriod={from:'',to:'',raw:''};salaryMap=new Map();phoneMap=new Map();payrollMap=new Map();salaryFileName='';clearAppSavedData();$('#fileInput').value='';if($('#salaryFileInput')) $('#salaryFileInput').value='';if($('#historyFileInput')) $('#historyFileInput').value='';if($('#salaryStatus')) $('#salaryStatus').textContent='لم يتم تحميل ملف المرتبات.';if($('#historyStatus')) $('#historyStatus').textContent='لم يتم فتح تقرير محفوظ.';$('#periodText').textContent='';$('#status').textContent='تم مسح بيانات الملف.';renderAll();openTab('uploads');});
   $('#loadSalaryBtn')?.addEventListener('click',loadSalaryFile);
   $('#goSummaryBtn')?.addEventListener('click',()=>{if(employees.length) openTab('dashboard');});
   $('#saveSettingsBtn').addEventListener('click',saveSettings);
@@ -3773,8 +3952,12 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
       `مرحبًا ${e.name||''}،`,
       ``,
       `ملخص الراتب عن ${period}:`,
-      `الراتب الشهري: ${monthlySalary(e).toFixed(2)}`,
+      `الراتب الأساسي: ${basicSalary(e).toFixed(2)}`,
+      `البدلات: ${allowancesSalary(e).toFixed(2)}`,
+      `إجمالي الراتب: ${monthlySalary(e).toFixed(2)}`,
+      `التأمينات: ${c.insuranceDeduction.toFixed(2)}${isSaudiEmployee(e)?` (${insurancePercent(e).toFixed(2)}%)`:''}`,
       `خصم الدوام: ${c.appliedDeduction.toFixed(2)}`,
+      `خصومات أخرى: ${c.otherDeductionsTotal.toFixed(2)}`,
       `الجزاءات: ${c.penaltiesTotal.toFixed(2)}`,
       `صافي الراتب: ${c.netSalary.toFixed(2)}`,
       ``,
@@ -3915,6 +4098,8 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
       shortage:rows.reduce((s,x)=>s+x.c.shortage,0),
       gross:rows.reduce((s,x)=>s+x.c.grossSalary,0),
       deduction:rows.reduce((s,x)=>s+x.c.appliedDeduction,0),
+      insurance:rows.reduce((s,x)=>s+x.c.insuranceDeduction,0),
+      otherDeductions:rows.reduce((s,x)=>s+x.c.otherDeductionsTotal,0),
       penalties:rows.reduce((s,x)=>s+x.c.penaltiesTotal,0),
       net:rows.reduce((s,x)=>s+x.c.netSalary,0)
     };
@@ -3972,7 +4157,7 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
 
     $('#topOvertime').innerHTML=dashboardRanks(d.rows,c=>Number(hours(c.weightedOvertime)),' h');
     $('#topShortage').innerHTML=dashboardRanks(d.rows,c=>Number(hours(c.shortage)),' h');
-    $('#topDeductions').innerHTML=dashboardRanks(d.rows,c=>(c.appliedDeduction||0)+(c.penaltiesTotal||0));
+    $('#topDeductions').innerHTML=dashboardRanks(d.rows,c=>(c.appliedDeduction||0)+(c.insuranceDeduction||0)+(c.otherDeductionsTotal||0)+(c.penaltiesTotal||0));
 
     $('#dashboardScopeText').textContent=summarySelection.size
       ? `يعرض ${d.employees} من الموظفين المحددين`
@@ -4096,8 +4281,8 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
             'كود الموظف','اسم الموظف','رقم الجوال','حالة إرسال ملخص الراتب','الساعات اليومية','أيام العمل الفعلية',
             'أيام الإجازة الأسبوعية','معامل الإضافي','الساعات الفعلية','الساعات المطلوبة',
             'الإضافي الفعلي','الإضافي المستحق','الساعات الناقصة','أيام الحضور','أيام الغياب',
-            'الراتب الشهري','مصدر الراتب','إجمالي الراتب','خصم الدوام المحسوب','خصم الدوام المطبق',
-            'تطبيق خصم الدوام','سبب عدم تطبيق الخصم','إجمالي الجزاءات',
+            'الراتب الأساسي','البدلات','إجمالي الراتب','مصدر الراتب','الجنسية','التأمينات %','مصدر نسبة التأمينات','خصم التأمينات',
+            'خصم الدوام المحسوب','خصم الدوام المطبق','تطبيق خصم الدوام','سبب عدم تطبيق الخصم','إجمالي الخصومات الأخرى','إجمالي الجزاءات',
             'الصافي قبل الجزاءات','صافي الراتب النهائي'
           ]
         ];
@@ -4111,9 +4296,9 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
             Number(hours(c.actual)), Number(hours(c.required)),
             Number(hours(c.overtime)), Number(hours(c.weightedOvertime)),
             Number(hours(c.shortage)), c.presentDays, c.absentDays,
-            monthlySalary(e), salarySource(e), c.grossSalary, c.calculatedDeduction, c.appliedDeduction,
-            applyDeduction(e)?'نعم':'لا',
-            applyDeduction(e)?'':noDeductionReason(e),
+            basicSalary(e), allowancesSalary(e), c.grossSalary, salarySource(e), nationalityText(e), insurancePercent(e), insurancePercentSource(e), c.insuranceDeduction,
+            c.calculatedDeduction, c.appliedDeduction, applyDeduction(e)?'نعم':'لا',
+            applyDeduction(e)?'':noDeductionReason(e), c.otherDeductionsTotal,
             c.penaltiesTotal, c.netBeforePenalties, c.netSalary
           ]);
         });
@@ -4164,15 +4349,15 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
         // ----- Settings sheet -----
         const settingsRows=[[
           'كود الموظف','اسم الموظف','رقم الجوال','حالة إرسال ملخص الراتب','الساعات اليومية','أيام العمل الفعلية',
-          'أيام الإجازة الأسبوعية','معامل الإضافي','الراتب الشهري','مصدر الراتب',
-          'تطبيق خصم الدوام','سبب عدم تطبيق الخصم'
+          'أيام الإجازة الأسبوعية','معامل الإضافي','الراتب الأساسي','البدلات','إجمالي الراتب','مصدر الراتب',
+          'الجنسية','التأمينات %','مصدر نسبة التأمينات','خصم التأمينات','تطبيق خصم الدوام','سبب عدم تطبيق الخصم'
         ]];
 
         chosen.forEach(e=>{
           settingsRows.push([
             e.id||'',e.name||'',employeePhone(e),salarySendStatus(e)==='sent'?'تم الإرسال':'لم يتم الإرسال',dailyHours(e),actualWorkDays(e),
-            dayNames(offDays(e)),overtimeMultiplier(e),monthlySalary(e),salarySource(e),
-            applyDeduction(e)?'نعم':'لا',
+            dayNames(offDays(e)),overtimeMultiplier(e),basicSalary(e),allowancesSalary(e),monthlySalary(e),salarySource(e),
+            nationalityText(e),insurancePercent(e),insurancePercentSource(e),insuranceDeduction(e),applyDeduction(e)?'نعم':'لا',
             applyDeduction(e)?'':noDeductionReason(e)
           ]);
         });
@@ -4183,6 +4368,22 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
           {wch:14},{wch:14},{wch:18},{wch:34}
         ];
         XLSX.utils.book_append_sheet(wb,wsSettings,sheetName('الإعدادات','Settings'));
+
+        // ----- Other deductions sheet -----
+        const otherDeductionRows=[[
+          'كود الموظف','اسم الموظف','رقم الخصم','اسم الخصم','مبلغ الخصم'
+        ]];
+        chosen.forEach(e=>{
+          const list=otherDeductions(e);
+          if(list.length){
+            list.forEach((p,i)=>otherDeductionRows.push([e.id||'',e.name||'',i+1,p.name||'',Number(p.amount||0)]));
+          }else{
+            otherDeductionRows.push([e.id||'',e.name||'','','لا توجد خصومات أخرى',0]);
+          }
+        });
+        const wsOtherDeductions=XLSX.utils.aoa_to_sheet(exportRows(otherDeductionRows));
+        wsOtherDeductions['!cols']=[{wch:14},{wch:24},{wch:12},{wch:40},{wch:16}];
+        XLSX.utils.book_append_sheet(wb,wsOtherDeductions,sheetName('خصومات أخرى','Other Deductions'));
 
         // ----- Penalties sheet -----
         const penaltyRows=[[
@@ -4237,7 +4438,27 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
     });
   }
 
+  async function downloadPayrollTemplate(){
+    const ok=await ensureXLSX();
+    if(!ok || typeof XLSX==='undefined'){
+      showPopup('تعذر تجهيز نموذج Excel. تحقق من اتصال الإنترنت.','error');
+      return;
+    }
+    const rows=[
+      ['Employee ID','Employee Name','Basic Salary','Allowances','Nationality','Insurance %','Mobile Number'],
+      ['1001','مثال موظف سعودي',5000,1500,'SA',9.75,'0500000000'],
+      ['1002','مثال موظف غير سعودي',4500,1000,'',0,'0500000001']
+    ];
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:16},{wch:28},{wch:16},{wch:16},{wch:15},{wch:15},{wch:18}];
+    XLSX.utils.book_append_sheet(wb,ws,'Payroll');
+    XLSX.writeFile(wb,'Payroll_Template.xlsx',{compression:true});
+    showPopup('تم تجهيز نموذج ملف المرتبات.','success','تم تحميل النموذج');
+  }
+
   $('#loadHistoryBtn')?.addEventListener('click',loadHistoryFile);
+  $('#downloadPayrollTemplateBtn')?.addEventListener('click',downloadPayrollTemplate);
 
   $('#summaryEmployeeFilter').addEventListener('input',applySummaryFilter);
   $('#summarySelectFiltered').addEventListener('click',()=>{
