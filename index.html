@@ -885,7 +885,7 @@ html[dir="ltr"] .app-toast{text-align:left}
 .dashboard-filter label{min-width:240px;flex:1;max-width:420px}
 .dashboard-filter label span{display:block;font-size:11px;color:#667085;margin-bottom:4px}
 #dashboardScopeText{font-size:12px;color:#667085}
-.dashboard-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.dashboard-kpis{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:12px}
 .dash-kpi{padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px;min-width:0}
 .dash-kpi span{display:block;font-size:10px;color:#667085;margin-bottom:5px}
 .dash-kpi b{font-size:17px;overflow-wrap:anywhere}
@@ -1041,6 +1041,13 @@ html[dir="ltr"] .app-toast{text-align:left}
 .employee-scope-select{min-width:180px}
 .employee-selection-note{font-size:10px;color:#667085}
 @media(max-width:560px){.employee-scope-select{width:100%;min-width:0}}
+
+  @media (max-width:1200px){
+    .dashboard-kpis{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  }
+  @media (max-width:700px){
+    .dashboard-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  }
 </style>
 </head>
 <body>
@@ -1215,13 +1222,17 @@ html[dir="ltr"] .app-toast{text-align:left}
 
       <div class="dashboard-kpis">
         <div class="dash-kpi"><span>الموظفون</span><b id="dEmployees">0</b></div>
+        <div class="dash-kpi"><span>سعودي SA</span><b id="dSaudi">0</b></div>
+        <div class="dash-kpi"><span>غير سعودي</span><b id="dNonSaudi">0</b></div>
         <div class="dash-kpi"><span>الحضور</span><b id="dPresent">0</b></div>
         <div class="dash-kpi"><span>الغياب</span><b id="dAbsent">0</b></div>
         <div class="dash-kpi"><span>ساعات العمل</span><b id="dActual">0.00</b></div>
         <div class="dash-kpi"><span>الإضافي المستحق</span><b id="dOT">0.00</b></div>
         <div class="dash-kpi"><span>الساعات الناقصة</span><b id="dShortage">0.00</b></div>
         <div class="dash-kpi"><span>الرواتب قبل الخصومات</span><b id="dGross">0.00</b></div>
+        <div class="dash-kpi"><span>التأمينات</span><b id="dInsurance">0.00</b></div>
         <div class="dash-kpi"><span>خصم الدوام</span><b id="dDeduction">0.00</b></div>
+        <div class="dash-kpi"><span>خصومات أخرى</span><b id="dOtherDeductions">0.00</b></div>
         <div class="dash-kpi"><span>الجزاءات</span><b id="dPenalties">0.00</b></div>
         <div class="dash-kpi dash-kpi-main"><span>صافي الرواتب</span><b id="dNet">0.00</b></div>
       </div>
@@ -1246,6 +1257,12 @@ html[dir="ltr"] .app-toast{text-align:left}
         <div class="dash-box">
           <h3>تحليل الرواتب</h3>
           <div class="bar-list" id="salaryBars"></div>
+        </div>
+
+        <div class="dash-box">
+          <h3>الجنسية والتأمينات</h3>
+          <div class="bar-list" id="nationalityBars"></div>
+          <div id="insuranceNote" style="margin-top:10px;font-size:11px;color:#667085;line-height:1.8"></div>
         </div>
 
         <div class="dash-box">
@@ -1738,7 +1755,7 @@ html[dir="ltr"] .app-toast{text-align:left}
     'لم يتم فتح تقرير محفوظ.':'No saved report opened.',
     'ارفع ملف Excel الذي تم تصديره سابقًا من النظام لاستعادة التقرير ومراجعته مرة أخرى على المنصة.':'Upload an Excel file previously exported by the system to restore and review it again in the app.',
 
-    'الراتب الشهري':'Monthly Salary','إرسال ملخص الراتب':'Send Salary Summary','الراتب الأساسي':'Basic Salary','البدلات':'Allowances','إجمالي الراتب':'Gross Salary','الجنسية':'Nationality','نسبة التأمينات':'Insurance %','خصم التأمينات':'Insurance Deduction','مصدر نسبة التأمينات':'Insurance % Source','خصومات أخرى':'Other Deductions','اسم الخصم':'Deduction Name','مبلغ الخصم':'Deduction Amount','تحميل نموذج Excel للمرتبات':'Download Payroll Excel Template',
+    'الراتب الشهري':'Monthly Salary','إرسال ملخص الراتب':'Send Salary Summary','الراتب الأساسي':'Basic Salary','البدلات':'Allowances','إجمالي الراتب':'Gross Salary','الجنسية':'Nationality','سعودي SA':'Saudi SA','غير سعودي':'Non-Saudi','الجنسية والتأمينات':'Nationality & Insurance','التأمينات':'Insurance','خصومات أخرى':'Other Deductions','نسبة التأمينات':'Insurance %','خصم التأمينات':'Insurance Deduction','مصدر نسبة التأمينات':'Insurance % Source','خصومات أخرى':'Other Deductions','اسم الخصم':'Deduction Name','مبلغ الخصم':'Deduction Amount','تحميل نموذج Excel للمرتبات':'Download Payroll Excel Template',
     'حالة الإرسال':'Send Status',
     'رقم الجوال للإرسال':'Mobile Number for Sending','حفظ الرقم':'Save Number',
     'يمكن كتابة أو تصحيح الرقم هنا. الرقم المحفوظ يدويًا تكون له الأولوية على الرقم الموجود في ملف المرتبات.':'You can enter or correct the number here. A manually saved number takes priority over the payroll file number.',
@@ -4090,6 +4107,8 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
     return {
       list,rows,
       employees:list.length,
+      saudi:rows.reduce((s,x)=>s+(isSaudiEmployee(x.e)?1:0),0),
+      nonSaudi:rows.reduce((s,x)=>s+(isSaudiEmployee(x.e)?0:1),0),
       present:rows.reduce((s,x)=>s+x.c.presentDays,0),
       absent:rows.reduce((s,x)=>s+x.c.absentDays,0),
       actual:rows.reduce((s,x)=>s+x.c.actual,0),
@@ -4120,13 +4139,17 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
   function renderDashboard(){
     const d=dashboardData();
     $('#dEmployees').textContent=d.employees;
+    $('#dSaudi').textContent=d.saudi;
+    $('#dNonSaudi').textContent=d.nonSaudi;
     $('#dPresent').textContent=d.present;
     $('#dAbsent').textContent=d.absent;
     $('#dActual').textContent=hours(d.actual);
     $('#dOT').textContent=hours(d.ot);
     $('#dShortage').textContent=hours(d.shortage);
     $('#dGross').textContent=d.gross.toFixed(2);
+    $('#dInsurance').textContent=d.insurance.toFixed(2);
     $('#dDeduction').textContent=d.deduction.toFixed(2);
+    $('#dOtherDeductions').textContent=d.otherDeductions.toFixed(2);
     $('#dPenalties').textContent=d.penalties.toFixed(2);
     $('#dNet').textContent=d.net.toFixed(2);
 
@@ -4146,14 +4169,25 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
       dashboardBar('الساعات الناقصة',hourVals[3],hourMax)
     ].join('');
 
-    const salaryVals=[d.gross,d.deduction,d.penalties,d.net];
+    const salaryVals=[d.gross,d.insurance,d.deduction,d.otherDeductions,d.penalties,d.net];
     const salaryMax=Math.max(1,...salaryVals);
     $('#salaryBars').innerHTML=[
       dashboardBar('إجمالي الرواتب',d.gross,salaryMax),
+      dashboardBar('التأمينات',d.insurance,salaryMax),
       dashboardBar('خصم الدوام',d.deduction,salaryMax),
+      dashboardBar('خصومات أخرى',d.otherDeductions,salaryMax),
       dashboardBar('الجزاءات',d.penalties,salaryMax),
       dashboardBar('صافي الرواتب',d.net,salaryMax)
     ].join('');
+
+    const nationalityMax=Math.max(1,d.employees);
+    $('#nationalityBars').innerHTML=[
+      dashboardBar('سعودي SA',d.saudi,nationalityMax),
+      dashboardBar('غير سعودي',d.nonSaudi,nationalityMax)
+    ].join('');
+    $('#insuranceNote').innerHTML=d.saudi
+      ? `إجمالي خصم التأمينات: <b>${d.insurance.toFixed(2)}</b><br>يطبق فقط على الموظفين SA ويحسب من الراتب الأساسي.`
+      : 'لا يوجد موظفون سعوديون SA ضمن التحديد الحالي، لذلك التأمينات = 0.00.';
 
     $('#topOvertime').innerHTML=dashboardRanks(d.rows,c=>Number(hours(c.weightedOvertime)),' h');
     $('#topShortage').innerHTML=dashboardRanks(d.rows,c=>Number(hours(c.shortage)),' h');
@@ -4222,10 +4256,17 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
         ['عدد الموظفين',d.employees],['أيام الحضور',d.present],['أيام الغياب',d.absent],
         ['ساعات العمل',Number(hours(d.actual))],['الساعات المطلوبة',Number(hours(d.required))],
         ['الإضافي المستحق',Number(hours(d.ot))],['الساعات الناقصة',Number(hours(d.shortage))],
-        ['إجمالي الرواتب قبل الخصومات',d.gross],['خصم الدوام',d.deduction],['الجزاءات',d.penalties],['صافي الرواتب',d.net]
+        ['سعودي SA',d.saudi],['غير سعودي',d.nonSaudi],
+        ['إجمالي الرواتب قبل الخصومات',d.gross],['التأمينات',d.insurance],['خصم الدوام',d.deduction],
+        ['خصومات أخرى',d.otherDeductions],['الجزاءات',d.penalties],['صافي الرواتب',d.net]
       ];
-      const detail=[['كود الموظف','الموظف','الحضور','الغياب','الساعات الفعلية','المطلوبة','الإضافي المستحق','النقص','إجمالي الراتب','خصم الدوام','الجزاءات','الصافي']];
-      d.rows.forEach(({e,c})=>detail.push([e.id||'',e.name,c.presentDays,c.absentDays,Number(hours(c.actual)),Number(hours(c.required)),Number(hours(c.weightedOvertime)),Number(hours(c.shortage)),c.grossSalary,c.appliedDeduction,c.penaltiesTotal,c.netSalary]));
+      const detail=[['كود الموظف','الموظف','الجنسية','الراتب الأساسي','البدلات','إجمالي الراتب','نسبة التأمينات','خصم التأمينات','الحضور','الغياب','الساعات الفعلية','المطلوبة','الإضافي المستحق','النقص','خصم الدوام','خصومات أخرى','الجزاءات','الصافي']];
+      d.rows.forEach(({e,c})=>detail.push([
+        e.id||'',e.name,nationalityText(e),basicSalary(e),allowancesSalary(e),c.grossSalary,
+        insurancePercent(e),c.insuranceDeduction,c.presentDays,c.absentDays,
+        Number(hours(c.actual)),Number(hours(c.required)),Number(hours(c.weightedOvertime)),Number(hours(c.shortage)),
+        c.appliedDeduction,c.otherDeductionsTotal,c.penaltiesTotal,c.netSalary
+      ]));
       XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(exportRows(totals)),sheetName('التحليلات','Analytics'));
       XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(exportRows(detail)),sheetName('الموظفون','Employees'));
       XLSX.writeFile(wb,'HR_Analytics_Dashboard.xlsx',{compression:true});
