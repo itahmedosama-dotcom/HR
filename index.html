@@ -1408,6 +1408,27 @@ body.auth-locked > #appToast{visibility:hidden!important;pointer-events:none!imp
 .login-error{min-height:20px;margin-top:7px;color:#b42318;font-size:12px;font-weight:700}
 .login-note{margin-top:14px;padding-top:12px;border-top:1px solid #edf1f5;color:#98a2b3;font-size:11px;text-align:center}
 body:not(.auth-locked) .login-gate{display:none!important}
+
+/* ===== Backup & Restore ===== */
+.backup-restore-card{padding:18px;border-radius:18px}
+.backup-page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}
+.backup-page-head h2{margin:0 0 5px;font-size:24px}
+.backup-page-head p{margin:0;color:#667085;font-size:12px;line-height:1.7}
+.backup-badge{background:#eefbf8;color:#087568;border:1px solid #bfe9df;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;white-space:nowrap}
+.backup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.backup-box{border:1px solid #dbe4ec;border-radius:14px;padding:16px;background:#fbfdff;display:flex;flex-direction:column;gap:10px}
+.backup-box-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#eaf8f5;color:#0c8174;font-size:22px;font-weight:900}
+.backup-box-copy h3{margin:0 0 5px;font-size:16px}
+.backup-box-copy p{margin:0;color:#667085;font-size:11px;line-height:1.8}
+.backup-box input[type="file"]{width:100%;min-height:42px;border:1px solid #d5dfe8;border-radius:10px;padding:7px;background:#fff}
+.backup-action-btn{width:100%;min-height:42px;justify-content:center;border-radius:10px;font-weight:800}
+.backup-status{min-height:34px;padding:8px 10px;border-radius:9px;background:#f3f6f9;color:#667085;font-size:11px;line-height:1.7}
+.backup-note{margin-top:14px;padding:12px 14px;border-radius:12px;border:1px solid #dbe7ee;background:#f7fafc;color:#475467;font-size:11px;line-height:1.8}
+@media(max-width:760px){
+  .backup-page-head{display:block}
+  .backup-badge{display:inline-flex;margin-top:9px}
+  .backup-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body class="auth-locked">
@@ -1443,7 +1464,6 @@ body:not(.auth-locked) .login-gate{display:none!important}
 
   <div class="tabs" data-menu-title="نظام الحضور والرواتب">
         <button type="button" id="languageToggle" class="tab lang-switch">English</button>
-        <button type="button" class="tab logout-btn" onclick="hrLogout()">تسجيل الخروج</button>
         <button class="tab active" data-tab="uploads">⇧&nbsp; رفع الملفات</button>
         <button class="tab" data-tab="dashboard">▤&nbsp; لوحة التحليلات</button>
         <button class="tab" data-tab="summary">▦&nbsp; الملخص</button>
@@ -1451,6 +1471,8 @@ body:not(.auth-locked) .login-gate{display:none!important}
         <button class="tab" data-tab="daily">◷&nbsp; تحليل الأيام</button>
         <button class="tab" data-tab="printing">▣&nbsp; الطباعة والاعتماد</button>
         <button class="tab" data-tab="settings">⚙&nbsp; إعدادات الدوام</button>
+        <button class="tab" data-tab="backuprestore">⟳&nbsp; Backup & Restore</button>
+        <button type="button" class="tab logout-btn" onclick="hrLogout()">تسجيل الخروج</button>
       </div>
 
   <section id="uploads" class="panel active">
@@ -1517,22 +1539,6 @@ body:not(.auth-locked) .login-gate{display:none!important}
             <small>إجمالي الراتب = الراتب الأساسي + البدلات. السعودي يرمز له بـ SA فقط؛ أي قيمة أخرى أو خلية فارغة تعتبر غير سعودي. نسبة التأمينات تُطبق فقط على SA وتُحسب من الراتب الأساسي فقط. يمكن أن يكون الموظف السعودي بدون تأمينات بنسبة 0%، وسيظهر ذلك كتحذير للمراجعة فقط وليس كخطأ. الربط يتم باستخدام كود الموظف فقط.</small>
             
           </div>
-        </div>
-      </div>
-
-      <div class="file-step optional-step history-step">
-        <div class="file-step-number">3</div>
-        <div class="file-step-content">
-          <div class="file-step-title">
-            <div><h3>فتح تقرير محفوظ / History</h3> <span class="optional-badge">اختياري</span></div>
-            <small>ارفع ملف Excel الذي تم تصديره سابقًا من النظام لاستعادة التقرير ومراجعته مرة أخرى على المنصة.</small>
-          </div>
-          <div class="upload-row history-upload-row">
-            <input id="historyFileInput" type="file" accept=".xlsx,.xls">
-            <button id="loadHistoryBtn" class="secondary">فتح التقرير المحفوظ</button>
-          </div>
-          <div id="historyStatus" class="salary-file-status">لم يتم فتح تقرير محفوظ.</div>
-          <div class="file-note">التقارير الجديدة المصدّرة من هذه النسخة تحفظ بيانات الاستعادة كاملة. كما يحاول النظام فتح ملفات التصدير السابقة اعتمادًا على أوراق الملخص والتفاصيل والإعدادات.</div>
         </div>
       </div>
 
@@ -1902,6 +1908,46 @@ body:not(.auth-locked) .login-gate{display:none!important}
           </tr></thead>
           <tbody id="dailyBody"></tbody>
         </table></div>
+    </div>
+  </section>
+
+
+  <section id="backuprestore" class="panel">
+    <div class="card backup-restore-card">
+      <div class="backup-page-head">
+        <div>
+          <h2>Backup & Restore</h2>
+          <p>احفظ نسخة كاملة من بيانات التقرير الحالية، أو استعد تقريرًا محفوظًا سابقًا للمتابعة والمراجعة.</p>
+        </div>
+        <span class="backup-badge">نسخة احتياطية واستعادة</span>
+      </div>
+
+      <div class="backup-grid">
+        <div class="backup-box">
+          <div class="backup-box-icon">⇩</div>
+          <div class="backup-box-copy">
+            <h3>تصدير Backup / History</h3>
+            <p>يحفظ جميع الموظفين، الحضور، الرواتب، الإعدادات، الخصومات، الجزاءات وحالات الاعتماد داخل ملف Excel قابل للاستعادة لاحقًا.</p>
+          </div>
+          <button type="button" id="exportHistoryBackupBtn" class="primary backup-action-btn">تصدير النسخة الاحتياطية</button>
+          <div id="backupExportStatus" class="backup-status">لم يتم تصدير نسخة احتياطية في هذه الجلسة.</div>
+        </div>
+
+        <div class="backup-box">
+          <div class="backup-box-icon">⇧</div>
+          <div class="backup-box-copy">
+            <h3>استعادة Backup / History</h3>
+            <p>اختر ملف Excel تم تصديره سابقًا من النظام، وسيتم استعادة البيانات والإعدادات الموجودة وقت حفظ النسخة.</p>
+          </div>
+          <input id="historyFileInput" type="file" accept=".xlsx,.xls">
+          <button type="button" id="loadHistoryBtn" class="secondary backup-action-btn">فتح واستعادة التقرير</button>
+          <div id="historyStatus" class="backup-status">لم يتم فتح تقرير محفوظ.</div>
+        </div>
+      </div>
+
+      <div class="backup-note">
+        <b>مهم:</b> عند الاستعادة يتم تحميل البيانات الموجودة داخل النسخة الاحتياطية إلى الجلسة الحالية. احتفظ بملف الـBackup في مكان آمن للرجوع إليه لاحقًا.
+      </div>
     </div>
   </section>
 
@@ -2718,6 +2764,21 @@ body:not(.auth-locked) .login-gate{display:none!important}
     'تسجيل الخروج':'Logout',
     'كلمة المرور':'Password',
     'دخول':'Login'
+  });
+
+  Object.assign(AR_EN,{
+    '⟳  Backup & Restore':'⟳  Backup & Restore',
+    'نسخة احتياطية واستعادة':'Backup & Restore',
+    'احفظ نسخة كاملة من بيانات التقرير الحالية، أو استعد تقريرًا محفوظًا سابقًا للمتابعة والمراجعة.':'Save a full backup of the current report data, or restore a previously saved report for review.',
+    'تصدير Backup / History':'Export Backup / History',
+    'استعادة Backup / History':'Restore Backup / History',
+    'تصدير النسخة الاحتياطية':'Export Backup',
+    'فتح واستعادة التقرير':'Open & Restore Report',
+    'لم يتم تصدير نسخة احتياطية في هذه الجلسة.':'No backup has been exported in this session.',
+    'يحفظ جميع الموظفين، الحضور، الرواتب، الإعدادات، الخصومات، الجزاءات وحالات الاعتماد داخل ملف Excel قابل للاستعادة لاحقًا.':'Saves employees, attendance, payroll, settings, deductions, penalties and approval statuses in a restorable Excel file.',
+    'اختر ملف Excel تم تصديره سابقًا من النظام، وسيتم استعادة البيانات والإعدادات الموجودة وقت حفظ النسخة.':'Choose an Excel file previously exported by the system to restore the saved data and settings.',
+    'هذا الملف يحتوي على نسخة كاملة قابلة للاستعادة من بيانات التقرير الحالية.':'This file contains a full restorable backup of the current report.',
+    'تاريخ ووقت النسخة الاحتياطية':'Backup Date & Time'
   });
 
   const EN_AR=Object.fromEntries(Object.entries(AR_EN).map(([a,e])=>[e,a]));
@@ -3539,6 +3600,60 @@ body:not(.auth-locked) .login-gate{display:none!important}
         wb.Workbook.Sheets[idx].Hidden=1;
       }
     }catch(_){}
+  }
+
+  async function exportHistoryBackup(){
+    if(!employees.length){
+      showPopup('لا توجد بيانات لعمل Backup. حمّل ملف الحضور أولًا.','error','لا توجد بيانات');
+      return;
+    }
+
+    const ready=await ensureXLSX();
+    if(!ready || typeof XLSX==='undefined'){
+      showPopup('تعذر تجهيز ملف النسخة الاحتياطية. تحقق من اتصال الإنترنت.','error','فشل التصدير');
+      return;
+    }
+
+    try{
+      const chosen=employees.slice();
+      const wb=XLSX.utils.book_new();
+      const now=new Date();
+      const generatedAt=now.toLocaleString(currentLang==='en'?'en-GB':'ar-SA');
+
+      const infoRows=[
+        [currentLang==='en'?'Backup & Restore':'Backup & Restore'],
+        [currentLang==='en'?'Report Period':'فترة التقرير',reportPeriod.from||'',reportPeriod.to||''],
+        [currentLang==='en'?'Employees':'عدد الموظفين',chosen.length],
+        [currentLang==='en'?'Backup Date & Time':'تاريخ ووقت النسخة الاحتياطية',generatedAt],
+        [currentLang==='en'?'Note':'ملاحظة',
+          currentLang==='en'
+            ? 'This file contains a full restorable backup of the current report.'
+            : 'هذا الملف يحتوي على نسخة كاملة قابلة للاستعادة من بيانات التقرير الحالية.'
+        ]
+      ];
+
+      const wsInfo=XLSX.utils.aoa_to_sheet(infoRows);
+      wsInfo['!cols']=[{wch:28},{wch:28},{wch:28}];
+      XLSX.utils.book_append_sheet(wb,wsInfo,sheetName('معلومات النسخة','Backup Info'));
+
+      appendBackupSheet(wb,chosen);
+
+      const period=(reportPeriod.from&&reportPeriod.to)
+        ? reportPeriod.from.replaceAll('-','')+'_'+reportPeriod.to.replaceAll('-','')
+        : now.toISOString().slice(0,10).replaceAll('-','');
+      const fileName='HR_Backup_'+period+'.xlsx';
+
+      XLSX.writeFile(wb,fileName,{compression:true});
+
+      const st=$('#backupExportStatus');
+      if(st) st.textContent=`تم تصدير النسخة الاحتياطية: ${fileName}`;
+      showPopup(`تم إنشاء Backup بنجاح لعدد ${chosen.length} موظف.\nاسم الملف: ${fileName}`,'success','تم إنشاء Backup');
+    }catch(err){
+      console.error(err);
+      const st=$('#backupExportStatus');
+      if(st) st.textContent='حدث خطأ أثناء إنشاء النسخة الاحتياطية.';
+      showPopup('حدث خطأ أثناء إنشاء النسخة الاحتياطية: '+(err?.message||err),'error','فشل التصدير');
+    }
   }
 
   function readBackupSnapshot(wb){
@@ -5763,7 +5878,7 @@ function renderAll(){
 
 $$('.tab').forEach(b=>b.addEventListener('click',()=>{
     if(!b.dataset.tab) return;
-    if(b.dataset.tab!=='uploads' && !employees.length){
+    if(!['uploads','backuprestore'].includes(b.dataset.tab) && !employees.length){
       showPopup('يجب أولًا تحميل وتحليل ملف الحضور والانصراف.','error','ملف الحضور مطلوب');
       openTab('uploads');
       return;
@@ -6455,6 +6570,7 @@ $('#clearBtn').addEventListener('click',()=>{employees=[];summarySelection.clear
 
   $('#downloadAttendanceTemplateBtn')?.addEventListener('click',downloadAttendanceTemplate);
   $('#exportReviewExcelBtn')?.addEventListener('click',exportUploadReviewExcel);
+  $('#exportHistoryBackupBtn')?.addEventListener('click',exportHistoryBackup);
   $('#loadHistoryBtn')?.addEventListener('click',loadHistoryFile);
   $('#downloadPayrollTemplateBtn')?.addEventListener('click',downloadPayrollTemplate);
 
